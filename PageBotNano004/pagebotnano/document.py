@@ -36,7 +36,11 @@ class Document:
 
 		>>> doc = Document()
 		>>> doc
-		I am a Document(w=595, h=842)
+		<Document w=595 h=842 pages=0>
+		>>> page = doc.newPage()
+		>>> page = doc.newPage()
+		>>> doc
+		<Document w=595 h=842 pages=2>
 		"""
 		if w is None: # If not defined, take the width of A4
 			w, _ = A4
@@ -52,16 +56,23 @@ class Document:
 		# This method is called when print(document) is executed.
 		# It shows the name of the class, which can be different, if the
 		# object inherits from Document.
-		return 'I am a %s(w=%d h=%d pages=%d)' % (self.__class__.__name__, 
+		return '<%s w=%d h=%d pages=%d>' % (self.__class__.__name__, 
 			self.w, self.h, len(self.pages))
 
 	def newPage(self, w=None, h=None):
 		"""Create a new page. If the (w, h) is undefined, then take the current
 		size of the document.
+
+		>>> doc = Document()
+		>>> doc.newPage()
+		<Page pn=1 w=595 h=842 elements=0>
 		"""
 		# Make a new page and add the page number from the total number of pages.
+		# Note that the page number is 1 higher (starting at 1) than its index
+		# will be in self.pages.
 		page = Page(w or self.w, h or self.h, pn=len(self.pages)+1) 
 		self.pages.append(page)
+		return page # Answer the new create page, so the caller add elements to it.
 
 	def build(self):
 		"""Build the document by looping trough the pages, an then recursively

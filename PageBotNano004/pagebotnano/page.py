@@ -29,22 +29,27 @@ class Page:
 		# Store the elements on the page here. Start with an empty list.
 		self.elements = []
 
+	def __repr__(self):
+		# This method is called when print(page) is executed.
+		# It shows the name of the class, which can be different, if the
+		# object inherits from Page.
+		return '<%s pn=%d w=%d h=%d elements=%d>' % (self.__class__.__name__, 
+			self.pn, self.w, self.h, len(self.elements))
+
+	def addElement(self, e):
+		"""Add the element to the list of child elements.
+		"""
+		self.elements.append(e)
+
 	def build(self, doc):
-		"""Recursively make the pages to draw themselves in DrawBot.
-		The build is “broadcast” to all the elements on the page.
+		"""Draw the page and recursively make the child elements to draw 
+		themselves in DrawBot. The build is “broadcast” to all the elements 
+		on the page.
 
 		"""
 		drawBot.newPage(self.w, self.h) # Create a new DrawBot page.
 		for element in self.elements:
 			# Passing on doc and this page in case an element needs more info.
-			element.build(doc, self) 
-
-
-		# Now let DrawBot do its work, creating the page and saving it.
-		# For now to have something visible.
-		# Fill the page with a random dark color (< 50% for (r, g, b))
-		drawBot.fill(random()*0.5, random()*0.5, random()*0.5)
-		drawBot.rect(0, 0, self.w, self.h)
-		fs = drawBot.FormattedString('My specimen\nPage %d' % self.pn, 
-			font='Georgia', fontSize=80, fill=1)
-		drawBot.text(fs, (50, self.h-100))
+			# Since this bottom-left corner of the page is the origin for position,
+			# set it to (0, 0)
+			element.build(x=0, y=0, doc=doc, page=self, parent=self) 

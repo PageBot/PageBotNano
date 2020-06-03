@@ -51,6 +51,8 @@ class Document:
 		self.h = h
 		# Storage for the pages in this document
 		self.pages = [] # Simple list, the index is the page number (starting at 0)
+		# Keep the flag is self.build was already executed when calling self.export
+		self.hasBuilt = False
 
 	def __repr__(self):
 		# This method is called when print(document) is executed.
@@ -78,22 +80,32 @@ class Document:
 		"""Build the document by looping trough the pages, an then recursively
 		tell every page to build itself (and its contained elements).
 		"""
-		# Tell each page to build itself in DrawBot.
+		# Clear all previous drawing in the DrawBot canvas.
+		drawBot.newDrawing()
+
+		# Tell each page to build itself in DrawBot, including their child elements.
 		for page in self.pages:
 			page.build(self) # Passing self as document, in case the page needs more info.
+		self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 
-	def export(self, path):
+	def export(self, path, force=False, multipage=True):
 		"""Export the document into the _export folder. We assume that the 
 		document and pages are built. We don't do that here, in case multiple
 		formats are saved from the same build.
+		If `force` is True or if build has not been done yet, then call
+		self.build anyway.
 
 		"""
+		if force or not self.hasBuilt: # If forced or not done yet, build the pages.
+			self.build()
+
 		if path.startswith(EXPORT_DIR) and not os.path.exists(EXPORT_DIR):
 			os.mkdir(EXPORT_DIR)
 		# Now all the pages drew them themselfs, we can export to the path.
 		# let DrawBot do its work, saving it.
-		drawBot.saveImage(path)
+		drawBot.saveImage(path, multipage=multipage)
 
 if __name__ == "__main__":
+	# Running this document will execute all >>> comments as test of this source.
     import doctest
     doctest.testmod()[0]

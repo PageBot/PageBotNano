@@ -53,3 +53,8 @@ class Page:
 			# Since this bottom-left corner of the page is the origin for position,
 			# set it to (0, 0)
 			element.build(x=0, y=0, doc=doc, page=self, parent=self) 
+
+if __name__ == "__main__":
+	# Running this document will execute all >>> comments as test of this source.
+    import doctest
+    doctest.testmod()[0]

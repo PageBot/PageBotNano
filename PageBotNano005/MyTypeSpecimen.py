@@ -23,7 +23,8 @@ from random import random
 # that we need for creating the type specimen.
 # Classes can be recognised by their initial capital name.
 from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text
+from pagebotnano.elements import Rect, Text, TextBox
+from pagebotnano.toolbox.loremipsum import loremipsum
 
 class TypeSpecimen(Document):
 	# Class names start with a capital. See a class as a factory
@@ -45,12 +46,15 @@ class TypeSpecimen(Document):
 
 typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
 
-padding = 50 # Padding of the page. Outside CSS called "margin" of the page.
+fontName = 'Georgia'
+titleSize = 64
+headSize = 24
+bodyFontSize = 16
+leading = 1.4 # Multiplier for the fontSize;lineHe
+padding = 80 # Padding of the page. Outside CSS called "margin" of the page.
 
-# Create a number of new pages in the document. If no new page size is given, 
-# it will take over the size of the document.
-for n in range(10):
-	page = typeSpecimen.newPage()
+def makeCoverPage(doc, title):
+	page = doc.newPage()
 
 	# Fill the page with a random dark color (< 50% for (r, g, b))
 	fillColor = random()*0.5, random()*0.5, random()*0.5
@@ -58,10 +62,10 @@ for n in range(10):
 	page.addElement(rectangleElement) # Add the rectangle element to the page.
 
 	# Make a FormattedString for the text box
-	fs = Text.FormattedString('My specimen\nPage %d' % page.pn, 
-		font='Georgia', fontSize=80, lineHeight=90, fill=1)
+	fs = Text.FS(title,
+		font=fontName, fontSize=titleSize, lineHeight=titleSize*1.1, fill=1)
 	# Make a Text element with an (x, y) position and add it to the page.
-	textElement = Text(fs, x=padding, y=page.h-2*padding)
+	textElement = Text(fs, x=padding, y=page.h-1.5*padding)
 	page.addElement(textElement) # Add the text element to the page.
 
 	# Add square with light color (> 50% for (r, g, b)) and lighter frame.
@@ -73,16 +77,29 @@ for n in range(10):
 		stroke=strokeColor, strokeWidth=5)
 	page.addElement(rectangleElement) # Add the rectangle element to the page.
 
+def makeBodyPages(doc, bodyText):
+	"""Create a number of new pages in the document, as long as there is overflow. 
+	If no new page size is given, it will take over the size of the document.
+	"""
+	fs = Text.FS(bodyText, font=fontName, fontSize=bodyFontSize, lineHeight=bodyFontSize*leading)
+	while True:
+		page = doc.newPage()
+		# Add text element with page number
+		pn = TextBox.FS(str(page.pn), align='center', font=fontName, fontSize=bodyFontSize)
+		page.addElement(Text(pn, page.w/2, padding/2))
+		e = TextBox(fs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
+		page.addElement(e)
+		fs = e.getOverflow(fs)
+		if not fs:
+			break
+
+txt = loremipsum(doShuffle=True)
+
+makeCoverPage(typeSpecimen, 'Type specimen\n'+fontName)
+makeBodyPages(typeSpecimen, txt)
 
 # Build the document, all pages and their contained elements.
 typeSpecimen.build() 
-
-# Shows: I am a TypeSpecimen(w=595, h=842, pages=10) with default size
-# and the amount of created images.
-print(typeSpecimen) 
-# Show the pages
-for page in typeSpecimen.pages:
-	print(page)
 
 # Create the "_export" folder if it does not exist yet.
 # This Github repository is filtering file to not upload _export.
@@ -90,3 +107,4 @@ for page in typeSpecimen.pages:
 typeSpecimen.export('_export/MyTypeSpecimen.pdf')
 typeSpecimen.export('_export/MyTypeSpecimen.png')
 
+print('Done')

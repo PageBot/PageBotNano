@@ -20,7 +20,7 @@ import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 import drawBot
 
-from pagebotnano.constants import *
+from pagebotnano.constants import A4, EXPORT_DIR
 from pagebotnano.page import Page
 from pagebotnano.elements import Element
 

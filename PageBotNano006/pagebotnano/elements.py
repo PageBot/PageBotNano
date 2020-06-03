@@ -76,6 +76,12 @@ class Element:
 		#Let inheriting subclasses handle what must appear on the background.
 		self.drawForeground(ox, oy, doc, page, parent)
 
+	# Rough example of implementing HTML/CSS generator in this architecture
+	#def build_html(self, x, y, doc, page, parent=None):
+	#	print('<div class="" style="background-color: %s">' % asHtmlColor(self.fill))
+	#	self.drawContent(ox, oy, doc, page, parent)
+	#	print('</div>')
+
 	def drawContent(self, ox, oy, doc, page, parent):
 		"""Default behavior is to do nothing, as the Element (and e.h. Rect)
 		don’t have content to draw, besides the background and frame.
@@ -113,6 +119,7 @@ class Element:
 			if self.w is not None and self.h is not None:
 				drawBot.rect(ox, oy, self.w, self.h)
 
+# Rect = Element would have been the same.
 class Rect(Element):
 	"""This element draws a simple rectangle. This is identical to the default 
 	behavior of the base Element class, so nothing needs to be defined here.
@@ -165,18 +172,18 @@ class TextBox(Text):
 	>>> from pagebotnano.toolbox.loremipsum import loremipsum
 	>>> headLine = 'Example of TextBox overflow\\n'
 	>>> txt = loremipsum()
-	>>> fontSize = 18
+	>>> fontSize = 30
 	>>> headSize = fontSize*1.5
 	>>> fs = Text.FS(headLine, font='Georgia-Bold', lineHeight=headSize*1.4, fontSize=headSize)
 	>>> fs.append(Text.FS(txt, font='Georgia', lineHeight=fontSize*1.4, fontSize=fontSize))
 	>>> doc = Document()
 	>>> padding = 80
-	>>> previousPage = None
 	>>> while True:
 	...     page = doc.newPage()
 	...	    # Add text element with page number
-	...     pn = TextBox.FS(str(page.pn), align='center', font='Georgia', fontSize=16)
-	...     page.addElement(Text(pn, page.w/2, padding/2))
+	...     pn = Text.FS(str(page.pn), align='center', font='Georgia', fontSize=16)
+	...     e = Text(pn, page.w/2, padding/2)
+	...     page.addElement(e)
 	...     e = TextBox(fs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
 	...     page.addElement(e)
 	...     fs = e.getOverflow(fs)
@@ -214,7 +221,7 @@ class TextBox(Text):
 			# Width of the box is undefined, measure it from the defined column height.
 			w, _ = drawBot.textSize(fs, height=h)
 		# Height of the box is undefined, measure it from the defined column width.
-		return drawBot.textBox(fs, (10000, 0, w, h))
+		return drawBot.textBox(fs, (10000000, 0, w, h))
 
 	def drawContent(self, ox, oy, doc, page, parent):
 		"""We just need to define drawing of the foreground. The rest of behavior
@@ -247,11 +254,15 @@ class Image(Element):
 	>>> page = doc.newPage()
 	>>> padding = 40
 	>>> imagePath = '../../resources/images/cookbot10.jpg'
-	>>> e = Image(imagePath, x=padding, w=page.w-2*padding)
+	>>> e = Image(imagePath, x=padding, w=page.w/2-2*padding)
 	>>> iw, ih = e.getSize() # Get the size of the Image element
 	>>> e.y = page.h - padding - ih # Align the image on top of the page.
 	>>> page.addElement(e)
-	>>> doc.export('_export/Image.pdf') # Build and export.
+	>>> e = Image(imagePath, x=padding, y=padding, w=page.w-2*padding)
+	>>> iw, ih = e.getSize() # Get the size of the Image element
+	>>> page.addElement(e)
+	>>> doc.export('_export/Image.pdf') # Build and export as PDF
+	>>> doc.export('_export/Image.png') # Build and export as PNG
 	"""
 	def __init__(self, path, x=None, y=None, w=None, h=None, fill=None, stroke=None, 
 		strokeWidth=None):
@@ -335,6 +346,6 @@ class Image(Element):
 
 
 if __name__ == "__main__":
-	# Running this document will execute all >>> comments as test of this source.
+    # Running this document will execute all >>> comments as test of this source.
     import doctest
     doctest.testmod()[0]

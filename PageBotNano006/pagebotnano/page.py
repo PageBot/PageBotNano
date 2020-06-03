@@ -54,6 +54,15 @@ class Page:
 			# set it to (0, 0)
 			element.build(x=0, y=0, doc=doc, page=self, parent=self) 
 
+	# Rough example of implementing HTML/CSS generator in this architecture
+	#def build_html(self):
+	#	drawBot.newPage(self.w, self.h) # Create a new DrawBot page.
+	#	for element in self.elements:
+	#		# Passing on doc and this page in case an element needs more info.
+	#		# Since this bottom-left corner of the page is the origin for position,
+	#		# set it to (0, 0)
+	#		element.build_html(x=0, y=0, doc=doc, page=self, parent=self) 
+
 if __name__ == "__main__":
 	# Running this document will execute all >>> comments as test of this source.
     import doctest

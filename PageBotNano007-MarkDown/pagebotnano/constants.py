@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
+#
+#	P A G E B O T  N A N O
+#
+#	Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#	www.pagebot.io
+#	Licensed under MIT conditions
+#
+#	Supporting DrawBot, www.drawbot.com
+# -----------------------------------------------------------------------------
+#
+#	constants.py
+#
+A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
+
+EXPORT_DIR = '_export/' # Name of the directory that does not commit in Github
+
+# Set of names that are allowed as attribute in DrawBot.FormattedString,
+# so we can filter from a more generic style description.
+# See: https://www.drawbot.com/content/text/formattedString.html
+FS_ATTRIBUTES = {
+	'txt', 'font', 'fontSize', 'fallbackFont', 'fill', 'cmykFill', 'stroke',
+	'cmykStroke', 'strokeWidth', 'align', 'lineHeight', 'tracking', 'baselineShift',
+	'openTypeFeatures', 'tabs', 'language', 'indent', 'tailIndent', 
+	'firstLineIndent', 'paragraphTopSpacing', 'paragraphBottomSpacing',
+}

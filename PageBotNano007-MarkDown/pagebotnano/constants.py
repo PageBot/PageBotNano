@@ -26,3 +26,10 @@ FS_ATTRIBUTES = {
 	'openTypeFeatures', 'tabs', 'language', 'indent', 'tailIndent', 
 	'firstLineIndent', 'paragraphTopSpacing', 'paragraphBottomSpacing',
 }
+CSS_ATTRIBUTES = dict(
+	font='font-family',
+	fontSize='font-size',
+	fill='background-color',
+)
+
+HTML_TEXT_TAGS = {'h1', 'h2', 'h3', 'h4', 'h5', 'p', 'span', 'b', 'i'}

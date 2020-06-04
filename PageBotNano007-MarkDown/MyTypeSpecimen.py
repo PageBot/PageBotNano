@@ -24,6 +24,7 @@ from random import random
 # Classes can be recognised by their initial capital name.
 from pagebotnano.document import Document
 from pagebotnano.elements import Rect, Text, TextBox, Image
+from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.loremipsum import loremipsum
 
 class TypeSpecimen(Document):
@@ -62,10 +63,10 @@ def makeCoverPage(doc, title):
 	page.addElement(rectangleElement) # Add the rectangle element to the page.
 
 	# Make a FormattedString for the text box
-	fs = Text.FS(title,
+	bs = BabelString(title,
 		font=fontName, fontSize=titleSize, lineHeight=titleSize*1.1, fill=1)
 	# Make a Text element with an (x, y) position and add it to the page.
-	textElement = Text(fs, x=padding, y=page.h-1.5*padding)
+	textElement = Text(bs, x=padding, y=page.h-1.5*padding)
 	page.addElement(textElement) # Add the text element to the page.
 
 	# Add square image with frame around
@@ -83,16 +84,16 @@ def makeBodyPages(doc, bodyText):
 	"""Create a number of new pages in the document, as long as there is overflow. 
 	If no new page size is given, it will take over the size of the document.
 	"""
-	fs = Text.FS(bodyText, font=fontName, fontSize=bodyFontSize, lineHeight=bodyFontSize*leading)
+	bs = BabelString(bodyText, font=fontName, fontSize=bodyFontSize, lineHeight=bodyFontSize*leading)
 	while True:
 		page = doc.newPage()
 		# Add text element with page number
-		pn = TextBox.FS(str(page.pn), align='center', font=fontName, fontSize=bodyFontSize)
+		pn = BabelString(str(page.pn), align='center', font=fontName, fontSize=bodyFontSize)
 		page.addElement(Text(pn, page.w/2, padding/2))
-		e = TextBox(fs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
+		e = TextBox(bs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
 		page.addElement(e)
-		fs = e.getOverflow(fs)
-		if not fs:
+		bs = e.getOverflow(bs, doc=doc)
+		if not bs.fs:
 			break
 
 txt = loremipsum(doShuffle=True)

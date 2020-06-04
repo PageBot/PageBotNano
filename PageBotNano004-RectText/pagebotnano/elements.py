@@ -19,7 +19,6 @@
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 import drawBot
-from pagebotnano.toolbox.color import asColor
 
 class Element:
 	"""Base class of all elements that can be placed on a page.

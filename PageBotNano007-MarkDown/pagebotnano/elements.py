@@ -19,8 +19,6 @@
 import os
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
-import drawBot
-from pagebotnano.toolbox.color import asColor
 
 class Element:
 	"""Base class of all elements that can be placed on a page.
@@ -38,7 +36,7 @@ class Element:
 		self.y = y or 0
 		self.w = w # Width and height of the element bounding box
 		self.h = h
-		self.fill = fill or asColor(0) # Default is drawing a black rectangle.
+		self.fill = fill # Default is drawing a black rectangle.
 		self.stroke = stroke # Default is drawing no stroke frame
 		self.strokeWidth = strokeWidth
 		self.elements = [] # Storage in case there are child elements
@@ -94,14 +92,10 @@ class Element:
 		redefined by inheriting subclasses that need different foreground drawing.
 		"""
 		if self.fill is not None:
-			drawBot.stroke(None) # Any stroke drawing is done in foreground
-			r, g, b, a = asColor(self.fill)
-			if r is None:
-				drawBot.fill(None)
-			else:
-				drawBot.fill(r, g, b, a)
+			doc.context.stroke(None) # Any stroke drawing is done in foreground
+			doc.context.fill(self.fill)
 			if self.w is not None and self.h is not None:
-				drawBot.rect(ox, oy, self.w, self.h)
+				doc.context.rect(ox, oy, self.w, self.h)
 
 	def drawForeground(self, ox, oy, doc, page, parent):
 		"""Draw the foreground of the element. Default is to just draw the 
@@ -109,15 +103,10 @@ class Element:
 		redefined by inheriting subclasses that need different foreground drawing.
 		"""
 		if self.stroke is not None and self.strokeWidth: # Only if defined.
-			drawBot.fill(None) # Fill is done in background drawing.
-			r, g, b, a = asColor(self.stroke)
-			if r is None:
-				drawBot.stroke(None)
-			else:
-				drawBot.strokeWidth(self.strokeWidth)
-				drawBot.stroke(r, g, b, a)
+			doc.context.fill(None) # Fill is done in background drawing.
+			doc.context.stroke(self.stroke, self.strokeWidth)
 			if self.w is not None and self.h is not None:
-				drawBot.rect(ox, oy, self.w, self.h)
+				doc.context.rect(ox, oy, self.w, self.h)
 
 # Rect = Element would have been the same.
 class Rect(Element):
@@ -138,30 +127,30 @@ class Text(Element):
 	is done. 
 
 	>>> from pagebotnano.document import Document
-	>>> fs = Text.FormattedString('Hello world', font='Georgia', fontSize=100)
+	>>> from pagebotnano.babelstring import BabelString
+	>>> style = dict(font='Georgia', fontSize=100)
+	>>> bs = BabelString('Hello world', style)
 	>>> doc = Document()
 	>>> page = doc.newPage()
 	>>> padding = 40
-	>>> e = Text(fs, padding, page.h/2, fill=(1, 0, 0))
+	>>> e = Text(bs, padding, page.h/2, fill=(1, 0, 0))
 	>>> page.addElement(e)
 	>>> doc.export('_export/Text.pdf') # Build and export.
 	"""
-	# Add abbreviation for easier usage.
-	FormattedString = FS = drawBot.FormattedString
 
-	def __init__(self, fs, x, y, w=None, h=None, fill=None, stroke=None, 
+	def __init__(self, bs, x, y, w=None, h=None, fill=None, stroke=None, 
 		strokeWidth=None):
 		# Call the base element with all standard attributes.
 		Element.__init__(self, x=x, y=y, w=w, h=h, fill=fill, stroke=stroke, 
 			strokeWidth=strokeWidth)
-		self.fs = fs # Store the FormattedString in self.
+		self.bs = bs # Store the BabelString in self.
 
-	def drawContent(self, ox, oy, dox, page, parent):
+	def drawContent(self, ox, oy, doc, page, parent):
 		"""We just need to define drawing of the content. The rest of behavior
 		for the Text element (including drawing on the background and the frame) 
 		is handled by the base Element class.
 		"""
-		drawBot.text(self.fs, (ox, oy))
+		doc.context.text(self.bs, (ox, oy))
 
 class TextBox(Text):
 	"""This elements draws a FormattedString as wrapped text on a defined place
@@ -169,25 +158,27 @@ class TextBox(Text):
 	code. 
 
 	>>> from pagebotnano.document import Document
+	>>> from pagebotnano.babelstring import BabelString
 	>>> from pagebotnano.toolbox.loremipsum import loremipsum
 	>>> headLine = 'Example of TextBox overflow\\n'
 	>>> txt = loremipsum()
 	>>> fontSize = 30
 	>>> headSize = fontSize*1.5
-	>>> fs = Text.FS(headLine, font='Georgia-Bold', lineHeight=headSize*1.4, fontSize=headSize)
-	>>> fs.append(Text.FS(txt, font='Georgia', lineHeight=fontSize*1.4, fontSize=fontSize))
+	>>> bs = BabelString(headLine, dict(font='Georgia-Bold', lineHeight=headSize*1.4, fontSize=headSize))
+	>>> bs2 = BabelString(txt, dict(font='Georgia', lineHeight=fontSize*1.4, fontSize=fontSize))
+	>>> bs.append(bs2)
 	>>> doc = Document()
 	>>> padding = 80
 	>>> while True:
 	...     page = doc.newPage()
 	...	    # Add text element with page number
-	...     pn = Text.FS(str(page.pn), align='center', font='Georgia', fontSize=16)
+	...     pn = BabelString(str(page.pn), dict(align='center', font='Georgia', fontSize=16))
 	...     e = Text(pn, page.w/2, padding/2)
 	...     page.addElement(e)
-	...     e = TextBox(fs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
+	...     e = TextBox(bs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
 	...     page.addElement(e)
-	...     fs = e.getOverflow(fs)
-	...     if not fs:
+	...     bs = e.getOverflow(bs, doc=doc)
+	...     if not bs.fs: # Test on this “incomplete” BabelString, as it only has a cached FS
 	...         break
 	>>> doc.export('_export/TextBox-Overflow.pdf') # Build and export.
 
@@ -200,28 +191,31 @@ class TextBox(Text):
 		Text.__init__(self, fs, x=x, y=y, w=w, h=h, fill=fill, stroke=stroke, 
 			strokeWidth=strokeWidth)
 
-	def getOverflow(self, fs=None, w=None, h=None):
+	def getOverflow(self, bs=None, w=None, h=None, doc=None):
 		"""Flow the text into self and put any overflow in self.next.
 		If there is no self.next defined, then store the remaining overflow
 		text in self.overflow.
 		"""
+		# Make sure that there is a `doc` for the context.
+		assert doc is not None
+
 		# If another FormattedString is defined, then use that.
-		# Otherwise use the existing self.fs
-		if fs is None:
-			fs = self.fs
-		# Since we cannot test the overflow without drawing in DrawBot, we'll
-		# create a text column far outside the page boundaries. 
+		# Otherwise use the existing BabelString self.bs
+		if bs is None:
+			bs = self.bs
+		# Since we cannot test the overflow without drawing in the context, 
+		# we'll create a text column far outside the page boundaries. 
 		# Unfortunately this increases the PDF export size.
 		h = w or self.h
 		w = h or self.w
 		if h is None and w is not None:
 			# Height of the box is undefined, measure it from the defined column width.
-			_, h = drawBot.textSize(fs, width=w)
+			_, h = doc.context.textSize(bs, width=w)
 		elif w is None and h is not None:
 			# Width of the box is undefined, measure it from the defined column height.
-			w, _ = drawBot.textSize(fs, height=h)
+			w, _ = doc.context.textSize(bs, height=h)
 		# Height of the box is undefined, measure it from the defined column width.
-		return drawBot.textBox(fs, (10000000, 0, w, h))
+		return doc.context.textBox(bs, (10000000, 0, w, h))
 
 	def drawContent(self, ox, oy, doc, page, parent):
 		"""We just need to define drawing of the foreground. The rest of behavior
@@ -237,14 +231,14 @@ class TextBox(Text):
 		w = self.w
 		if h is None and w is not None:
 			# Height of the box is undefined, measure it from the defined column width.
-			_, h = drawBot.textSize(self.fs, width=w)
+			_, h = doc.context.textSize(self.fs, width=w)
 		elif w is None and h is not None:
 			# Width of the box is undefined, measure it from the defined column height.
-			w, _ = drawBot.textSize(self.fs, height=h)
+			w, _ = doc.context.textSize(self.fs, height=h)
 		# Else if width and height are both defined or undefined, we can used them as is. 
 		# In case width and height are both defined, it may result in a new overflow
 		# FormattedString. Store that in self.overflow.
-		self.overflow = drawBot.textBox(self.fs, (ox, oy, self.w, self.h or page.h)) 
+		self.overflow = doc.context.textBox(self.bs, (ox, oy, self.w, self.h or page.h)) 
 
 class Image(Element):
 	"""This element draws an image on a defined place. 
@@ -255,11 +249,11 @@ class Image(Element):
 	>>> padding = 40
 	>>> imagePath = '../../resources/images/cookbot10.jpg'
 	>>> e = Image(imagePath, x=padding, w=page.w/2-2*padding)
-	>>> iw, ih = e.getSize() # Get the size of the Image element
+	>>> iw, ih = e.getSize(doc) # Get the size of the Image element
 	>>> e.y = page.h - padding - ih # Align the image on top of the page.
 	>>> page.addElement(e)
 	>>> e = Image(imagePath, x=padding, y=padding, w=page.w-2*padding)
-	>>> iw, ih = e.getSize() # Get the size of the Image element
+	>>> iw, ih = e.getSize(doc) # Get the size of the Image element
 	>>> page.addElement(e)
 	>>> doc.export('_export/Image.pdf') # Build and export as PDF
 	>>> doc.export('_export/Image.png') # Build and export as PNG
@@ -273,49 +267,55 @@ class Image(Element):
 		self.path = path
 
 	@classmethod
-	def imageSize(cls, path):
+	def imageSize(cls, path, doc):
 		"""Answer the images size in points.
 
-		>>> imagePath = '../../resources/images/cookbot10.jpg'
-		>>> Image.imageSize(imagePath)
+		>>> from pagebotnano.document import Document
+		>>> doc = Document()
+		>>> path = '../../resources/images/cookbot10.jpg'
+		>>> Image.imageSize(path, doc)
 		(2058, 946)
 		"""
-		return drawBot.imageSize(path)
+		return doc.context.imageSize(path)
 
-	def getSize(self):
+	def getSize(self, doc):
 		"""Answer the scaled size of the image.
 
+		>>> from pagebotnano.document import Document
+		>>> doc = Document()
 		>>> imagePath = '../../resources/images/cookbot10.jpg'
 		>>> e = Image(imagePath, w=500)
-		>>> w, h = e.getSize()
+		>>> w, h = e.getSize(doc)
 		>>> '%0.2f, %0.2f' % (w, h) # Python method of rounding float numbers.
 		'500.00, 229.83'
 		"""
-		iw, ih = self.imageSize(self.path)
-		sx, sy = self.getScale()
+		iw, ih = self.imageSize(self.path, doc)
+		sx, sy = self.getScale(doc)
 		return iw*sx, ih*sy
 
-	def getScale(self):
+	def getScale(self, doc):
 		"""Answer the scale of the image file, compared to the target scale of self.
 		Detect if the image should proportionally scaled to (w, h) in case one 
 		of the two is undefined.
 
+		>>> from pagebotnano.document import Document
+		>>> doc = Document()
 		>>> imagePath = '../../resources/images/cookbot10.jpg'
 		>>> e = Image(imagePath, w=500)
-		>>> sx, sy = e.getScale()
+		>>> sx, sy = e.getScale(doc)
 		>>> '%0.2f, %0.2f' % (sx, sy) # Python method of rounding float numbers.
 		'0.24, 0.24'
 		>>> e.h = 2000 # Scaling disproportional now
-		>>> sx, sy = e.getScale()
+		>>> sx, sy = e.getScale(doc)
 		>>> '%0.2f, %0.2f' % (sx, sy) # Python method of rounding float numbers.
 		'0.24, 2.11'
 		>>> e.w = e.h = None # Disable scaling of the image
-		>>> sx, sy = e.getScale()
+		>>> sx, sy = e.getScale(doc)
 		>>> '%0.2f, %0.2f' % (sx, sy) # Python method of rounding float numbers.
 		'1.00, 1.00'
 		"""
 		# Get the size in points of this image
-		iw, ih = self.imageSize(self.path)
+		iw, ih = self.imageSize(self.path, doc)
 		# If both (w, h) are defined, then scale non-proportional
 		if self.w and self.h is None:
 			sx = sy = self.w/iw
@@ -335,14 +335,13 @@ class Image(Element):
 		"""
 		# Get the scale of the image, comparing the file size with the size
 		# of the image element.
-		sx, sy = self.getScale()
+		sx, sy = self.getScale(doc)
 		# In drawBot it is not possible to scale the image, so we need to scale
 		# the canvas instead. Then also we need to scale the (ox, oy) positions.
 		# After drawing, reverse scale the canvas back to 100%
-		drawBot.scale(sx, sy)
-		drawBot.image(self.path, (ox/sx, oy/sy))
-		drawBot.scale(1/sx, 1/sy)
-
+		doc.context.scale(sx, sy)
+		doc.context.image(self.path, (ox/sx, oy/sy))
+		doc.context.scale(1/sx, 1/sy)
 
 
 if __name__ == "__main__":

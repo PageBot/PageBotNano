@@ -15,30 +15,29 @@
 #
 #	This source contains supporting functions for PageBotNano classes.
 #
-def asColor(r, g=None, b=None, a=None):
+def asRgbaColor(c):
 	"""Convert the attribute to a color tuple that is valid in DrawBot.
 
-	>>> asColor(1) # Answer white color tuple
+	>>> asRgbaColor(1) # Answer white color tuple
 	(1, 1, 1, 1)
-	>>> asColor(0, 0, 1) # Answer blue color
+	>>> asRgbaColor((0, 0, 1)) # Answer blue color
 	(0, 0, 1, 1)
-	>>> asColor(0.5) # 50% gray
+	>>> asRgbaColor((0.5)) # 50% gray
 	(0.5, 0.5, 0.5, 1)
-	>>> asColor(0.5, 0.4, 0.3, 0.2)
+	>>> asRgbaColor((0.5, 0.4, 0.3, 0.2))
 	(0.5, 0.4, 0.3, 0.2)
 	"""
-	if isinstance(r, (tuple, list)):
-		if len(r) == 3:
-			r, g, b = r
+	if isinstance(c, (tuple, list)):
+		if len(c) == 3:
+			r, g, b = c
 			return r, g, b, 1 # Return the color with undefined opacity.
-		if len(r) == 4:
-			return r # Answer the color tuple unchanged.
-		print('asColor: Color "%s" for not have the right format')
+		if len(c) == 4:
+			return c # Answer the color tuple unchanged.
 		return (0, 0, 0) # Answer black in case of error
-	if isinstance(r, (float, int)) and 0 <= r <= 1:
+	elif isinstance(c, (float, int)) and 0 <= c <= 1:
 		# Fill the green and blue with the red value, if they are undefined.
-		return r, g or r, b or r, a or 1 # Answer the (r, g ,b, a) 
-	return None, None, None, None
+		return c, c, c, 1 # Answer the gray scale (r, g ,b, a) 
+	print('asRgbaColor: Color "%s" does not have the right format' % str(c))
 
 if __name__ == "__main__":
 	# Running this document will execute all >>> comments as test of this source.

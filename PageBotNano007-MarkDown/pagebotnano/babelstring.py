@@ -15,9 +15,10 @@
 #
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
+from copy import copy
 import drawBot
 
-from pagebotnano.constants import FS_ATTRIBUTES
+from pagebotnano.constants import FS_ATTRIBUTES, CSS_ATTRIBUTES, HTML_TEXT_TAGS
 
 class BabelRun:
 	"""Holds a plain string with a style.
@@ -26,6 +27,17 @@ class BabelRun:
 		self.s = s # Property that clear the native cache components of a string.
 		self.style = style
 
+	def copy(self):
+		"""Answer a copy of self, where also the style is copied.
+
+		>>> br = BabelRun('Hello world', dict(font='Georgia'))
+		>>> br2 = br.copy()
+		>>> br.s == br2.s and br.style == br2.style # Copy is equal
+		True
+		>>> br.style is not br2.style
+		True
+		"""
+		return self.__class__(self.s, copy(self.style))
 class Css:
 	"""Holds a set of styles for the BabelString. Capable of exporting 
 	into standard css syntax.
@@ -38,6 +50,40 @@ class Css:
 
 	def __repr__(self):
 		return '<%s style=%s>' % (self.__class__.__name__, len(self.styles))
+
+	def getMergedStyles(self):
+		merged = {} # First merge equal styles for defined tags
+		for style in self.styles:
+			tag = style.get('tag', 'span')
+			class_ = style.get('name')
+			if tag in HTML_TEXT_TAGS:
+				cssStyle = dict(class_=class_)
+				if tag not in merged:
+					merged[tag] = cssStyle
+				for cssName, value in style.items():
+					merged[tag][cssName] = value
+		return merged
+
+	def asString(self, compact=False):
+		if compact:
+			r = t = s = ''
+		else:
+			r = '\n'
+			t = '\t'
+			s = ' '
+		css = ''
+		for tag, style in sorted(self.getMergedStyles().items()):
+			class_ = style.get('class_')
+			css += tag
+			if class_ is not None:
+				css += '.'+class_
+			css += ' {'
+			for cssName, value in style.items():
+				if cssName in CSS_ATTRIBUTES:
+					# TODO: make better representations of the CSS value
+					css += '%s%s:%s%s;%s' % (t, cssName, s, value, r)
+			css += '};\n'
+		return css
 
 class BabelString:
 	"""The BabelString is a wrapper around native string formats, such as
@@ -59,7 +105,9 @@ class BabelString:
 	>>> bs.fs, bs.fs.__class__.__name__ # New DrawBot.FormattedString created.
 	(Hello worlds and other planets, 'FormattedString')
 	"""
-	def __init__(self, s, style=None, **kwargs):
+	def __init__(self, s=None, style=None, **kwargs):
+		if s is None:
+			s = ''
 		if style is None:
 			style = {}
 		for name, value in kwargs.items():
@@ -91,7 +139,7 @@ class BabelString:
 			self.append(str(s))
 		return self
 
-	def append(self, s, style=None):
+	def append(self, bs, style=None):
 		"""Append the string s to self. If not style is defined, then just add
 		the `s` to the last run (inheriting the current style).
 		Otherwise create a new BabelRun to store that `s` string with the style.
@@ -105,12 +153,19 @@ class BabelString:
 		>>> bs.append(' and other worlds', dict(font='Georgia'))
 		>>> bs # Created a new run
 		<BabelString runs=2>
+		>>> bs2 = BabelString('(ok)')
+		>>> bs.append(bs2) # Adding another BabelString
+		>>> bs 
+		<BabelString runs=3>
 		"""
-		assert isinstance(s, str)
-		if style is None:
-			self.runs[-1].s += s # Undefined style, just add to last run
+		if isinstance(bs, self.__class__):
+			for run in bs.runs:
+				self.runs.append(run.copy())
 		else:
-			self.runs.append(BabelRun(s, style))
+			if style is None:
+				self.runs[-1].s += str(bs) # Undefined style, just add to last run
+			else:
+				self.runs.append(BabelRun(str(bs), style))
 		self.reset()
 
 	def reset(self):
@@ -142,7 +197,15 @@ class BabelString:
 			for run in self.runs:
 				fs.append(drawBot.FormattedString(run.s, **self._getFSStyle(run.style)))
 		return self._fs
-	fs = property(_get_fs)
+	def _set_fs(self, fs):
+		"""In case of DrawBot.textBox a DrawBot.FormattedString is answered.
+		An “incomplete” BabelString is constructed by the DrawBotContext,
+		because we cannot reconstruct the source of the string. But the 
+		DrawBot.FormattedString can still be used for placement in Text
+		and TextBox when doc.context is a DrawBotContext.
+		"""
+		self._fs = fs
+	fs = property(_get_fs, _set_fs)
 
 	def _get_html(self):
 		"""Property that creates a new HTML string representation of self,
@@ -152,6 +215,9 @@ class BabelString:
 		>>> bs = BabelString('Hello world', dict(tag='h1', name='top'))
 		>>> bs.html
 		'<h1 class="top">Hello world</h1>'
+		>>> bs = BabelString('Hello world', dict(name='top'))
+		>>> bs.html # Default tag name is <span>
+		'<span class="top">Hello world</span>'
 		"""
 		if self._html is None:
 			tags = []
@@ -175,9 +241,11 @@ class BabelString:
 		from the current set of runs, if the cached value self._html
 		does not already exist. Otherwise just answer the cached Css instance.
 
-		>>> bs = BabelString('Hello world', dict(tag='h1', name='top'))
-		>>> bs.css, isinstance(bs.css, Css)
-		(<Css style=1>, True)
+		>>> bs = BabelString('Hello world', dict(font='Georgia', fontSize=24, tag='h1', name='top'))
+		>>> bs.css
+		<Css style=1>
+		>>> bs.css.asString(compact=True)
+		'h1.top {font:Georgia;fontSize:24;};\\n'
 		"""
 		if self._css is None:
 			self._css = Css()

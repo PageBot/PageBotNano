@@ -18,17 +18,17 @@
 import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
-import drawBot
 
 from pagebotnano.constants import A4, EXPORT_DIR
 from pagebotnano.page import Page
 from pagebotnano.elements import Element
+from pagebotnano.contexts.drawbotcontext import DrawBotContext
 
 class Document:
 	# Class names start with a capital. See a class as a factory
 	# of document objects (name spelled with an initial lower case.)
 	
-	def __init__(self, w=None, h=None):
+	def __init__(self, w=None, h=None, context=None):
 		"""This is the "constructor" of a Document instance (=object).
 		It takes two attributes: `w` is the general width of pages and
 		`h` is the general height of pages.
@@ -53,6 +53,10 @@ class Document:
 		self.pages = [] # Simple list, the index is the page number (starting at 0)
 		# Keep the flag is self.build was already executed when calling self.export
 		self.hasBuilt = False
+		# Store the context in the Document. Use DrawBotContext by default.
+		if context is None:
+			context = DrawBotContext()
+		self.context = context
 
 	def __repr__(self):
 		# This method is called when print(document) is executed.
@@ -80,10 +84,10 @@ class Document:
 		"""Build the document by looping trough the pages, an then recursively
 		tell every page to build itself (and its contained elements).
 		"""
-		# Clear all previous drawing in the DrawBot canvas.
-		drawBot.newDrawing()
+		# Clear all previous drawing in the context canvas.
+		self.context.newDrawing()
 
-		# Tell each page to build itself in DrawBot, including their child elements.
+		# Tell each page to build itself in context, including their child elements.
 		for page in self.pages:
 			page.build(self) # Passing self as document, in case the page needs more info.
 		self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
@@ -95,6 +99,10 @@ class Document:
 		If `force` is True or if build has not been done yet, then call
 		self.build anyway.
 
+		>>> doc = Document()
+		>>> doc.newPage()
+		<Page pn=1 w=595 h=842 elements=0>
+		>>> doc.export('_export/Document-export.pdf')
 		"""
 		if force or not self.hasBuilt: # If forced or not done yet, build the pages.
 			self.build()
@@ -102,8 +110,8 @@ class Document:
 		if path.startswith(EXPORT_DIR) and not os.path.exists(EXPORT_DIR):
 			os.mkdir(EXPORT_DIR)
 		# Now all the pages drew them themselfs, we can export to the path.
-		# let DrawBot do its work, saving it.
-		drawBot.saveImage(path, multipage=multipage)
+		# let the context do its work, saving it.
+		self.context.saveImage(path, multipage=multipage)
 
 if __name__ == "__main__":
 	# Running this document will execute all >>> comments as test of this source.

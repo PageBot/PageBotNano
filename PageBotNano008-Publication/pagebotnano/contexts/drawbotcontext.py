@@ -71,12 +71,18 @@ class DrawBotContext:
 
     def textBox(self, bs, r):
         # Set the cache from the overflow, we don't have the source anymore
-        overFlow = BabelString() 
+        overFlow = BabelString(hyphenation=bs.hyphenation) 
         overFlow.fs = drawBot.textBox(bs.fs, r) 
         return overFlow # Return this “incomplete” BabelString.
 
     def textSize(self, bs, w=None, h=None):
         return drawBot.textSize(bs.fs, width=w, height=h)
+
+    def hyphenation(self, flag):
+        """Set the hyphenation flag in DrawBot canvas. Note that this only
+        works while drawing the TextBox, not when creating the FormattedString.
+        """
+        drawBot.hyphenation(flag)
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

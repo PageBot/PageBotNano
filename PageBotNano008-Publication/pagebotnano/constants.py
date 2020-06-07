@@ -22,6 +22,7 @@ DEFAULT_WIDTH = 100 # Default width for some of the element types.
 LEFT = 'left'
 CENTER = 'center'
 RIGHT = 'right'
+JUSTIFIED = 'justified'
 
 EXPORT_DIR = '_export/' # Name of the directory that does not commit in Github
 
@@ -42,3 +43,6 @@ CSS_ATTRIBUTES = dict(
 )
 
 HTML_TEXT_TAGS = {'h1', 'h2', 'h3', 'h4', 'h5', 'p', 'span', 'b', 'i'}
+
+# Language codes for OSX
+EN = 'en' # English

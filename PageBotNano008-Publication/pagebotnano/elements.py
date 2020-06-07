@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 
 from pagebotnano.constants import CENTER
+from pagebotnano.babelstring import BabelString
 
 class Element:
     """Base class of all elements that can be placed on a page.
@@ -153,6 +154,8 @@ class Text(Element):
         # Call the base element with all standard attributes.
         Element.__init__(self, x=x, y=y, w=w, h=h, fill=fill, stroke=stroke, 
             strokeWidth=strokeWidth)
+        if not isinstance(bs, BabelString):
+        	bs = BabelString(bs)
         self.bs = bs # Store the BabelString in self.
 
     def drawContent(self, ox, oy, doc, page, parent):
@@ -215,6 +218,11 @@ class TextBox(Text):
         # Otherwise use the existing BabelString self.bs
         if bs is None:
             bs = self.bs
+
+        # Note that the hyphenation flag works while drawing the textBox, for the
+        # entire textbox. It is not – what would be expected – defined per paragraph.
+        doc.context.hyphenation(bs.hyphenation)
+
         # Since we cannot test the overflow without drawing in the context, 
         # we'll create a text column far outside the page boundaries. 
         # Unfortunately this increases the PDF export size.
@@ -226,6 +234,7 @@ class TextBox(Text):
         elif w is None and h is not None:
             # Width of the box is undefined, measure it from the defined column height.
             w, _ = doc.context.textSize(bs, height=h)
+
         # Height of the box is undefined, measure it from the defined column width.
         return doc.context.textBox(bs, (10000000, 0, w, h))
 
@@ -234,6 +243,10 @@ class TextBox(Text):
         for the Text element (including drawing on the background) is handled
         by the base Element class.
         """
+        # Note that the hyphenation flag works while drawing the textBox, for the
+        # entire textbox. It is not – what would be expected – defined per paragraph.
+        doc.context.hyphenation(self.bs.hyphenation)
+
         # Store any overflow to be processed by the caller.
         # Note that this should never happen, as the context of the text box
         # better can be processed by self.flowText before any drawing is done.

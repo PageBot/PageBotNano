@@ -18,7 +18,8 @@ sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 from copy import copy
 import drawBot
 
-from pagebotnano.constants import FS_ATTRIBUTES, CSS_ATTRIBUTES, HTML_TEXT_TAGS
+from pagebotnano.constants import (EN, FS_ATTRIBUTES, CSS_ATTRIBUTES, 
+    HTML_TEXT_TAGS)
 
 class BabelRun:
     """Holds a plain string with a style.
@@ -36,8 +37,13 @@ class BabelRun:
         True
         >>> br.style is not br2.style
         True
+        >>> br
+        <BabelRun s=Hello world>
         """
         return self.__class__(self.s, copy(self.style))
+
+    def __repr__(self):
+    	return '<%s s=%s>' % (self.__class__.__name__, self.s[:20])
 
 class Css:
     """Holds a set of styles for the BabelString. Capable of exporting 
@@ -143,6 +149,31 @@ class BabelString:
             self.append(str(s))
         return self
 
+    def _get_hyphenation(self):
+        """Run through all run.style, untile a setting for hyphenation is found.
+        That value is the answered boolean. Unfortunately OSX does not allow
+        hyphenation turned on/off per paragraph. Instead the flag works for an 
+        entire TextBox while drawing it. 
+
+        >>> bs = BabelString('Hello world', hyphenation=True)
+        >>> bs.hyphenation
+        True
+        >>> bs.hyphenation = False
+        >>> bs.runs[0].style['hyphenation']
+        False
+        >>> bs = BabelString('Hello world', dict(hyphenation=True))
+        >>> bs.hyphenation
+        True
+        """
+        for run in self.runs:
+            if 'hyphenation' in run.style:
+                return run.style['hyphenation']
+        return False
+    def _set_hyphenation(self, flag):
+        if self.runs:
+            self.runs[0].style['hyphenation'] = flag
+    hyphenation = property(_get_hyphenation, _set_hyphenation)
+
     def append(self, bs, style=None):
         """Append the string s to self. If not style is defined, then just add
         the `s` to the last run (inheriting the current style).
@@ -164,10 +195,15 @@ class BabelString:
         """
         if isinstance(bs, self.__class__):
             for run in bs.runs:
-                self.runs.append(run.copy())
+                if self.runs[-1].style == run.style:
+                    # Identical style, just add to last run or self
+                    self.runs[-1].s += run.s 
+                else:
+                    self.runs.append(run.copy())
         else:
-            if style is None:
-                self.runs[-1].s += str(bs) # Undefined style, just add to last run
+            if style is None or (self.runs and self.runs[-1].style == style):
+                # Undefined style or identical style, just add to last run
+                self.runs[-1].s += str(bs) 
             else:
                 self.runs.append(BabelRun(str(bs), style))
         self.reset()
@@ -199,7 +235,8 @@ class BabelString:
         if self._fs is None:
             self._fs = fs = drawBot.FormattedString()
             for run in self.runs:
-                fs.append(drawBot.FormattedString(run.s, **self._getFSStyle(run.style)))
+                fsStyle = self._getFSStyle(run.style)
+                fs.append(drawBot.FormattedString(run.s, **fsStyle))
         return self._fs
     def _set_fs(self, fs):
         """In case of DrawBot.textBox a DrawBot.FormattedString is answered.
@@ -227,6 +264,8 @@ class BabelString:
             tags = []
             self._html = ''
             for run in self.runs:
+                if not run.s:
+                    continue
                 tag = None
                 if 'tag' in run.style:
                     tag = run.style['tag']
@@ -235,7 +274,7 @@ class BabelString:
                 self._html += '<' + tag
                 if 'name' in run.style:
                     self._html += ' class="%s"' % run.style['name']
-                self._html += '>%s</%s>' % (run.s, tag)
+                self._html += '>%s</%s>' % (run.s.strip(), tag)
 
         return self._html
     html = property(_get_html)

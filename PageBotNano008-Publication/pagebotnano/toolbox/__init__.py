@@ -41,6 +41,28 @@ def fileNameOf(path):
     """
     return path.split('/')[-1] or None
 
+#   M E A S U R E S
+
+def mm(mm):
+    """Convert from millimeter values to rounded points
+    
+    >>> mm(210)
+    595
+    >>> mm(297)
+    842
+    """
+    return int(round(mm * 72 * 0.039370)) # Approximated 1" = 25.400051mm
+
+def cm(cm):
+    """Convert from millimeter values to rounded points
+    
+    >>> cm(21)
+    595
+    >>> cm(29.7)
+    842
+    """
+    return int(round(cm * 72 * 0.039370 * 10)) # Approximated 1" = 25.400051mm
+
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest

@@ -80,9 +80,23 @@ PageBotNano is a top-down evolving light-weight training version of PageBot. It 
 # PageBotNano #008
 ## New to this version
 
-* Add MyBook.py, to generate a Book publication, with cover, “french” page, title page and content pages for as many as needed.
+* Add MyBook.py, to generate a Book publication, with cover, “french” page, title page and content pages for as many as needed. Using Lorem ipsum text. Better styles. Automatics left/right page number positioning.
 * Add default Book publication behavior.
 * Add random generator for book titles and author names.
 * Add new cookbot2.jpg square example image.
+* Add PageBot Type-3 article as markdown file.
+* Markdown parser that works entirely with regular expressions. TODO: Add [table] and adding 
+* Typesetter now reads markdown files.
+* Add Galley (=Element) class, as result of Typesetter typesetting.
+* Add Typesetter.typesetMarkdown(), Typesetter.typesetString() and Typesetter.typeset(xml)
+* Typesetter.verbose collects all errors and warnings during typesetting from content.
+* Typesetter TODO: Add more functionality to the empty tag methods.
+* Add MyManual.py example of small booklet reading from markdown file, trying to do real page composition. TODO: captions, better image positioning and more intelligent breaking of columns to next page (taking care about headings).
+* Add BabelRun.__repr__
+* Add hyphenation. Note that due to limitations of OSX, hyphenation turns on/off in a TextBox, not in a paragraph. The first style of the BabelString in a TextBox is taken as value for the setting.
+* Add EN as language code to 
+* Add mm() and cm() converter functions to toolbox/
+
+
 
 

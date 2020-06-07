@@ -18,17 +18,16 @@ import codecs
 
 def parseMarkdownFile(path):
     """Regular expression based markdown parser.
-    """
 
-    """
     >>> path = '../../../resources/test.md'
-    >>> html = parseMarkdownFile(path)
-    >>> '<python>' in html and '</python>' in html
-       True
+    >>> xml = parseMarkdownFile(path)
+    >>> '<python>' in xml and '</python>' in xml
+    True
     """
     f = codecs.open(path, mode="r", encoding="utf-8") # Save the XML as unicode.
     txt = f.read()
     f.close()
+    txt = txt.replace('\r', '\n') # Just to be sure we have the right type of returns.
     return parseMarkdown(txt)
 
 def parseMarkdown(txt):
@@ -59,7 +58,7 @@ def parseMarkdown(txt):
     # **text** --> <b>text</b>
     txt = re.sub('(\\*\\*)(.*?)\\1', '<b>\\2</b>', txt, flags=re.MULTILINE)
     # __text__ --> <strong>text</strong>
-    txt = re.sub('(__)(.*?)\\1', '<strong>\\2</strong>', txt, flags=re.MULTILINE)
+    txt = re.sub('(\\_\\_)(.*?)\\1', '<strong>\\2</strong>', txt, flags=re.MULTILINE)
     # *text* --> <em>text</em> 
     txt = re.sub('(\\*)(.*?)\\1', '<em>\\2</em>', txt, flags=re.MULTILINE)
     # _text_ --> <i>text</i> 

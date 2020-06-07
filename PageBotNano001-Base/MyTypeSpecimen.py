@@ -1,9 +1,9 @@
 #
-#	PageBot Nano
+#   PageBot Nano
 #
-#	This MyTypeSpecimen.py shows an example how to import
-#	existing libaries, that contain knowledge about document,
-#	pages and the elements on the pages.
+#   This MyTypeSpecimen.py shows an example how to import
+#   existing libaries, that contain knowledge about document,
+#   pages and the elements on the pages.
 #
 
 # From the library we import the classes (=object factories)
@@ -13,15 +13,15 @@ from pagebotnano.page import Page
 from pagebotnano.elements import Element
 
 class TypeSpecimen(Document):
-	# Class names start with a capital. See a class as a factory
-	# of type specimen objects (name spelled with an initial lower case.)
-	# In this case we inherit from what is already defined in Document.
-	# Similar how a Volkswagen factory would inherit the functions already
-	# defined in a generic car factory. Inheriting is one of the most 
-	# powerful aspects of Python programming, so an object can perform
-	# complex tasks, without the need to add these functions again for
-	# every new project.
-	pass # For now it will do nothing, but that will change.
+    # Class names start with a capital. See a class as a factory
+    # of type specimen objects (name spelled with an initial lower case.)
+    # In this case we inherit from what is already defined in Document.
+    # Similar how a Volkswagen factory would inherit the functions already
+    # defined in a generic car factory. Inheriting is one of the most 
+    # powerful aspects of Python programming, so an object can perform
+    # complex tasks, without the need to add these functions again for
+    # every new project.
+    pass # For now it will do nothing, but that will change.
 
 
 # Now we create a new type specimen, by executing the class.

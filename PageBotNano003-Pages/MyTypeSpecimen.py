@@ -2,20 +2,20 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#	P A G E B O T  N A N O
+#   P A G E B O T  N A N O
 #
-#	Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
-#	www.pagebot.io
-#	Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#	Supporting DrawBot, www.drawbot.com
+#   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#	MyTypeSpecimen.py
+#   MyTypeSpecimen.py
 #
-#	This MyTypeSpecimen.py shows an example how to import
-#	existing libaries, that contain knowledge about document,
-#	pages and the elements on the pages.
+#   This MyTypeSpecimen.py shows an example how to import
+#   existing libaries, that contain knowledge about document,
+#   pages and the elements on the pages.
 #
 
 # From the library we import the classes (=object factories)
@@ -23,15 +23,15 @@
 from pagebotnano.document import Document
 
 class TypeSpecimen(Document):
-	# Class names start with a capital. See a class as a factory
-	# of type specimen objects (name spelled with an initial lower case.)
-	# In this case we inherit from what is already defined in Document.
-	# Similar how a Volkswagen factory would inherit the functions already
-	# defined in a generic car factory. Inheriting is one of the most 
-	# powerful aspects of Python programming, so an object can perform
-	# complex tasks, without the need to add these functions again for
-	# every new project.
-	pass # For now it will do nothing, but that will change.
+    # Class names start with a capital. See a class as a factory
+    # of type specimen objects (name spelled with an initial lower case.)
+    # In this case we inherit from what is already defined in Document.
+    # Similar how a Volkswagen factory would inherit the functions already
+    # defined in a generic car factory. Inheriting is one of the most 
+    # powerful aspects of Python programming, so an object can perform
+    # complex tasks, without the need to add these functions again for
+    # every new project.
+    pass # For now it will do nothing, but that will change.
 
 
 # Now we create a new type specimen, by executing the class.
@@ -45,7 +45,7 @@ typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
 # Create a number of new pages in the document. If no new page size is given, 
 # it will take over the size of the document.
 for n in range(10):
-	typeSpecimen.newPage()
+    typeSpecimen.newPage()
 
 # Build the document, all pages and their contained elements.
 typeSpecimen.build() 

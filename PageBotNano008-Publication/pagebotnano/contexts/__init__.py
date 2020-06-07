@@ -2,12 +2,12 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#	P A G E B O T  N A N O
+#   P A G E B O T  N A N O
 #
-#	Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
-#	www.pagebot.io
-#	Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#	Supporting DrawBot, www.drawbot.com
+#   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #

@@ -19,12 +19,14 @@ import sys
 from random import random
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import CENTER, LEFT, RIGHT, EN
+from pagebotnano.constants import CENTER, LEFT, RIGHT, EN, MAIN
 from pagebotnano.publications.publication import Publication
 from pagebotnano.document import Document
 from pagebotnano.elements import Rect, Text, TextBox, Image
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.typesetter import Typesetter
+from pagebotnano.templates.onecolumn import (coverPage, oneColumnPage, 
+    frenchPage, tabelOfContentPage, titlePage, colophonPage)
 
 class Book(Publication):
     """A Book publication takes a volume of text/imges source
@@ -34,6 +36,7 @@ class Book(Publication):
     >>> from pagebotnano.elements import Rect, Text
     >>> from pagebotnano.constants import A5
     >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
+    >>> from pagebotnano.templates.onecolumn import *
     >>> w, h = A5
     >>> title = randomTitle()
     >>> author = randomName()
@@ -44,14 +47,16 @@ class Book(Publication):
     >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, styles)    
     >>> imagePath = '../../../resources/images/cookbot1.jpg'
-    >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath)
+    >>> templates = [CoverPage(), FrenchPage(), TitlePage(), TOCPage(), OneColumnPage(), ColophonPage()]
+    >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath, templates=templates)
     >>> book.export('_export/Book.pdf')
     """
     MAX_PAGES = 100
     
     def __init__(self, w, h, title, author, galley=None, coverImagePath=None, 
-        coverColor=None, styles=None):
-        Publication.__init__(self, w, h)
+        coverColor=None, styles=None, context=None, templates=None):
+        Publication.__init__(self, w=w, h=h, styles=styles, context=context,
+            templates=templates)
         self.title = title
         self.author = author
         self.galley = galley # Typesetter.galley
@@ -59,9 +64,6 @@ class Book(Publication):
         if coverColor is None:
             coverColor = random()*0.3, random()*0.1, random()*0.4 # Random dark blue
         self.coverColor = coverColor
-        if styles is None:
-            styles = {}
-        self.styles = styles
 
     def compose(self):
         """This is the core of a publication, composing the specific
@@ -136,6 +138,7 @@ class Book(Publication):
 
         # Make “French” “Voordehandse” page.
         page = self.doc.newPage() # No page number here.
+        page.applyTemplate()
         # CENTER text alignment overwrites the value in headStyle.
         # fontSize overwrites the value in headStyle
         bs = BabelString(self.title+'\n', headStyle, fontSize=fontSize, align=CENTER)
@@ -143,11 +146,11 @@ class Book(Publication):
         page.addElement(e)
 
         # Make Title page.
-        page = self.doc.newPage() # No page number here.
+        page = self.doc.newPage(template=TitlePage()) # No page number here.
+        page.compose(self.doc, page)
         bs = BabelString(self.title+'\n', headStyle, align=CENTER)
         bs.append(BabelString(self.author, subHeadStyle, align=CENTER))
-        e = Text(bs, x=page.w/2, y=page.h*3/4)
-        page.addElement(e)
+        page.find(MAIN).bs = bs
 
         # For all the elements that are collected in the galley, assume that
         # the TextBoxes are chapters, creating a new page for them.

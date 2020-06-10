@@ -16,12 +16,14 @@
 #   This source contains the class with knowledge about elements that
 #   can be placed on a page.
 #
+from copy import deepcopy
 import os
 import sys
-sys.path.insert(0, "..") # So we can import pagebotnano without installing.
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano.constants import CENTER
 from pagebotnano.babelstring import BabelString
+from pagebotnano.toolbox import makePadding, fileNameOf
 
 class Element:
     """Base class of all elements that can be placed on a page.
@@ -34,7 +36,9 @@ class Element:
     >>> page
     <Page pn=1 w=595 h=842 elements=0>
     """
-    def __init__(self, x=None, y=None, w=None, h=None, fill=None, stroke=None, strokeWidth=0):
+    def __init__(self, x=None, y=None, w=None, h=None, name=None, 
+            template=None, fill=None, stroke=None, strokeWidth=0, 
+            pt=None, pr=None, pb=None, pl=None):
         self.x = x or 0 # (x, y) position of the element from bottom left of parent.
         self.y = y or 0
         self.w = w # Width and height of the element bounding box
@@ -42,16 +46,132 @@ class Element:
         self.fill = fill # Default is drawing a black rectangle.
         self.stroke = stroke # Default is drawing no stroke frame
         self.strokeWidth = strokeWidth
+        self.padding = pt, pr, pb, pl # Initialize the padding
         self.elements = [] # Storage in case there are child elements
 
+        # Optional name, e.g. for template or element finding. Defaults to class name.
+        self.name = name or self.__class__.__name__ 
+        self.template = template # Optional Template instance for this element.
+
+        # Allow elements, pages and templates to initialize themselves
+        # by implementing the self.initialize method.
+        self.initialize()
+
+    def initialize(self):
+        """Allow elements, pages and templates to initialize themselves
+        by implementing this method in inheriting classes.
+        Default behavior is to do nothing.
+        """
+
+    def _get_padding(self):
+        """Answer a tuple of the 4 padding values of the element
+
+        >>> e = Element(pl=10)
+        >>> e.padding # Other values are default PADDING
+        (30, 30, 30, 10)
+        """
+        return self.pt, self.pr, self.pb, self.pl 
+    def _set_padding(self, padding):
+        self.pt, self.pr, self.pb, self.pl = makePadding(padding)
+    padding = property(_get_padding, _set_padding)
+
+    def _get_pw(self):
+        """Answer the usable element space, withing the horizontal padding
+
+        >>> e = Element(w=500, pl=100, pr=50)
+        >>> e.pw
+        350
+        """
+        return self.w - self.pl - self.pr
+    pw = property(_get_pw)
+
+    def _get_ph(self):
+        """Answer the usable element space, withing the vertical padding
+
+        >>> e = Element(h=500, pt=100, pb=50)
+        >>> e.ph
+        350
+        """
+        return self.h - self.pt - self.pb
+    ph = property(_get_ph)
+
     def __repr__(self):
-        return '<%s w=%s h=%s>' % (self.__class__.__name__, self.w, self.h)
+        return '<%s name=%s w=%s h=%s>' % (self.__class__.__name__, self.name, self.w, self.h)
 
     def addElement(self, e):
         """Add the element to the list of child elements.
         """
         self.elements.append(e)
-        
+        return e # Answer the element in convenience for the caller.
+
+    def find(self, name=None, pattern=None):
+        """Search through the tree of self and self.elements to find an
+        element with the indicated name.
+
+        >>> e = Element(name='root')
+        >>> child1 = e.addElement(Element(name='child1'))
+        >>> child2 = child1.addElement(Element(name='child2'))
+        >>> child3 = child2.addElement(Element(name='child3'))
+        >>> e is e.find('root')
+        True
+        >>> child1 is e.find('child1')
+        True
+        >>> child3 is e.find('child3') # Finding recursive deep
+        True
+        """
+        assert name is not None or pattern is not None, ('Element.find: Define either name or pattern' % self.__class__.__name__)
+        if name is not None and name == self.name:
+            return self
+        if pattern is not None and pattern in self.name:
+            return self
+        for child in self.elements:
+            found = child.find(name)
+            if found is not None:
+                return found
+        return None
+
+    def applyTemplate(self, template=None, clear=True):
+        """Make a copy of the elements in template and add them to self. 
+
+        >>> from pagebotnano.elements import Template
+        >>> t = Template(name='MyTemplate')
+        >>> t.addElement(Element(name='ChildElement'))
+        >>> e = Element()
+        >>> e.applyTemplate(t)
+        >>> e.elements # now has a child element
+        [<Element name=ChildElement w=None h=None>]
+        >>> e.elements[0] is t.elements[0] # False, it is a copy
+        False
+        """
+        if template is None:
+            template = self.template
+        if template is not None:
+            if clear:
+                self.elements = []
+            for element in template.elements:
+                self.elements.append(deepcopy(element))
+
+    def compose(self, doc, page, parent=None):
+        """Compose the layout of an element. Default behavior is to pass it on
+        to the children. To be redefined by inheriting Element to make their own
+        layout composition.
+
+        >>> from pagebotnano.document import Document
+        >>> from pagebotnano.templates.onecolumn import OneColumnPage
+        >>> doc = Document()
+        >>> t = OneColumnPage()
+        >>> page = doc.newPage(template=t)
+        >>> page.template
+        <OneColumnPage name=OneColumnPage elements=0>
+        """
+        if self.template is not None:
+            self.template.compose(doc)
+            self.applyTemplate(self.template)
+        # Now broadcast the compose call to all child elements.
+        # Note that these may just have been created by the template.
+        for e in self.elements:
+            e.compose(doc, page, self)
+
     def build(self, x, y, doc, page, parent=None):
         """Build the content of the element, including background color,
         stroked frame and content of the inheriting classes.
@@ -149,11 +269,11 @@ class Text(Element):
     >>> doc.export('_export/Text.pdf') # Build and export.
     """
 
-    def __init__(self, bs, x, y, w=None, h=None, fill=None, stroke=None, 
-        strokeWidth=None):
+    def __init__(self, bs, x, y, w=None, h=None, name=None, 
+        fill=None, stroke=None, strokeWidth=None):
         # Call the base element with all standard attributes.
-        Element.__init__(self, x=x, y=y, w=w, h=h, fill=fill, stroke=stroke, 
-            strokeWidth=strokeWidth)
+        Element.__init__(self, x=x, y=y, w=w, h=h, name=name, 
+            fill=fill, stroke=stroke, strokeWidth=strokeWidth)
         if not isinstance(bs, BabelString):
         	bs = BabelString(bs)
         self.bs = bs # Store the BabelString in self.
@@ -198,13 +318,13 @@ class TextBox(Text):
     >>> doc.export('_export/TextBox-Overflow.pdf') # Build and export.
 
     """
-    def __init__(self, bs, x, y, w, h=None, fill=None, stroke=None, 
+    def __init__(self, bs, x, y, w, h=None, name=None, fill=None, stroke=None, 
             strokeWidth=None):
         """Call the super class element with all standard attributes.
         Different from the Text class, now the width `w` is a required attribute.
         """
-        Text.__init__(self, bs, x=x, y=y, w=w, h=h, fill=fill, stroke=stroke, 
-            strokeWidth=strokeWidth)
+        Text.__init__(self, bs, x=x, y=y, w=w, h=h, name=name, 
+            fill=fill, stroke=stroke, strokeWidth=strokeWidth)
 
     def getOverflow(self, bs=None, w=None, h=None, doc=None):
         """Flow the text into self and put any overflow in self.next.
@@ -272,7 +392,7 @@ class Image(Element):
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> padding = 40
-    >>> imagePath = '../../resources/images/cookbot10.jpg'
+    >>> imagePath = '../../../resources/images/cookbot10.jpg'
     >>> e = Image(imagePath, x=padding, w=page.w/2-2*padding)
     >>> iw, ih = e.getSize(doc) # Get the size of the Image element
     >>> e.y = page.h - padding - ih # Align the image on top of the page.
@@ -283,13 +403,16 @@ class Image(Element):
     >>> doc.export('_export/Image.pdf') # Build and export as PDF
     >>> doc.export('_export/Image.png') # Build and export as PNG
     """
-    def __init__(self, path, x=None, y=None, w=None, h=None, fill=None, stroke=None, 
-        strokeWidth=None):
+    def __init__(self, path, x=None, y=None, w=None, h=None, name=None, 
+        fill=None, stroke=None, strokeWidth=None):
         # Call the base element with all standard attributes.
-        Element.__init__(self, x=x, y=y, w=w, h=h, fill=fill, stroke=stroke, 
-            strokeWidth=strokeWidth)
+        Element.__init__(self, x=x, y=y, w=w, h=h, name=name, 
+            fill=fill, stroke=stroke, strokeWidth=strokeWidth)
         assert os.path.exists(path), ('Image: Path "%s" does not exist.' % path)
         self.path = path
+
+    def __repr__(self):
+        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, fileNameOf(self.path), self.w, self.h)
 
     @classmethod
     def imageSize(cls, path, doc):
@@ -297,7 +420,7 @@ class Image(Element):
 
         >>> from pagebotnano.document import Document
         >>> doc = Document()
-        >>> path = '../../resources/images/cookbot10.jpg'
+        >>> path = '../../../resources/images/cookbot10.jpg'
         >>> Image.imageSize(path, doc)
         (2058, 946)
         """
@@ -308,7 +431,7 @@ class Image(Element):
 
         >>> from pagebotnano.document import Document
         >>> doc = Document()
-        >>> imagePath = '../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../../../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
         >>> w, h = e.getSize(doc)
         >>> '%0.2f, %0.2f' % (w, h) # Python method of rounding float numbers.
@@ -325,7 +448,7 @@ class Image(Element):
 
         >>> from pagebotnano.document import Document
         >>> doc = Document()
-        >>> imagePath = '../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../../../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
         >>> sx, sy = e.getScale(doc)
         >>> '%0.2f, %0.2f' % (sx, sy) # Python method of rounding float numbers.

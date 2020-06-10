@@ -16,18 +16,22 @@
 #   This source contains the class with knowledge about elements that
 #   can be placed on a page.
 #
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
 import drawBot
 from random import random
 
-class Page:
+from pagebotnano.elements import Element
+
+class Page(Element):
     # Class names start with a capital. See a class as a factory
     # of page objects (name spelled with an initial lower case.)
-    def __init__(self, w, h, pn):
-        self.w = w
-        self.h = h
+    # Page being another kind of Element, means that theoretically
+    # it can be placed on another page or inside another element.
+    def __init__(self, pn=None, **kwargs):
+        Element.__init__(self, **kwargs)
         self.pn = pn # Store the page number in the page.
-        # Store the elements on the page here. Start with an empty list.
-        self.elements = []
 
     def __repr__(self):
         # This method is called when print(page) is executed.
@@ -41,18 +45,21 @@ class Page:
         """
         self.elements.append(e)
 
-    def build(self, doc):
+    def build(self, x=0, y=0, doc=None, **kwargs):
         """Draw the page and recursively make the child elements to draw 
         themselves in DrawBot. The build is “broadcast” to all the elements 
         on the page.
 
         """
+        assert doc is not None, ('%s.build: Document needs to be defined.' % self.__class__.__name__)
         drawBot.newPage(self.w, self.h) # Create a new DrawBot page.
         for element in self.elements:
             # Passing on doc and this page in case an element needs more info.
             # Since this bottom-left corner of the page is the origin for position,
-            # set it to (0, 0)
-            element.build(x=0, y=0, doc=doc, page=self, parent=self) 
+            # set it to default (0, 0).
+            # In case a page is used on a spread or for display on another page,
+            # (x, y) can have another value.
+            element.build(x=x, y=y, doc=doc, page=self, parent=self) 
 
     # Rough example of implementing HTML/CSS generator in this architecture
     #def build_html(self):
@@ -67,13 +74,16 @@ class Template(Page):
     """The Template class is almost the same as a regular Page, with the
     difference that it stores a name.
 
-    >>> t = Template('Cover', w=500, h=800)
+    >>> t = Template(name='Cover', w=500, h=800)
     >>> t.name
     'Cover'
     """
-    def __init__(self, name, w, h, pn=None):
-        Page.__init__(self, w, h, pn)
-        self.name = name
+    def __repr__(self):
+        # This method is called when print(template) is executed.
+        # It shows the name of the class, which can be different, if the
+        # object inherits from Page.
+        return '<%s name=%s elements=%d>' % (self.__class__.__name__, 
+            self.name, len(self.elements))
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

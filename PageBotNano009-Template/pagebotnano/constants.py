@@ -17,14 +17,22 @@ A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
 A5 = 421, 595
 
 DEFAULT_WIDTH = 100 # Default width for some of the element types.
+PADDING = 30 # Default padding of pages, template and elements.
 
 # Types of text alignment
 LEFT = 'left'
 CENTER = 'center'
 RIGHT = 'right'
 JUSTIFIED = 'justified'
+NONE = 'none' # Used e.g. for a template having page number on a page.
 
 EXPORT_DIR = '_export/' # Name of the directory that does not commit in Github
+
+# Set of names used for predictable elements on a page.
+MAIN = 'mainText' # Name of the main element of a page, containing text.
+PN_LEFT = 'pageNumberLeft' # Text box with pagenumber on left side of page.
+PN_CENTER = 'pageNumberCenter' # Text box with pagenumber centered page.
+PN_RIGHT = 'pageNumberRight' # Text box with pagenumber on right side of page.
 
 # Set of names that are allowed as attribute in DrawBot.FormattedString,
 # so we can filter from a more generic style description.

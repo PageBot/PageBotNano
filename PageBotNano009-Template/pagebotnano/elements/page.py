@@ -70,21 +70,6 @@ class Page(Element):
     #       # set it to (0, 0)
     #       element.build_html(x=0, y=0, doc=doc, page=self, parent=self) 
 
-class Template(Page):
-    """The Template class is almost the same as a regular Page, with the
-    difference that it stores a name.
-
-    >>> t = Template(name='Cover', w=500, h=800)
-    >>> t.name
-    'Cover'
-    """
-    def __repr__(self):
-        # This method is called when print(template) is executed.
-        # It shows the name of the class, which can be different, if the
-        # object inherits from Page.
-        return '<%s name=%s elements=%d>' % (self.__class__.__name__, 
-            self.name, len(self.elements))
-
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest

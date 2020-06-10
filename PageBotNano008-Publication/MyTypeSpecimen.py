@@ -11,104 +11,67 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   MyTypeSpecimen.py
+#   MyManual.py
 #
-#   This MyTypeSpecimen.py shows an example how to import
-#   existing libaries, that contain knowledge about document,
-#   pages and the elements on the pages.
+#   This MyBook.py shows an example how to import
+#   existing libaries, that contain knowledge about a publication,
+#   document, pages and the elements on the pages.
 #
-from random import random
+from random import choice, random
+from pagebotnano.constants import EN, JUSTIFIED
+from pagebotnano.elements import Rect, Text
+from pagebotnano.publications.book import Book
+from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
+from pagebotnano.toolbox.typesetter import Typesetter
+from pagebotnano.toolbox import mm
 
-# From the library we import the classes (=object factories)
-# that we need for creating the type specimen.
-# Classes can be recognised by their initial capital name.
-from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, TextBox, Image
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox.loremipsum import loremipsum
-from pagebotnano.constants import CENTER
+w, h = mm(130), mm(210) # Nice little booklet
 
-class TypeSpecimen(Document):
-    # Class names start with a capital. See a class as a factory
-    # of type specimen objects (name spelled with an initial lower case.)
-    # In this case we inherit from what is already defined in Document.
-    # Similar how a Volkswagen factory would inherit the functions already
-    # defined in a generic car factory. Inheriting is one of the most 
-    # powerful aspects of Python programming, so an object can perform
-    # complex tasks, without the need to add these functions again for
-    # every new project.
-    pass # For now it will do nothing, but that will change.
+title = randomTitle()
+author = randomName()
+contextPath = '../resources/TypeSpecimen.md'
+coverImagePath = choice([
+    #'../resources/images/NordSpecimen-bg.pdf',
+    '../resources/images/NordSpecimen.pdf',
+    '../resources/images/max-specimen.pdf',
+    '../resources/images/Specimen.pdf',
+    #'../resources/images/PageBotSchema2.pdf',
+    #'../resources/images/cookbot2.jpg',
+])
+coverColor = (random()*0.1,random()*0.1, random()*0.5)
 
+# Styles for the tags that are used in the xml content.
+styles = dict(
+    h1=dict(font='Georgia-Bold', fontSize=14, lineHeight=16, fill=(1, 0, 0),
+        paragraphTopSpacing=3, language=EN, hyphenation=True),
+    h2=dict(font='Georgia-Italic', fontSize=12, lineHeight=16, 
+        paragraphTopSpacing=3, language=EN),
+    h3=dict(font='Georgia-Italic', fontSize=10, lineHeight=13, 
+        paragraphTopSpacing=3, language=EN),
+    p=dict(font='Georgia', fontSize=9, lineHeight=13, language=EN, 
+        align=JUSTIFIED),
+    b=dict(font='Georgia-Italic', fontSize=9, lineHeight=13, 
+        language=EN, align=JUSTIFIED),
+    em=dict(font='Georgia-Bold', fontSize=9, lineHeight=13, 
+        language=EN, align=JUSTIFIED),
+    i=dict(font='Georgia-Italic', fontSize=9, lineHeight=13, 
+        language=EN, align=JUSTIFIED),
+    bi=dict(font='Georgia-BoldItalic', fontSize=9, lineHeight=13, 
+        language=EN, align=JUSTIFIED),
+)
+print('Generating the manual “%s” by %s' % (title, author))
 
-# Now we create a new type specimen, by executing the class.
-# Compare that by letting a car factory produce a car. We only need
-# one factory ("TypeSpecimen" name starting with capital), which
-# then can product an inlimited number of typeSpecimen objects (name
-# starting with a lower case.)
+# Create the typesetter that will do content parsing into a “Galley”
+ts = Typesetter()
+# Do the typesetting. Galley is now another type of element
+# that contains text and image elements in a sequence.
+galley = ts.typesetFile(contextPath, styles)
 
-typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
-
-fontName = 'Georgia'
-titleSize = 64
-headSize = 24
-bodyFontSize = 16
-leading = 1.4 # Multiplier for the fontSize;lineHe
-padding = 60 # Padding of the page. Outside CSS called "margin" of the page.
-
-def makeCoverPage(doc, title):
-    page = doc.newPage()
-
-    # Fill the page with a random dark color (< 50% for (r, g, b))
-    fillColor = random()*0.5, random()*0.5, random()*0.5
-    rectangleElement = Rect(0, 0, page.w, page.h, fill=fillColor)
-    page.addElement(rectangleElement) # Add the rectangle element to the page.
-
-    # Make a FormattedString for the text box
-    bs = BabelString(title,
-        font=fontName, fontSize=titleSize, lineHeight=titleSize*1.1, fill=1)
-    # Make a Text element with an (x, y) position and add it to the page.
-    textElement = Text(bs, x=padding, y=page.h-1.5*padding)
-    page.addElement(textElement) # Add the text element to the page.
-
-    # Add square image with frame around
-    imagePath = '../resources/images/cookbot1.jpg'
-
-    # Add square with light color (> 50% for (r, g, b)) and lighter frame.
-    rx = ry = padding # Position from bottom-left
-    rw = rh = page.w - 2*padding # Make a square, so w = h
-    strokeColor = 0.75+random()*0.25, 0.75+random()*0.25, 0.75+random()*0.25
-    imageElement = Image(imagePath, x=rx, y=ry, w=rw, h=rh,
-        stroke=strokeColor, strokeWidth=5)
-    page.addElement(imageElement) # Add the rectangle element to the page.
-
-def makeBodyPages(doc, bodyText):
-    """Create a number of new pages in the document, as long as there is overflow. 
-    If no new page size is given, it will take over the size of the document.
-    """
-    bs = BabelString(bodyText, font=fontName, fontSize=bodyFontSize, lineHeight=bodyFontSize*leading)
-    while True:
-        page = doc.newPage()
-        # Add text element with page number
-        pn = BabelString(str(page.pn), align=CENTER, font=fontName, fontSize=bodyFontSize)
-        page.addElement(Text(pn, page.w/2, padding/2))
-        e = TextBox(bs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
-        page.addElement(e)
-        bs = e.getOverflow(bs, doc=doc)
-        if not bs.fs:
-            break
-
-txt = loremipsum(doShuffle=True)
-
-makeCoverPage(typeSpecimen, 'Type specimen\n'+fontName)
-makeBodyPages(typeSpecimen, txt)
-
-# Build the document, all pages and their contained elements.
-typeSpecimen.build() 
-
-# Create the "_export" folder if it does not exist yet.
-# This Github repository is filtering file to not upload _export.
-# Export the specimen as empty page as PDF and PNG.
-typeSpecimen.export('_export/MyTypeSpecimen.pdf')
-typeSpecimen.export('_export/MyTypeSpecimen.png')
+# Create the Book publication and feed it with the processed galley content.
+pub = Book(w=w, h=h, title=title, author=author, galley=galley,
+    coverImagePath=coverImagePath, 
+    coverImageBackgroundColor=1,
+    coverColor=coverColor)
+pub.export('_export/WorkshopResults.pdf')
 
 print('Done')

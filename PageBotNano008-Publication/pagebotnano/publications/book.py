@@ -43,13 +43,14 @@ class Book(Publication):
     >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
     >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, styles)    
-    >>> imagePath = '../../../resources/images/cookbot1.jpg'
+    >>> imagePath = '../../../resources/images/cookbot2.jpg'
     >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath)
     >>> book.export('_export/Book.pdf')
     """
     MAX_PAGES = 100
     
     def __init__(self, w, h, title, author, galley=None, coverImagePath=None, 
+        coverImageBackgroundColor=None,
         coverColor=None, styles=None):
         Publication.__init__(self, w, h)
         self.title = title
@@ -59,6 +60,7 @@ class Book(Publication):
         if coverColor is None:
             coverColor = random()*0.3, random()*0.1, random()*0.4 # Random dark blue
         self.coverColor = coverColor
+        self.coverImageBackgroundColor = coverImageBackgroundColor
         if styles is None:
             styles = {}
         self.styles = styles
@@ -131,8 +133,10 @@ class Book(Publication):
         page.addElement(e)
 
         if self.coverImagePath is not None: # Only if not defined.
-            e = Image(self.coverImagePath, x=pad, y=pad, w=page.w-2*pad)
-            page.addElement(e)
+            e1 = Image(self.coverImagePath, x=pad, y=pad, w=page.w-2*pad)
+            e2 = Rect(x=pad, y=pad, w=page.w-2*pad, h=e1.h, fill=1)
+            page.addElement(e1)
+            page.addElement(e2)
 
         # Make “French” “Voordehandse” page.
         page = self.doc.newPage() # No page number here.
@@ -148,6 +152,9 @@ class Book(Publication):
         bs.append(BabelString(self.author, subHeadStyle, align=CENTER))
         e = Text(bs, x=page.w/2, y=page.h*3/4)
         page.addElement(e)
+
+        # Empty left page after title page
+        page = self.doc.newPage() # No page number here.
 
         # For all the elements that are collected in the galley, assume that
         # the TextBoxes are chapters, creating a new page for them.
@@ -178,15 +185,17 @@ class Book(Publication):
                     if not bs.fs:
                         break
 
-            elif isinstance(ge, Image): # Images not supported yet
+            elif isinstance(ge, Image):
                 page = self.doc.newPage()
 
                 self.addPageNumber(page, pad, pageNumberLeftStyle, pageNumberRightStyle)
-                page.addElement(ge)
-                ge.w = page.w - pad
                 iw, ih = ge.getSize(self.doc)
+                ge.w = page.w - pad
                 ge.x = pad/2
                 ge.y = page.h - pad - ih
+                #e = Rect(x=ge.x, y=ge.y, w=ge.w, h=ge.h, fill=(1, 0, 0))
+                #page.addElement(e)
+                page.addElement(ge)
 
     def addPageNumber(self, page, pad, leftStyle, rightStyle):
         # Add text element with page number

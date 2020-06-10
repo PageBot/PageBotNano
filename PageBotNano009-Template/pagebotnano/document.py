@@ -20,15 +20,16 @@ import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 
 from pagebotnano.constants import A4, EXPORT_DIR
-from pagebotnano.page import Page
-from pagebotnano.elements import Element
+from pagebotnano.elements import Element, Page
 from pagebotnano.contexts.drawbotcontext import DrawBotContext
+from pagebotnano.toolbox import makePadding
 
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
     
-    def __init__(self, w=None, h=None, context=None):
+    def __init__(self, w=None, h=None, pt=None, pr=None, pb=None, pl=None,
+        context=None):
         """This is the "constructor" of a Document instance (=object).
         It takes two attributes: `w` is the general width of pages and
         `h` is the general height of pages.
@@ -49,10 +50,11 @@ class Document:
         # Store the values in the document instance.
         self.w = w
         self.h = h
+        self.padding = pt, pr, pb, pl # Initialize the default padding
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
-        self.templates = {} # Dicitionary of template pages, key is their name.
         # Keep the flag is self.build was already executed when calling self.export
+        self.hasComposed = False
         self.hasBuilt = False
         # Store the context in the Document. Use DrawBotContext by default.
         if context is None:
@@ -66,7 +68,39 @@ class Document:
         return '<%s w=%d h=%d pages=%d>' % (self.__class__.__name__, 
             self.w, self.h, len(self.pages))
 
-    def newPage(self, w=None, h=None):
+    def _get_padding(self):
+        """Answer a tuple of the 4 padding values of the element
+
+        >>> doc = Document(pl=10)
+        >>> doc.padding # Other values are default PADDING
+        (30, 30, 30, 10)
+        """
+        return self.pt, self.pr, self.pb, self.pl 
+    def _set_padding(self, padding):
+        self.pt, self.pr, self.pb, self.pl = makePadding(padding)
+    padding = property(_get_padding, _set_padding)
+
+    def _get_pw(self):
+        """Answer the usable element space, withing the horizontal padding
+
+        >>> doc = Document(w=500, pl=100, pr=50)
+        >>> doc.pw
+        350
+        """
+        return self.w - self.pl - self.pr
+    pw = property(_get_pw)
+
+    def _get_ph(self):
+        """Answer the usable element space, withing the vertical padding
+
+        >>> doc = Document(h=500, pt=100, pb=50)
+        >>> doc.ph
+        350
+        """
+        return self.h - self.pt - self.pb
+    ph = property(_get_ph)
+
+    def newPage(self, w=None, h=None, name=None, template=None):
         """Create a new page. If the (w, h) is undefined, then take the current
         size of the document.
 
@@ -77,21 +111,45 @@ class Document:
         # Make a new page and add the page number from the total number of pages.
         # Note that the page number is 1 higher (starting at 1) than its index
         # will be in self.pages.
-        page = Page(w or self.w, h or self.h, pn=len(self.pages)+1) 
-        self.pages.append(page)
+        page = Page(w=w or self.w, h=h or self.h, pn=len(self.pages)+1,
+            name=name, template=template) 
+        self.addPage(page)
         return page # Answer the new create page, so the caller add elements to it.
 
-    def newTemplate(self, name, w=None, h=None):
-        """Create a new Template (=Page). If (w, h) is undefined, then take the current
-        size of the document.
+    def addPage(self, page):
+        """Add the page to self.pages. If the page.w or page.h is undefined, then
+        set them with the document size.
 
-        >>> Doc = Document()
-        >>> doc.newTemplate()
-        <Page pn=1, w=595, h=842 elements=0>
+        >>> doc = Document()
+        >>> page = Page()
+        >>> page.w, page.h
+        (None, None)
+        >>> doc.addPage(page)
+        >>> page.w, page.h
+        (595, 842)
         """
-        template = 
+        if page.w is None:
+            page.w = self.w
+        if page.h is None:
+            page.h = self.h
+        self.pages.append(page)
+
+    def compose(self):
+        """Compose the document, by looking through the pages, and the recursively
+        tell every page to compose itself (and its comtained elements).
+
+        >>> doc = Document()
+        >>> page = doc.newPage()
+        >>> page = doc.newPage()
+        >>> page = doc.newPage()
+        >>> doc.compose()
+        """
+        for page in self.pages:
+            page.compose(doc=self, page=page) # Passing self as document, in case the page needs more info
+        self.hasComposed = True # Flag that we did this, in case called separate from self.export
+
     def build(self):
-        """Build the document by looping trough the pages, an then recursively
+        """Build the document by looping trough the pages, and then recursively
         tell every page to build itself (and its contained elements).
         """
         # Clear all previous drawing in the context canvas.
@@ -99,7 +157,7 @@ class Document:
 
         # Tell each page to build itself in context, including their child elements.
         for page in self.pages:
-            page.build(self) # Passing self as document, in case the page needs more info.
+            page.build(doc=self) # Passing self as document, in case the page needs more info.
         self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 
     def export(self, path, force=False, multipage=True):
@@ -114,6 +172,9 @@ class Document:
         <Page pn=1 w=595 h=842 elements=0>
         >>> doc.export('_export/Document-export.pdf')
         """
+        if force or not self.hasComposed: # If forced or not done yet, compose the pages.
+            self.compose()
+
         if force or not self.hasBuilt: # If forced or not done yet, build the pages.
             self.build()
 

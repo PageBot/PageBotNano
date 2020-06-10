@@ -24,6 +24,7 @@ from pagebotnano.publications.book import Book
 from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
 from pagebotnano.toolbox.typesetter import Typesetter
 from pagebotnano.toolbox import mm
+from pagebotnano.templates.onecolumn import *
 
 w, h = mm(130), mm(210) # Nice little booklet
 
@@ -60,13 +61,21 @@ print('Generating the manual “%s” by %s' % (title, author))
 # Create the typesetter that will do content parsing into a “Galley”
 ts = Typesetter()
 # Do the typesetting. Galley is now another type of element
-# that contains text and image elements in a sequence.
+# that contains text and image elements in the sequence of the markdown.
 galley = ts.typesetFile(contextPath, styles)
 
+# Create templates for this book.
+templates = [
+    FrenchPage(),
+    TitlePage(),
+    OneColumnPage(),
+    ColophonPage(),
+]
 # Create the Book publication and feed it with the processed galley content.
-pub = Book(w=w, h=h, title=title, author=author, galley=galley,
-    coverImagePath=coverImagePath, 
-    coverColor=coverColor)
-pub.export('_export/MyManual.pdf')
+book = Book(w=w, h=h, title=title, author=author, galley=galley,
+    coverImagePath=coverImagePath, coverColor=coverColor,
+    templates=templates)
+
+book.export('_export/MyManual.pdf')
 
 print('Done')

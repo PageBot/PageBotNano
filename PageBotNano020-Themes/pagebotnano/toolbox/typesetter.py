@@ -123,7 +123,7 @@ class Typesetter:
             styles = {}
         style = styles.get(node.tag) # Search the style for this node. Can be None.
         if style is not None and 'tag' not in style:
-        	style['tag'] = node.tag
+            style['tag'] = node.tag
 
         nodeSupport = 'node_'+node.tag
         # Is this tag supported by the typesetter? If it does, then e.g. for a 
@@ -149,33 +149,34 @@ class Typesetter:
             getattr(self, '_'+nodeSupport)(node, e, style)
 
     def getTextBox(self, e=None):
-    	"""Answer the last TextBox element if it exists. 
-    	Otherwise create it first.
-
-		>>> ts = Typesetter()
-		>>> e = ts.getTextBox()
-		>>> e
-		<CodeBlock code=None>
-		>>> e1 = ts.getTextBox() # Gets the existing last TextBox
-		>>> e is e1
-		True
-		>>> e2 = TextBox('', x=0, y=0, w=DEFAULT_WIDTH)
-		>>> ts.galley.addElement(e2)
-		>>> e2 is ts.getTextBox() # Now finding the new one as last
-		True
-    	"""
-    	if e is None:
-    		e = self.galley
-    	if not e.elements or not isinstance(e.elements[-1], TextBox):
-    		e.addElement(TextBox('', x=0, y=0, w=e.w or DEFAULT_WIDTH))
-    	return e.elements[-1]
-
-    def getCodeBlock(self, e=None):
         """Answer the last TextBox element if it exists. 
         Otherwise create it first.
 
         >>> ts = Typesetter()
-        >>> e = ts.getCodeBlock()
+        >>> e = ts.getTextBox()
+        >>> e
+        <TextBox name=TextBox w=100 h=None>
+        >>> e1 = ts.getTextBox() # Gets the existing last TextBox
+        >>> e is e1
+        True
+        >>> e2 = TextBox('', x=0, y=0, w=DEFAULT_WIDTH)
+        >>> ts.galley.addElement(e2)
+        <TextBox name=TextBox w=100 h=None>
+        >>> e2 is ts.getTextBox() # Now finding the new one as last
+        True
+        """
+        if e is None:
+            e = self.galley
+        if not e.elements or not isinstance(e.elements[-1], TextBox):
+            e.addElement(TextBox('', x=0, y=0, w=e.w or DEFAULT_WIDTH))
+        return e.elements[-1]
+
+    def getCodeBlock(self, e=None):
+        """Answer the last Codeblock element if it exists. 
+        Otherwise create it first.
+
+        >>> ts = Typesetter()
+        >>> e = ts.getCodeBlock('# Python comment')
         >>> e
         <CodeBlock code=None>
         """

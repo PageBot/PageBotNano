@@ -30,7 +30,7 @@ w, h = mm(130), mm(210) # Nice little booklet
 #theme = HappyHolidays(LIGHT)
 theme = BusinessAsUsual(LIGHT)
 
-contentPath = '../resources/PublishingVariables.md'
+contentPath = 'PublishingVariables.md'
 
 # Create the typesetter that will do content parsing into a “Galley”
 ts = Typesetter()

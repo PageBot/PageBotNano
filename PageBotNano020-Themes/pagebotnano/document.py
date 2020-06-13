@@ -23,13 +23,14 @@ from pagebotnano.constants import A4, EXPORT_DIR
 from pagebotnano.elements import Element, Page
 from pagebotnano.contexts.drawbotcontext import DrawBotContext
 from pagebotnano.toolbox import makePadding
+from pagebotnano.themes.theme import BaseTheme
 
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
     
     def __init__(self, w=None, h=None, pt=None, pr=None, pb=None, pl=None,
-        context=None):
+        theme=None, templates=None, context=None):
         """This is the "constructor" of a Document instance (=object).
         It takes two attributes: `w` is the general width of pages and
         `h` is the general height of pages.
@@ -53,6 +54,22 @@ class Document:
         self.padding = pt, pr, pb, pl # Initialize the default padding
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
+
+        # The TemplateSet dictionary contains a set of functions that
+        # compose the pages and containing elements for a particular
+        # type of publications.
+        if templates is None:
+            templates = OneColumnTemplates()
+        self.templates = templates
+
+        # The theme contains (or can produce) all stylistic parameters
+        # of a publication, such as color, typographic values and the 
+        # selected mood (lightest, light, dark, darkest) to create
+        # dark-on-light or light-on-dark moods with the same color palette.
+        if theme is None: # If not default, we choose one here.
+            theme = DefaultTheme()
+        self.theme = theme
+ 
         # Keep the flag is self.build was already executed when calling self.export
         self.hasComposed = False
         self.hasBuilt = False

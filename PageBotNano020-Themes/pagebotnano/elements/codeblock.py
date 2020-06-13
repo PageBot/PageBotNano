@@ -59,7 +59,7 @@ class CodeBlock(Element):
         convert this codeblock to python snippets, such as
         <python>
         cid = 'NameOfBlock'
-        doc = Document(w=300, h=500)
+        page = doc.newPage()
         </python>
         This way authors can run PageBot generators controlled by content.
         Note that it is the author's responsibility not to overwrite global values
@@ -83,11 +83,46 @@ class CodeBlock(Element):
         >>> sorted(result.keys()), g['aa'] # Result is added to the globals
         (['__code__', 'a', 'aa', 'doc', 'page'], 6000000)
         """
+
+
+
+
+        if targets is None:
+            if page is None:
+                page = self.doc[1]
+
+            targets = dict(composer=self, doc=self.doc, page=page, style=self.doc.styles,
+                newText=newText)
+
+            if page is not None:
+                targets['box'] = page.select('main')
+
+        elif page is not None:
+            targets['page'] = page
+
+        if 'errors' not in targets:
+            targets['errors'] = []
+        errors = targets['errors']
+
+        if 'verbose' not in targets:
+            targets['verbose'] = []
+        verbose = targets['verbose']
+
+        if galley is None:
+            galley = page.galley
+
+
+
+
         if targets is None:
             # If no globals defined, create a new empty dictionary as storage of result
             # and try to fill it in case we are part of a page, e.g. for debugging.
-            targets = {}
-            doc = self.doc
+            assert self.doc is not None
+            if not self.doc.pages:
+                page = self.doc.newPage()
+            page = self.doc.pages[-1] # Get the last page
+
+            targets = dict(pub=self, doc=self.doc, page=page, 
             if doc is not None:
                 targets['doc'] = doc
         if not self.tryExcept: # For debugging show full error of code block run.

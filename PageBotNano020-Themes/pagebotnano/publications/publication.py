@@ -44,29 +44,15 @@ class Publication:
     >>> pub.export('_export/Publication.pdf')
     """
     def __init__(self, w=None, h=None, theme=None, galley=None, templates=None,
-            context=None):
-        # The theme contains (or can produce) all stylistic parameters
-        # of a publication, such as color, typographic values and the 
-        # selected mood (lightest, light, dark, darkest) to create
-        # dark-on-light or light-on-dark moods with the same color palette.
-        if theme is None: # If not default, we choose one here.
-            theme = DefaultTheme()
-        self.theme = theme
-        
+            context=None):       
         # The galley is the main source of content, typically generated
         # by a Typesetter instance, reading from a markdown file.
         if galley is None:
             galley = Galley() # If not defined, create an empty Galley
         self.galley = galley
 
-        # The TemplateSet dictionary contains a set of functions that
-        # compose the pages and containing elements for a particular
-        # type of publications.
-        if templates is None:
-            templates = OneColumnTemplates()
-        self.templates = templates
-
-        self.doc = Document(w=w, h=h, context=context)
+        self.doc = Document(w=w, h=h, theme=theme, templates=templates, 
+            context=context)
 
     def compose(self):
         """Composing the publication allows inheriting class

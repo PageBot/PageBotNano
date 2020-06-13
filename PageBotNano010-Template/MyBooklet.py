@@ -38,10 +38,11 @@ ts = Typesetter()
 # that contains text and image elements in the sequence of the markdown.
 galley = ts.typesetFile(contentPath, theme.styles)
 
+"""
 # Create the Booklet publication and feed it with the processed galley content.
 booklet = Booklet(w=w, h=h, theme=theme, galley=galley, 
     templates=OneColumnTemplates())
 
 booklet.export('_export/MyBooklet.pdf')
-
+"""
 print('Done')

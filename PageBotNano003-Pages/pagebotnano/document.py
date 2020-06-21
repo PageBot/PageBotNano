@@ -36,7 +36,7 @@ class Document:
 
         >>> doc = Document()
         >>> doc
-        I am a Document(w=595, h=842)
+        I am a Document(w=595 h=842 pages=0)
         """
         if w is None: # If not defined, take the width of A4
             w, _ = A4

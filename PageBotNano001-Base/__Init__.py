@@ -1,5 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
 #
-#   PageBot Nano
+#   P A G E B O T  N A N O
+#
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
+#
+#   Supporting DrawBot, www.drawbot.com
+# -----------------------------------------------------------------------------
+#
+#   constants.py
 #
 #   This source makes it possible to import other sources
 #   from this diretory/folder

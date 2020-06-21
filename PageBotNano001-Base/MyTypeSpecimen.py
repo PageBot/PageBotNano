@@ -1,5 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
 #
-#   PageBot Nano
+#   P A G E B O T  N A N O
+#
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
+#
+#   Supporting DrawBot, www.drawbot.com
+# -----------------------------------------------------------------------------
 #
 #   This MyTypeSpecimen.py shows an example how to import
 #   existing libaries, that contain knowledge about document,
@@ -7,7 +17,9 @@
 #
 
 # From the library we import the classes (=object factories)
-# that we need for creating the type specimen.
+# that we need for creating the type specimen, for the local library.
+# If this file and the pagebotnano library are on the same directory
+# level, it is not needed to install the library in Python.
 from pagebotnano.document import Document
 from pagebotnano.page import Page
 from pagebotnano.elements import Element
@@ -34,5 +46,5 @@ typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
 print(typeSpecimen)
 
 # It seems like nothing happened yet, because the class/factory is
-# still empty, but that will change soon. That is worked is visible
+# still empty, but that will change soon. That it worked is visible
 # because there was no error when running this in DrawBot.

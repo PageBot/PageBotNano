@@ -23,7 +23,8 @@ from pagebotnano.constants import A4, EXPORT_DIR
 from pagebotnano.elements import Element, Page
 from pagebotnano.contexts.drawbotcontext import DrawBotContext
 from pagebotnano.toolbox import makePadding
-from pagebotnano.themes.theme import BaseTheme
+from pagebotnano.themes import DefaultTheme
+from pagebotnano.templates.onecolumn import OneColumnTemplates
 
 class Document:
     # Class names start with a capital. See a class as a factory

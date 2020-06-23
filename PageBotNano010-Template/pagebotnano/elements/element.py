@@ -252,7 +252,7 @@ class Text(Element):
         Element.__init__(self, x=x, y=y, w=w, h=h, name=name, 
             fill=fill, stroke=stroke, strokeWidth=strokeWidth)
         if not isinstance(bs, BabelString):
-        	bs = BabelString(bs)
+            bs = BabelString(bs)
         self.bs = bs # Store the BabelString in self.
 
     def drawContent(self, ox, oy, doc, page, parent):

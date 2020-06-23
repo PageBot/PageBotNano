@@ -68,6 +68,14 @@ def cm(cm):
     """
     return int(round(cm * 72 * 0.039370 * 10)) # Approximated 1" = 25.400051mm
 
+def pt(pt):
+    """Convert to points from points: return the same value.
+
+    >>> pt(72)
+    72
+    """
+    return pt
+    
 def makePadding(padding):
     """Check on the various ways that padding can be defined.
 

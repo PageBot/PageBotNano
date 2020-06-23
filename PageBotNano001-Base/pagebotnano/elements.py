@@ -20,12 +20,12 @@ class Element:
     """Class names start with a capital. See a class as a factory
     of element objects (name spelled with an initial lower case.)
     
-	Running this Python file, is testing the consistency by executing
-	the docstring below. 
-	
-	>>> e = Element()
-	>>> e
-	I am an Element
+    Running this Python file, is testing the consistency by executing
+    the docstring below. 
+    
+    >>> e = Element()
+    >>> e
+    I am an Element
     """
     pass # For now it will do nothing, but that will change in later version.
 

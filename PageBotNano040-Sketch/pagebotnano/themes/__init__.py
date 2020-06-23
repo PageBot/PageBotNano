@@ -25,13 +25,13 @@ from pagebotnano.themes.somethingintheair import SomethingInTheAir
 from pagebotnano.themes.wordlywise import WordlyWise
 
 AllThemes = (
-	BackToTheCity,
-	BusinessAsUsual,
-	FairyTales,
-	FreshAndShiny,
-	HappyHolidays,
-	IntoTheWoods,
-	SeasoningTheDish,
-	SomethingInTheAir,
-	WordlyWise,
+    BackToTheCity,
+    BusinessAsUsual,
+    FairyTales,
+    FreshAndShiny,
+    HappyHolidays,
+    IntoTheWoods,
+    SeasoningTheDish,
+    SomethingInTheAir,
+    WordlyWise,
 )

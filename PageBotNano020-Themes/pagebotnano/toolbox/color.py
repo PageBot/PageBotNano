@@ -13,6 +13,7 @@
 #
 #   color.py
 #
+#   Copied from PageBot/toolbox/color.py
 #   This source contains supporting functions for PageBotNano classes.
 #
 from copy import copy
@@ -977,6 +978,18 @@ class Color:
         return 'rgba(%0.2f, %0.2f, %0.2f, %0.2f' % (r, g, b, self.a)
     css = property(_get_css)
 
+    def _get_averageRgb(self):
+        """Answer the average light of self.rgb.
+
+        >>> color(0, 0.5, 1).averageRgb
+        0.5
+        >>> color(0.2, 0.1, 0.6).averageRgb
+        0.3
+        """
+        r, g, b = self.rgb
+        return (r + g + b)/3
+    averageRgb = property(_get_averageRgb)
+
     def warmer(self, v=0.5):
         """Answers warmer version of `self`. This converts to internal RGB storage.
 
@@ -1168,7 +1181,7 @@ class Color:
         ('mistyrose', 'lavenderblush', 'lavenderblush')
         """
         if self._name is None:
-            self._name = rgb2Name(self.rgb)
+            return rgb2Name(self.rgb) # Don't cache or it will take over. Just answer
         return self._name
     name = property(_get_name)
 

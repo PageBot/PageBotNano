@@ -43,7 +43,7 @@ class BabelRun:
         return self.__class__(self.s, copy(self.style))
 
     def __repr__(self):
-    	return '<%s s=%s>' % (self.__class__.__name__, self.s[:20])
+        return '<%s s=%s>' % (self.__class__.__name__, self.s[:20])
 
 class Css:
     """Holds a set of styles for the BabelString. Capable of exporting 

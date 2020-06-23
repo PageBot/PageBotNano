@@ -21,9 +21,9 @@ from pagebotnano.constants import (MAIN, LEFT, RIGHT, CENTER, NONE,
     PN_LEFT, PN_CENTER, PN_RIGHT)
 from pagebotnano.elements import Text, TextBox, Rect, Image
 from pagebotnano.babelstring import BabelString
-from pagebotnano.templates import BaseTemplate
+from pagebotnano.templates import BaseTemplates
 
-class OneColumnTemplate(BaseTemplate):
+class OneColumnTemplates(BaseTemplates):
 
     @classmethod
     def _initialize(cls, theme, doc, page, parent):

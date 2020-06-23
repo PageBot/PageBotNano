@@ -20,12 +20,12 @@ class Page:
     """Class names start with a capital. See a class as a factory
     of page objects (name spelled with an initial lower case.)
     
-	Running this Python file, is testing the consistency by executing
-	the docstring below. 
-	
-	>>> e = Page()
-	>>> e
-	I am a Page
+    Running this Python file, is testing the consistency by executing
+    the docstring below. 
+    
+    >>> e = Page()
+    >>> e
+    I am a Page
     """
     pass # For now it will do nothing, but that will change in later version.
 

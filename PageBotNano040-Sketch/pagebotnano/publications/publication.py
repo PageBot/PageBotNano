@@ -19,7 +19,7 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano.document import Document
 from pagebotnano.constants import CENTER
-from pagebotnano.themes import HappyHolidays as DefaultTheme
+from pagebotnano.themes import DefaultTheme
 from pagebotnano.toolbox.typesetter import Galley
 # Default set of template functions.
 from pagebotnano.templates.onecolumn import OneColumnTemplates 

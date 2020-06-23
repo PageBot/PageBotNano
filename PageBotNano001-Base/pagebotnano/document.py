@@ -20,13 +20,13 @@ class Document:
     of document objects (name spelled with an initial lower case.)
     For now it will do nothing, but that will change.
 
-	Running this Python file, is testing the consistency by executing
-	the docstring below. 
+    Running this Python file, is testing the consistency by executing
+    the docstring below. 
 
-	>>> doc = Document()
-	>>> doc
-	I am a Document
-	"""
+    >>> doc = Document()
+    >>> doc
+    I am a Document
+    """
     def __repr__(self):
         # This method is called when print(document) is executed.
         # It shows the name of the class, which can be different, if the

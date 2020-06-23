@@ -46,15 +46,17 @@ class BaseTheme:
     def getColor(self, shade, base):
         return self.colors[base][shade]
 
-
-    MATRIX_RECIPE = [1, 0.85, 0.6, 0.3, 0, 0.3, 0.6, 0.85, 1]
-    MATRIX_RECIPE = [1, 0.85, 0.6, 0.3, 0, 1, 0.6, 0.3, 0.15]
+    #                Darkest --------- self --------- Lightest 
+    MATRIX_RECIPE = [0.8, 0.6, 0.4, 0.2, 0, 0.8, 0.6, 0.4, 0.2]
     
     def makeColorMatrix(self, mood):
-        """Create a 7 (shades) x 6 (base color) table, as source for theme styles.
+        """Create a 9 (shades) x 6 (base color) table, as source for theme styles.
         (white <--) lightest <-- light <-- lighter <-- base
         base --> darker --> dark --> darkest (--> black)
 
+        self.colors[base][shade] In matrix is that self.colors[y][x]
+
+        >>> # Sample below, see also ColorSpeciment.py
         >>> from pagebotnano.document import Document
         >>> from pagebotnano.themes import AllThemes, BackToTheCity
         >>> from pagebotnano.constants import *
@@ -134,6 +136,20 @@ class BaseTheme:
             boldItalic=boldItalic,
             monospaced='Courier-Regular'
         )
+    def textColor(self, base, shade):
+        """Answer the shade of base color that words best as text foreground
+        on the `shade` color.
+
+        >>> from pagebotnano.themes import BackToTheCity
+        >>> theme = BackToTheCity()
+        >>> theme.textColor(3, 0).name
+        'black'
+        """
+        c = self.colors[base][shade]
+        if c.averageRgb < 0.4:
+            return color(1)
+        return color(0)
+
     def getDefaultStyles(self, fonts, colors):
         """Answer the default set of styles, to get any theme started.
         At least, implement the tags defined in HTML_TEXT_TAGS
@@ -148,8 +164,8 @@ class BaseTheme:
         lh13 = 1.3*ps
         lh14 = 1.4*ps
 
-        textColor = self.getColor(7, 3)
-        accentColor = self.getColor(7, 4)
+        textColor = self.textColor(4, 2)
+        accentColor = self.getColor(3, 4)
 
         regular = fonts['regular']
         bold = fonts['bold']

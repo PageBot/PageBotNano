@@ -2,4 +2,8 @@
 
 # PageBotNano #020 Theme
 
-## Under development
+Changes in this version:
+
+* Adding themes
+* Add ColorSpecimen.py generator for colors overview charts.
+

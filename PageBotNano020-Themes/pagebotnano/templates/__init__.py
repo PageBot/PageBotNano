@@ -14,7 +14,7 @@
 #   This source makes it possible to import other sources
 #   from this diretory/folder
 #
-class BaseTemplate:
+class BaseTemplates:
     """Defines the mininum set of page generating/composing functions that a
     template should implement. Otherwise raise an error.
     """

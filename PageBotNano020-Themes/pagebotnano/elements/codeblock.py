@@ -122,7 +122,7 @@ class CodeBlock(Element):
                 page = self.doc.newPage()
             page = self.doc.pages[-1] # Get the last page
 
-            targets = dict(pub=self, doc=self.doc, page=page, 
+            targets = dict(pub=self, doc=self.doc, page=page)
             if doc is not None:
                 targets['doc'] = doc
         if not self.tryExcept: # For debugging show full error of code block run.

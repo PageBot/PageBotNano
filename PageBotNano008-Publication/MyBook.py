@@ -36,9 +36,9 @@ coverColor = (random()*0.1,random()*0.1, random()*0.5)
 
 # Styles for the tags that are used in the xml content.
 styles = dict(
-	h1=dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=10),
-	h2=dict(font='Georgia-Italic', fontSize=14, lineHeight=16, paragraphBottomSpacing=10),
-	p=dict(font='Georgia', fontSize=10, lineHeight=14)
+    h1=dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=10),
+    h2=dict(font='Georgia-Italic', fontSize=14, lineHeight=16, paragraphBottomSpacing=10),
+    p=dict(font='Georgia', fontSize=10, lineHeight=14)
 )
 print('Generating the book “%s” by %s' % (title, author))
 

@@ -10,3 +10,4 @@ Changes in this version:
 * The ColorCell puts labels between parenthesis if these values are approximations of the base type of the color. E.g. of a color is defined by **rgb**, then the **color.spot** cannot be an exact match.
 
 
+

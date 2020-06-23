@@ -28,21 +28,22 @@ from pagebotnano.constants import CENTER
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10
-LEADING = 12
+LEADING = 13
 
 # Names of layout options
 OVERLAY = 'Overlay' # Rectangle with recipes overlay. Make sure that label color is right.
 SPOTSAMPLE = 'SpotSample' # As standard spot color layout: color rectangle on top, recipes in white below.
-LAYOUTS = (None, OVERLAY, SPOTSAMPLE)
+COLOR_LAYOUTS = (None, OVERLAY, SPOTSAMPLE)
 
 # Options for showing recipe labels
 HEX = 'hex' # Show CSS hex color recipe
+RGB = 'rgb' # Show RGB color recipe
 SPOT = 'spot' # Show approximated closest spot color recipe
 CMYK = 'cmyk' # Show CMYK color recipce
 NAME = 'name' # Show approximated name
 RAL = 'ral' # Show approximated closest RAL recipe.
 THEME = 'theme' # Show theme position, if defined.
-LABELS = (HEX, NAME, SPOT, CMYK, RAL, THEME)
+COLOR_LABELS = (HEX, RGB, NAME, CMYK, SPOT, RAL, THEME)
 
 class ColorCell(Element):
     """The ColorCell offers various options to display the recipe of a color.
@@ -57,12 +58,18 @@ class ColorCell(Element):
     >>> page = doc.newPage()
     >>> page.padding = 10
     >>> c = color(name='cyan')
-    >>> e = ColorCell(c, x=page.pl, y=page.pb, w=page.pw, h=page.ph, layout=SPOTSAMPLE, labels=LABELS)
+    >>> e = ColorCell(c, x=page.pl, y=page.pb, w=page.pw, h=page.ph, layout=SPOTSAMPLE, labels=COLOR_LABELS)
     >>> page.addElement(e)
     >>> page = doc.newPage()
     >>> page.padding = 10
     >>> c = color(spot=300)
     >>> e = ColorCell(c, x=page.pl, y=page.pb, w=page.pw, h=page.ph, layout=SPOTSAMPLE, labels=(SPOT, HEX, NAME))
+    >>> page.addElement(e)
+    >>> page = doc.newPage()
+    >>> page.padding = 10
+    >>> c = color(0.15)
+    >>> e = ColorCell(c, x=page.pl, y=page.pb, w=page.pw, h=page.ph, labels=(HEX, NAME, CMYK))
+    >>> e.style['fill'] = color(1) # Change the label color
     >>> page.addElement(e)
     >>> doc.export('_export/ColorCell.pdf')
     """
@@ -74,7 +81,7 @@ class ColorCell(Element):
                 fill=0, align=CENTER)
         self.style = style
         self.themePosition = themePosition
-        assert layout in LAYOUTS
+        assert layout in COLOR_LAYOUTS
         self.layout = layout # Default layout is OVERLAY
         # The labels define which color recipe(s) will be shown 
         if not labels:
@@ -96,9 +103,15 @@ class ColorCell(Element):
                 if not self.c.isName: # In case abbreviation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
-            elif label == SPOT:
-                recipe = 'Spot %s' % self.c.spot
+            elif label == SPOT: # Can be name or number
+                recipe = 'Spot %s' % str(self.c.spot).capitalize() 
                 if not self.c.isSpot: # In case abbreviation
+                    recipe = '(%s)' % recipe # then add parenthesis
+                recipes.append(recipe)
+            elif label == RGB:
+                r, g, b = self.c.rgb 
+                recipe = 'rgb %d %d %d' % (r*255, g*255, b*255)
+                if not self.c.isRgb: # In case abbreviation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == CMYK:
@@ -134,17 +147,18 @@ class ColorCell(Element):
             # Mark abbreviated color recipes by parenthesis.
             # They are not an exact match, but closest known value for this color.
 
-            e = Rect(x=0, y=th, w=self.w, h=self.h-th, fill=self.c)
+            # Used padding-bottom (self.pb) also as gutter between color rectangle and labels
+            e = Rect(x=0, y=th+self.pb, w=self.w, h=self.h-th-self.pb, fill=self.c)
             self.addElement(e)
 
-            e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0), w=self.w, h=self.h)
+            e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0) + self.pb, w=self.w, h=self.h)
             self.addElement(e)
 
         else: # Default layout is OVERLAY
             e = Rect(x=0, y=0, w=self.w, h=self.h, fill=self.c)
             self.addElement(e)
 
-            e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0)/2, w=self.w, h=self.h)
+            e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0) + self.pb, w=self.w, h=self.h)
             self.addElement(e)
 
 if __name__ == '__main__':

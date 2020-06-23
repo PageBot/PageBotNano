@@ -13,6 +13,7 @@
 #
 #   constants.py
 #
+A3 = 842, 1191 # Rounded equivalent in points of 297mm x 420mm
 A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
 A5 = 421, 595
 

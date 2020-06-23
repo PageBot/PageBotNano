@@ -74,7 +74,7 @@ def makeColorSpecimen(pageSize, fileName, layout, textColor, labels):
 
             footNoteStyle = dict(font=FONT_NAME, fontSize=LABEL_SIZE, lineHeight=LEADING, 
                 fill=theme.colors[0][4], align=LEFT)
-            bs = BabelString('Colors with (parenthesis) are approximated to their closest recipe.', 
+            bs = BabelString('Colors with (parenthesis) are approximated to the closest recipe.', 
                 footNoteStyle)
             tw, th = bs.textSize
             e = Text(bs, x=page.pl, y=page.pb-th, w=tw, h=th)
@@ -94,12 +94,10 @@ layouts = (
     # Page size, filename, layout, labelColor, labels
     ((W, H), OVERLAY, OVERLAY, None, (HEX, NAME, RGB, SPOT, CMYK, )),
     ((W, H), SPOTSAMPLE+'1', SPOTSAMPLE, color(0), (HEX, NAME, SPOT)),
-    ((A4[1], A4[0]), SPOTSAMPLE+'-A4', SPOTSAMPLE, color(0), (HEX, NAME, RGB, SPOT, CMYK, )),
-    ((A4[1], A4[0]), SPOTSAMPLE+'-A4-Hex', SPOTSAMPLE, color(0), (HEX, NAME)),
     ((A5[1], A5[0]), SPOTSAMPLE+'-A5', SPOTSAMPLE, color(0), (HEX,)),
-    ((A5[1], A5[0]*2/3), OVERLAY+'-A5ish', SPOTSAMPLE, color(0.3), (HEX,)),
+    ((A5[1], A5[0]*2/3), OVERLAY+'-A5ish', SPOTSAMPLE, color(0), (HEX,)),
 )
-# For all the layouts, make the specimen.
+
 for pageSize, fileName, layout, textColor, labels in layouts:
     makeColorSpecimen(pageSize, fileName, layout, textColor, labels)
 

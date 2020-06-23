@@ -623,6 +623,8 @@ class Color:
         True
         """
         if isinstance(c, self.__class__):
+            if (self.isName or c.isName) and self.name == c.name:
+                return True
             if (self.isRgba or c.isRgba) and self.rgba == c.rgba and self.tint == c.tint:
                 return True
             if (self.isRgb or c.isRgb) and self.rgb == c.rgb and self.tint == c.tint:
@@ -681,6 +683,17 @@ class Color:
         return '%s(r=%s, g=%s, b=%s, c=%s, m=%s, y=%s, k=%s, spot=%s, ral=%s, name=%s)' % (self.__class__.__name__, self.r, self.g, self.b, self.c, self.m, self.y, self.k, self._spot, self._ral, self._name)
     fullString = property(_get_fullString)
 
+    def _get_isName(self):
+        """Answer if the base of this color is defined by name.
+
+        >>> color(name='red').isName
+        True
+        >>> color(spot=300).isName
+        False
+        """
+        return self._name is not None
+    isName = property(_get_isName)
+    
     def _get_isRgb(self):
         """Answers if the base of this color is defined as RGB or if an (RGB)
         name is defined.

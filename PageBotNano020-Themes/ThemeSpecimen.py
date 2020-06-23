@@ -19,7 +19,7 @@
 from pagebotnano.document import Document
 from pagebotnano.themes import AllThemes, BackToTheCity
 from pagebotnano.constants import *
-from pagebotnano.elements import Rect, Text
+from pagebotnano.elements import Rect, Text, ColorCell
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox import pt
 
@@ -41,18 +41,14 @@ for Theme in AllThemes:
         for shade in range(len(theme.colors[0])):
             for base in range(len(theme.colors)):
                 # Get the color from the theme color matrix and add as rectangle
+                # This is the extened example, instead of using the ColorCell element.
                 c = theme.colors[base][shade]
-                e = Rect(x=page.pl+shade*cw, y=page.pb+base*ch, w=cw, h=ch, fill=c)
-                page.addElement(e)
-
                 labelStyle = dict(font=FONT_NAME, fontSize=LABEL_SIZE, lineHeight=LEADING, 
                     fill=theme.textColor(base, shade), align=CENTER)
-                Cmyk, cMyk, cmYk, cmyK = c.cmyk 
-                bs = BabelString('#%s\n(%s)\n(cmyk %d %d %d %0d)\n(Spot %s)\n(RAL %s)\nColor[%d][%d]' % 
-                    (c.hex, c.name.capitalize(), Cmyk*100, cMyk*100, cmYk*100, cmyK*100, c.spot, c.ral, base, shade), 
-                    labelStyle)
-                tw, th = bs.textSize
-                e = Text(bs, x=page.pl+shade*cw+cw/2, y=page.pb+base*ch+th, w=cw, h=th)
+
+                # The ColorCell element takes care of showing the color as rectangle
+                # and the lines of various recipes on top.
+                e = ColorCell(c, x=page.pl+shade*cw, y=page.pb+base*ch, w=cw, h=ch, style=labelStyle)
                 page.addElement(e)
                 
         # Add background rectangle on top with theme name and mood. getColor(shade, base)

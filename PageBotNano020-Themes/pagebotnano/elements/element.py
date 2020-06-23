@@ -97,7 +97,10 @@ class Element:
     ph = property(_get_ph)
 
     def __repr__(self):
-        return '<%s name=%s w=%s h=%s>' % (self.__class__.__name__, self.name, self.w, self.h)
+        s = '<%s' % self.__class__.__name__
+        if self.name is not None and self.__class__.__name__ != self.name:
+            s += ' name=%s' % self.name
+        s += ' w=%s h=%s>' % (self.w, self.h)
 
     def addElement(self, e):
         """Add the element to the list of child elements.
@@ -137,11 +140,11 @@ class Element:
         layout composition.
 
         >>> from pagebotnano.document import Document
-        >>> from pagebotnano.templates.onecolumn import oneColumnPage
+        >>> from pagebotnano.templates.onecolumn import OneColumnTemplates
         >>> from pagebotnano.themes import SeasoningTheDish
         >>> theme = SeasoningTheDish()
         >>> doc = Document()
-        >>> page = oneColumnPage(theme, doc)
+        >>> page = OneColumnTemplates.oneColumnPage(theme, doc)
         """
         if self.template is not None:
             self.template(doc, page, self)

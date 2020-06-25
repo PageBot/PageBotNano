@@ -38,11 +38,11 @@ class GlyphView(Element):
     >>> page = doc.newPage()
     >>> pad = 10
     >>> page.padding = pad
-    >>> e = GlyphView('Georgia', 'Hhj', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
+    >>> e = GlyphView('Hhj', 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
     >>> page.addElement(e)
     >>> doc.export('_export/GlyphView.pdf')
     """
-    def __init__(self, font, glyphName, **kwargs):
+    def __init__(self, glyphName, font, **kwargs):
         Element.__init__(self, **kwargs)
         self.font = font
         self.glyphName = glyphName

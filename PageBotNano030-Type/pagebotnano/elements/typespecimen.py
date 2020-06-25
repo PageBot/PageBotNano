@@ -38,7 +38,7 @@ class GlyphView(Element):
     >>> page = doc.newPage()
     >>> pad = 10
     >>> page.padding = pad
-    >>> e = GlyphView('Georgia', 'Am', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
+    >>> e = GlyphView('Georgia', 'Hhj', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
     >>> page.addElement(e)
     >>> doc.export('_export/GlyphView.pdf')
     """
@@ -47,37 +47,43 @@ class GlyphView(Element):
         self.font = font
         self.glyphName = glyphName
 
-    def uild(self, doc, page, parent=None):
-        """Compose the cell as background color, with recipes text block on top.
-
-        """
     def drawContent(self, ox, oy, doc, page, parent):
-        fontSize = tmpSize = self.h
+        fontSize = self.h
         style = dict(font=self.font, fontSize=fontSize, textFill=0, align=CENTER)
         bs = BabelString(self.glyphName, style=style)
         tw, th = bs.textSize
-        while fontSize > 0 and self.w and tw > self.w:
-            fontSize -= 0.5
-            style = dict(font=self.font, fontSize=fontSize, textFill=0, align=CENTER)
+        if self.w and tw > self.w: # If width of self defined and string is wider
+            # Interpolate the fontSize from the measured width
+            fontSize = self.w * fontSize / tw
+            # Make a new string with the fitting fontSize
+            style = dict(font=self.font, fontSize=fontSize, align=CENTER)
             bs = BabelString(self.glyphName, style=style)
-            tw, th = bs.textSize
-        baseline = doc.context.fontDescender() - (self.h - fontSize)/2 
+            tw1, th1 = bs.textSize
+
+        doc.context.font(self.font, fontSize) # Set to new fontSize, so metrics do fit
+        descender = doc.context.fontDescender()
+        baseline = (self.h - fontSize)/2 - descender
         
-        y = oy-baseline
+        y = oy + baseline
         doc.context.font(self.font, fontSize)
-        baseline = (self.h - fontSize)/2 - doc.context.fontDescender() 
         doc.context.text(bs, (ox+self.w/2, y))
 
         doc.context.stroke((0, 0, 1), 0.5)
-        doc.context.line((ox, y), (ox+self.w, y))
+        doc.context.line((ox, y), (ox+self.w, y)) # Baseline
 
         xHeight = doc.context.fontXHeight()
-        y = oy-baseline+xHeight
+        y = oy + baseline + xHeight
         doc.context.line((ox, y), (ox+self.w, y))
 
         capHeight = doc.context.fontCapHeight()
-        y = oy-baseline+capHeight
+        y = oy + baseline + capHeight
         doc.context.line((ox, y), (ox+self.w, y))
+
+        y = oy + baseline + descender
+        doc.context.line((ox, y), (ox+self.w, y)) # Descender
+
+        y = oy + baseline + fontSize + descender
+        doc.context.line((ox, y), (ox+self.w, y)) # Descender
 
         """
         Font Properties

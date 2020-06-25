@@ -11,7 +11,7 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   ThemeColors.py
+#   ThemeSpecimens.py
 #
 #   This ThemeColors.py shows samples of all standard theme colors,
 #   with their closest spot color, CMYK, RGB, CSS hex-color and CSS name.

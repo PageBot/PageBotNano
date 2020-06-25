@@ -555,15 +555,15 @@ class SketchContext:
             #   location
             #   length
             #   attributes = SketchAttributes
-            #       MSAttributedStringFontAttribute
-            #       MSAttributedStringColorAttribute
-            #       textStyleVerticalAlignmentKey
-            #       kerning
-            #       paragraphStyle = SketchParagraphStyle
-            #           alignment
-            #           minimumLineHeight
-            #           maximumLineHeight
-            #           paragraphSpacing
+            #     MSAttributedStringFontAttribute
+            #     MSAttributedStringColorAttribute
+            #     textStyleVerticalAlignmentKey
+            #     kerning
+            #     paragraphStyle = SketchParagraphStyle
+            #         alignment
+            #         minimumLineHeight
+            #         maximumLineHeight
+            #         paragraphSpacing
             #print('----', sas.string[attrs.location:attrs.location+attrs.length])
             #print('fontSize:', fd.name, fd.size)
             #print('minimumLineHeight:', attrs.attributes.paragraphStyle.minimumLineHeight)

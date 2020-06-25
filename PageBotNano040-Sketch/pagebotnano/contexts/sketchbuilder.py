@@ -11,7 +11,7 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#     sketchbuilder.py
+#   sketchbuilder.py
 #
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.

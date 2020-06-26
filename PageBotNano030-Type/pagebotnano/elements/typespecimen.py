@@ -21,10 +21,10 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 import drawBot
 
-from pagebotnano.elements import Element, Rect, Line
+from pagebotnano.elements import Element, Rect, Line, Text
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.color import noColor, color
-from pagebotnano.constants import CENTER
+from pagebotnano.constants import CENTER, LEFT
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10
@@ -38,38 +38,49 @@ class GlyphView(Element):
     >>> page = doc.newPage()
     >>> pad = 10
     >>> page.padding = pad
-    >>> e = GlyphView('Hhj', 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
+    >>> e = GlyphView('Hhj', 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.96)
     >>> page.addElement(e)
     >>> doc.export('_export/GlyphView.pdf')
     """
-    def __init__(self, glyphName, font, **kwargs):
+    def __init__(self, glyphName, font, lineColor=None, lineWidth=None, **kwargs):
         Element.__init__(self, **kwargs)
         self.font = font
         self.glyphName = glyphName
+        self.lineColor = lineColor or (0, 0, 1) # Color of metrics lines
+        self.lineWidth = lineWidth or 0.5 # Thickness of metrics lines
+        self.fontSize = self.h # As start assume the full height of the element as fontSize
+
+        # Create a style for it, so we can draw the glyph(s) as Text.
+        style = dict(font=self.font, fontSize=self.fontSize, textFill=0, align=CENTER)
+        self.bs = BabelString(self.glyphName, style=style)
+        tw, th = self.bs.textSize # Get the size of the glyph(s) string to see if it fits.
+
+        if self.w and tw > self.w: # If width of self is defined and string is wider
+            # Interpolate the fontSize from the measured width to smaller scaled fontSize.
+            self.fontSize *= self.w / tw
+            # Make a new string with the fitting fontSize
+            style['fontSize'] = self.fontSize # Adjust the existing style
+            self.bs = BabelString(self.glyphName, style=style)
 
     def drawContent(self, ox, oy, doc, page, parent):
-        fontSize = self.h
-        style = dict(font=self.font, fontSize=fontSize, textFill=0, align=CENTER)
-        bs = BabelString(self.glyphName, style=style)
-        tw, th = bs.textSize
-        if self.w and tw > self.w: # If width of self defined and string is wider
-            # Interpolate the fontSize from the measured width
-            fontSize = self.w * fontSize / tw
-            # Make a new string with the fitting fontSize
-            style = dict(font=self.font, fontSize=fontSize, align=CENTER)
-            bs = BabelString(self.glyphName, style=style)
-            tw1, th1 = bs.textSize
+        """Draw the content of this single glyph/string fitting, with line indicators
+        of vertical metrics.
 
-        doc.context.font(self.font, fontSize) # Set to new fontSize, so metrics do fit
-        descender = doc.context.fontDescender()
-        baseline = (self.h - fontSize)/2 - descender
+        TODO: Show more font metrics and glyph metrics here. Add labels of values and names.
+        """
+
+        # Set the contextx to font and fontSize, so we get the right descender back.
+        doc.context.font(self.font, self.fontSize) # Set to new fontSize, so metrics do fit
+        descender = doc.context.fontDescender() # Scaled descender of current font/fontSize
+        # If the fontSize is down scaled to match the string width, then evenely 
+        # distribute the extra vertical space above and below that scaled fontSize.
+        baseline = (self.h - self.fontSize)/2 - descender # Distance from baseline to bottom y
         
-        y = oy + baseline
-        doc.context.font(self.font, fontSize)
-        doc.context.text(bs, (ox+self.w/2, y))
+        y = oy + baseline # Calculate the position of the baseline.
+        doc.context.text(self.bs, (ox+self.w/2, y)) # Draw the glyphs on centered position.
 
-        doc.context.stroke((0, 0, 1), 0.5)
-        doc.context.line((ox, y), (ox+self.w, y)) # Baseline
+        doc.context.stroke(self.lineColor, self.lineWidth)
+        doc.context.line((ox, y), (ox+self.w, y)) # Draw baseline
 
         xHeight = doc.context.fontXHeight()
         y = oy + baseline + xHeight
@@ -82,41 +93,126 @@ class GlyphView(Element):
         y = oy + baseline + descender
         doc.context.line((ox, y), (ox+self.w, y)) # Descender
 
-        y = oy + baseline + fontSize + descender
+        y = oy + baseline + self.fontSize + descender
         doc.context.line((ox, y), (ox+self.w, y)) # Descender
 
+class Waterfall(Element):
+    """The GlyphView show single glyphs with metrics lines.
+
+    >>> from pagebotnano.document import Document
+    >>> pad = 30
+    >>> doc = Document(w=400, h=800)
+    >>> page = doc.newPage()
+    >>> page.padding = pad
+    >>> sample = Waterfall.AaBbCc
+    >>> e = Waterfall(sample, 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
+    >>> page.addElement(e)
+    >>> sample = Waterfall.Hamburg
+    >>> page = doc.newPage()
+    >>> page.padding = pad
+    >>> e = Waterfall(sample, 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.9)
+    >>> page.addElement(e)
+
+    >>> doc.export('_export/Waterfall.pdf')
+    """
+    Hamburg = 'Hamburgefonstiv'
+    AaBbCc = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'
+    DEFAULT_FONTSIZES = (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30, 
+        32, 36, 40, 44, 48, 52, 56, 60, 64)
+
+    def __init__(self, sample, font, fontSizes=None, align=None, leading=None, **kwargs):
+        Element.__init__(self, **kwargs)
+        self.sample = sample or self.Hamburg
+        self.font = font or 'Georgia'
+        self.fontSizes = fontSizes or self.DEFAULT_FONTSIZES
+        self.leading = leading or 1.2 # Leading * fontSize factor
+        self.align = align or LEFT
+
+    def drawContent(self, ox, oy, doc, page, parent):
+        """Draw the content of this single glyph/string fitting, with line indicators
+        of vertical metrics.
+
+        TODO: Show more font metrics and glyph metrics here. Add labels of values and names.
         """
-        Font Properties
-        fontContainsCharacters(characters)
-        Return a bool if the current font contains the provided characters. Characters is a string containing one or more characters.
+        labelStyle = dict(font=self.font, fontSize=7, textFill=0, lineHeight=8, aligh=LEFT)
+        style = dict(font=self.font, fontSize=self.fontSizes[0], textFill=0, align=LEFT)
+        bs = BabelString('', style)
+        tw, th = bs.textSize
+        for fontSize in self.fontSizes:
+            labelLine = BabelString(' %d pt' % fontSize, labelStyle)
+            ltw, lth = labelLine.textSize
 
-        fontContainsGlyph(glyphName)
-        Return a bool if the current font contains a provided glyph name.
+            style['fontSize'] = fontSize
+            style['lineHeight'] = fontSize * self.leading
+            sample = self.sample
+            textLine = BabelString(sample, style)
+            stw, sth = textLine.textSize
 
-        fontFilePath()
-        Return the path to the file of the current font.
+            while sample and self.w and stw + ltw > self.w: 
+                # If not fitting, shorten the string until it does
+                sample = sample[:-1]
+                textLine = BabelString(sample, style)
+                stw, sth = textLine.textSize
+            if self.h and th + sth > self.h:
+                break # No vertical space left, skip the rest of the fontSizes. 
+            
+            bs += BabelString('\n'+sample, style) + labelLine # There still is vertical space, add the textLine
+            tw, th = bs.textSize
 
-        listFontGlyphNames()
-        Return a list of glyph names supported by the current font.
+        e = Text(bs, x=ox, y=oy+self.h)
+        page.addElement(e)
 
-        fontDescender()
-        Returns the current font descender, based on the current font and fontSize.
+class Stacked(Element):
+    """The GlyphView show single glyphs with metrics lines.
 
-        fontAscender()
-        Returns the current font ascender, based on the current font and fontSize.
+    >>> from pagebotnano.document import Document
+    >>> pad = 30
+    >>> doc = Document(w=200, h=800)
+    >>> page = doc.newPage()
+    >>> page.padding = pad
+    >>> e = Stacked(Stacked.WORDS*4, 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, capsOnly=True, fill=0.9)
+    >>> page.addElement(e)
 
-        fontXHeight()
-        Returns the current font x-height, based on the current font and fontSize.
+    >>> doc.export('_export/Stacked.pdf')
+    """
+    WORDS = ('The', 'Quick Brown', 'Fox', 'Jumps', 'Over', 'The Lazy', 'Dog')
 
-        fontCapHeight()
-        Returns the current font cap height, based on the current font and fontSize.
+    def __init__(self, words, font, leading=None, w=None, h=None, capsOnly=False, 
+        **kwargs):
+        Element.__init__(self, **kwargs)
+        self.words = words or self.WORDS
+        self.font = font or 'Georgia'
+        self.leading = leading or 1.2 # Leading * fontSize factor
+        self.w = w or 200 # Make sure there is default size.
+        self.h = h or 400
+        self.capsOnly = capsOnly
 
-        fontLeading()
-        Returns the current font leading, based on the current font and fontSize.
+    def drawContent(self, ox, oy, doc, page, parent):
+        """Draw the content of this single glyph/string fitting, with line indicators
+        of vertical metrics.
 
-        fontLineHeight()
-        Returns the current line height, based on the current font and fontSize. If a lineHeight is set, this value will be returned.       
+        TODO: Show more font metrics and glyph metrics here. Add labels of values and names.
+        TODO: Better vertical positioning
         """
+        y = self.h
+        style = dict(font=self.font, textFill=0, lineHeight=10, align=LEFT)
+        for word in self.words:
+            if self.capsOnly:
+                word = word.upper()
+            style['fontSize'] = 100 # Start with large guess of fontSize
+            textLine = BabelString(word, style) 
+            tlw, tlh = textLine.textSize
+
+            style['fontSize'] *= self.w / tlw
+            style['lineHeight'] = style['fontSize'] * self.leading
+            textLine = BabelString(word, style) # Get a new scaled version
+            tlw, tlh = textLine.textSize
+            if tlh > y: # Not fitting this word vertical anymore, try other.
+                continue
+
+            e = Text(textLine, x=ox, y=oy+y-tlh)
+            page.addElement(e)
+            y -= tlh
 
 if __name__ == '__main__':
     import doctest

@@ -52,6 +52,7 @@ FS_ATTRIBUTES = dict(
 
     font='font', 
     fontSize='fontSize', 
+    lineHeight='lineHeight',
     fallbackFont='fallbackFont', 
     align='align', 
     lightHeight='lineHeight', 

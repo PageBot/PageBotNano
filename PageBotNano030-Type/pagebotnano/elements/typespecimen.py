@@ -19,6 +19,7 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
+from random import shuffle
 import drawBot
 
 from pagebotnano.elements import Element, Rect, Line, Text
@@ -166,23 +167,26 @@ class Stacked(Element):
     """The GlyphView show single glyphs with metrics lines.
 
     >>> from pagebotnano.document import Document
+    >>> from pagebotnano.constants import FRUITS
     >>> pad = 30
-    >>> doc = Document(w=200, h=800)
+    >>> doc = Document(w=400, h=800)
     >>> page = doc.newPage()
     >>> page.padding = pad
-    >>> e = Stacked(Stacked.WORDS*4, 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, capsOnly=True, fill=0.9)
+    >>> font = 'Georgia'
+    >>> e = Stacked(FRUITS, font, x=pad, y=pad, w=page.pw, h=page.ph, gh=12, capsOnly=True, fill=0.9)
     >>> page.addElement(e)
-
-    >>> doc.export('_export/Stacked.pdf')
+    >>> #doc.export('_export/Stacked-%s.pdf' % font)
+    >>> doc.export('_export/Stacked-%s.jpg' % font) # Generating for Instagram
     """
     WORDS = ('The', 'Quick Brown', 'Fox', 'Jumps', 'Over', 'The Lazy', 'Dog')
 
     def __init__(self, words, font, leading=None, w=None, h=None, capsOnly=False, 
-        **kwargs):
+        gh=None, **kwargs):
         Element.__init__(self, **kwargs)
-        self.words = words or self.WORDS
+        self.words = list(words or self.WORDS)
         self.font = font or 'Georgia'
-        self.leading = leading or 1.2 # Leading * fontSize factor
+        self.leading = leading or 1 # Leading * fontSize factor
+        self.gh = gh or 0 # Vertical fixed gutter instead of relative leading.
         self.w = w or 200 # Make sure there is default size.
         self.h = h or 400
         self.capsOnly = capsOnly
@@ -195,24 +199,30 @@ class Stacked(Element):
         TODO: Better vertical positioning
         """
         y = self.h
-        style = dict(font=self.font, textFill=0, lineHeight=10, align=LEFT)
+        style = dict(font=self.font, textFill=0, align=LEFT)
         for word in self.words:
             if self.capsOnly:
                 word = word.upper()
-            style['fontSize'] = 100 # Start with large guess of fontSize
+            style['fontSize'] = fontSize = 100 # Start with large guess of fontSize
             textLine = BabelString(word, style) 
             tlw, tlh = textLine.textSize
 
-            style['fontSize'] *= self.w / tlw
-            style['lineHeight'] = style['fontSize'] * self.leading
+            style['fontSize'] = fontSize = fontSize * self.w / tlw
             textLine = BabelString(word, style) # Get a new scaled version
             tlw, tlh = textLine.textSize
             if tlh > y: # Not fitting this word vertical anymore, try other.
                 continue
 
-            e = Text(textLine, x=ox, y=oy+y-tlh)
+            if self.capsOnly:
+                y -= doc.context.fontCapHeight(self.font, fontSize)
+            else:
+                y -= doc.context.fontAscender(self.font, fontSize)
+            e = Text(textLine, x=ox, y=oy+y)
             page.addElement(e)
-            y -= tlh
+    
+            if not self.capsOnly:
+                y += doc.context.fontDescender(self.font, fontSize)
+            y -= fontSize * (self.leading - 1) + self.gh
 
 if __name__ == '__main__':
     import doctest

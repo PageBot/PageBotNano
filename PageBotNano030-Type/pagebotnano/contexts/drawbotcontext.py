@@ -53,34 +53,58 @@ class DrawBotContext:
         """Return a list of glyph names supported by the current font."""
         return drawBot.listFontGlyphNames()
 
-    def fontDescender(self):
+    def fontDescender(self, font=None, fontSize=None):
         """Returns the current font descender, based on the current font 
         and fontSize."""
+        if font is not None:
+            drawBot.font(font)
+        if fontSize is not None:
+            drawBot.fontSize(fontSize)
         return drawBot.fontDescender()
 
-    def fontAscender(self):
+    def fontAscender(self, font=None, fontSize=None):
         """Returns the current font ascender, based on the current font 
         and fontSize."""
+        if font is not None:
+            drawBot.font(font)
+        if fontSize is not None:
+            drawBot.fontSize(fontSize)
         return drawBot.fontAscender()
 
-    def fontXHeight(self):
+    def fontXHeight(self, font=None, fontSize=None):
         """Returns the current font x-height, based on the current font 
         and fontSize."""
+        if font is not None:
+            drawBot.font(font)
+        if fontSize is not None:
+            drawBot.fontSize(fontSize)
         return drawBot.fontXHeight()
 
-    def fontCapHeight(self):
+    def fontCapHeight(self, font=None, fontSize=None):
         """Returns the current font cap height, based on the current font 
         and fontSize."""
+        if font is not None:
+            drawBot.font(font)
+        if fontSize is not None:
+            drawBot.fontSize(fontSize)
         return drawBot.fontCapHeight()
 
-    def fontLeading():
+    def fontLeading(self, font=None, fontSize=None):
         """Returns the current font leading, based on the current font 
         and fontSize."""
+        if font is not None:
+            drawBot.font(font)
+        if fontSize is not None:
+            drawBot.fontSize(fontSize)
         return drawBot.fontLeading()
 
-    def fontLineHeight():
+    def fontLineHeight(self, font=None, fontSize=None):
         """Returns the current line height, based on the current font and 
         fontSize. If a lineHeight is set, this value will be returned."""
+        if font is not None:
+            drawBot.font(font)
+        if fontSize is not None:
+            drawBot.fontSize(fontSize)
         return fontLineHeight()     
 
     def fill(self, c):

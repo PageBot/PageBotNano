@@ -86,6 +86,39 @@ EN = 'en' # English
 DEFAULT_FONT = 'Georgia'
 DEFAULT_BODYSIZE = 10
 
+# Seeds for automatic content generators, e.g. for Stacked element.
+CITIES = ('Amsterdam', 'Delft', 'Alblasserdam', 'The Hague', 'Heerhugowaard', 
+    'Groningen', 'Leeuwarden', 'Rotterdam', 'Paris', 'Berlin', 'Madrid', 
+    'Vienna', 'Rome', 'London', 'Washington', 'Schiphol', 'Den Helder',
+    'Lissabon', 'Oslo', 'Stockholm', 'Copenhagen', 'New York', 'Boston')
+FRUITS = ('Apple', 'Orange', 'Lemon', 'Strawberry', 'Grape', 'Mango', 'Nectarine',
+    'Banana', 'Pomegranate', 'Raspberry', 'Papaya', 'Kiwi', 'Pineapple',
+    'Apricot', 'Grapefruit', 'Peach', 'Avocado', 'Passion fruit', 'Plum',
+    'Lime', 'Blueberry', 'Lychee', 'Fig')
+COFFEES = ('Cappuccino', 'Americano', 'Espresso', 'Macchiato', 'Mocha', 'Latte',
+    'Green thee', 'Red Eye', 'Doppio', 'Cortado', #'Black', 'Flat White', 'White', 
+    'Ristretto', 'Affogato', 'Antoccino', 'Breve', 'Café au Lait', 
+    'Café con Leche', 'Frappé', 'Irish', 'French Press', 'Lungo', 
+    'Turkish', 'Viennese')
+BIRDS = ('Crow', 'Peacock', 'Dove', 'Sparrow', 'Goose', 'Ostrich', 'Pigeon',
+    'Turkey', 'Hawk', 'Bald eagle', 'Raven', 'Parrot', 'Flamingo', 'Seagull',
+    'Swallow', 'Blackbird', 'Penguin', 'Robin', 'Swan', 'Owl', 'Stork', 
+    'Woodpecker')
+TOOLS = ('Saw', 'Hammer', 'Rake', 'Ladder', 'File', 'Gloves', 'Wheelbarrow',
+    'Mallet', 'Chisel', 'Screwdriver', 'Wrench', 'Hand drill', 'Level', 'Ax',
+    'Pliers', 'Clamp', 'Bolt cutter', 'Shears', 'Vise', 'Nut', 'Bolt', 'Nail',
+    'Screw', 'Tape measure', 'Shovel', 'Allen key', 'Chainsaw', 'Heat gun',
+    'Jackhammer', 'Circular saw', 'Nail gun', 'Drill', 'Sander', 'Grinder',
+    'Lathe', 'Lawn mower', 'Pneumatic torque wrench', 'Table saw', 'Router',
+    'Ruler')
+SPORTS = ('Archery', 'Badminton', 'Cricket', 'Bowling', 'Boxing', 'Curling',
+    'Tennis', 'Skateboarding', 'Surfing', 'Hockey', 'Figure skating', 'Yoga',
+    'Fencing', 'Fitness', 'Gymnastics', 'Karate', 'Volleyball', 'Weightlifting',
+    'Basketball', 'Baseball', 'Rugby', 'Wrestling', 'High jumping', 'Hang gliding', 
+    'Car racing', 'Cycling', 'Running', 'Table tennis', 'Fishing', #'Judo',
+    'Climbing', 'Billiards', 'Pool', 'Horse racing', 'Golf', 'Football', 'Soccer',
+    'Chess', 'Marathon')
+
 # Mood names for Theme
 DARK = 'Dark' # Dark background, light text
 LIGHT = 'Light' # Light background, dark text

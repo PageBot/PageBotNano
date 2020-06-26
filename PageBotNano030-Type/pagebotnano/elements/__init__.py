@@ -21,4 +21,4 @@ from pagebotnano.elements.element import Element, Text, TextBox, Rect, Image, Li
 from pagebotnano.elements.page import Page
 from pagebotnano.elements.codeblock import CodeBlock
 from pagebotnano.elements.colorcell import ColorCell
-from pagebotnano.elements.typespecimen import GlyphView
+from pagebotnano.elements.typespecimen import GlyphView, Stacked

@@ -96,7 +96,7 @@ FRUITS = ('Apple', 'Orange', 'Lemon', 'Strawberry', 'Grape', 'Mango', 'Nectarine
     'Apricot', 'Grapefruit', 'Peach', 'Avocado', 'Passion fruit', 'Plum',
     'Lime', 'Blueberry', 'Lychee', 'Fig')
 COFFEES = ('Cappuccino', 'Americano', 'Espresso', 'Macchiato', 'Mocha', 'Latte',
-    'Green thee', 'Red Eye', 'Doppio', 'Cortado', #'Black', 'Flat White', 'White', 
+    'Green thee', 'Red Eye', 'Doppio', 'Cortado', 'Black', 'Flat White', 'White', 
     'Ristretto', 'Affogato', 'Antoccino', 'Breve', 'Café au Lait', 
     'Café con Leche', 'Frappé', 'Irish', 'French Press', 'Lungo', 
     'Turkish', 'Viennese')

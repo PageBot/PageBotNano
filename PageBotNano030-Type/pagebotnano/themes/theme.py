@@ -17,6 +17,7 @@
 #   can start with.
 #
 from copy import copy
+from random import choice
 import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
@@ -45,6 +46,14 @@ class BaseTheme:
 
     def getColor(self, shade, base):
         return self.colors[base][shade]
+
+    def _get_randomTextColor(self):
+        """Answer a random color that can be used from text. 
+        """
+        base = choice(range(len(self.colors)))
+        shade = choice(range(4, 9)) # Right-side of the shade row is possible text colors.
+        return self.getColor(shade, base)
+    randomTextColor = property(_get_randomTextColor)
 
     #              Darkest --------- self --------- Lightest 
     MATRIX_RECIPE = [0.8, 0.6, 0.4, 0.2, 0, 0.8, 0.6, 0.4, 0.2]

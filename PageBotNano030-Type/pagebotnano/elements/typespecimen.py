@@ -19,7 +19,7 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from random import shuffle
+from random import shuffle, choice
 import drawBot
 
 from pagebotnano.elements import Element, Rect, Line, Text
@@ -161,6 +161,7 @@ class Waterfall(Element):
             tw, th = bs.textSize
 
         e = Text(bs, x=ox, y=oy+self.h)
+        page.h = page.pb + page.pt + th
         page.addElement(e)
 
 class Stacked(Element):
@@ -180,27 +181,37 @@ class Stacked(Element):
     """
     WORDS = ('The', 'Quick Brown', 'Fox', 'Jumps', 'Over', 'The Lazy', 'Dog')
 
-    def __init__(self, words, font, leading=None, w=None, h=None, capsOnly=False, 
-        gh=None, **kwargs):
+    def __init__(self, words, font=None, fontChoice=None, leading=None, w=None, h=None, 
+        theme=None, capsOnly=False, gh=None, **kwargs):
         Element.__init__(self, **kwargs)
         self.words = list(words or self.WORDS)
-        self.font = font or 'Georgia'
+        self.fontChoice = fontChoice # If defined, choose randomly
+        self.font = font or 'Georgia' # otherwise use this one.
         self.leading = leading or 1 # Leading * fontSize factor
         self.gh = gh or 0 # Vertical fixed gutter instead of relative leading.
         self.w = w or 200 # Make sure there is default size.
         self.h = h or 400
         self.capsOnly = capsOnly
+        self.theme = theme # Choice for random colors, if defined.
 
     def drawContent(self, ox, oy, doc, page, parent):
         """Draw the content of this single glyph/string fitting, with line indicators
         of vertical metrics.
 
         TODO: Show more font metrics and glyph metrics here. Add labels of values and names.
-        TODO: Better vertical positioning
+        TODO: For large sizes, compensate for the side beatings of straight stems.
         """
         y = self.h
-        style = dict(font=self.font, textFill=0, align=LEFT)
         for word in self.words:
+            if self.fontChoice:
+                fontName = choice(self.fontChoice)
+            else:
+                fontName = self.font
+            if self.theme is None:
+                textColor = Color(0)
+            else:
+                textColor = self.theme.randomTextColor
+            style = dict(font=fontName, textFill=textColor, align=LEFT)
             if self.capsOnly:
                 word = word.upper()
             style['fontSize'] = fontSize = 100 # Start with large guess of fontSize

@@ -20,7 +20,7 @@ import sys # Import access to some deep Python functions
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 import drawBot # Import the drawBot functions, embedded in the DrawBot app.
 
-from pagebotnano.constants import A4
+from pagebotnano.constants import A4, EXPORT_DIR
 
 class Document:
     # Class names start with a capital. See a class as a factory

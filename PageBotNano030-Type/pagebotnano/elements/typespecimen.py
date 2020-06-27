@@ -166,14 +166,17 @@ class Waterfall(Element):
 class Stacked(Element):
     """The GlyphView show single glyphs with metrics lines.
 
+    >>> from random import shuffle
     >>> from pagebotnano.document import Document
-    >>> from pagebotnano.constants import FRUITS
+    >>> from pagebotnano.constants import SPORTS
     >>> pad = 30
+    >>> words = list(SPORTS)
+    >>> shuffle(words)
     >>> doc = Document(w=400, h=800)
     >>> page = doc.newPage()
     >>> page.padding = pad
-    >>> font = 'Georgia'
-    >>> e = Stacked(FRUITS, font, x=pad, y=pad, w=page.pw, h=page.ph, gh=12, capsOnly=True, fill=0.9)
+    >>> font = 'Verdana'
+    >>> e = Stacked(words, font, x=pad, y=pad, w=page.pw, h=page.ph, gh=12, capsOnly=True, fill=0.9)
     >>> page.addElement(e)
     >>> #doc.export('_export/Stacked-%s.pdf' % font)
     >>> doc.export('_export/Stacked-%s.jpg' % font) # Generating for Instagram

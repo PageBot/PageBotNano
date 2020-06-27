@@ -70,7 +70,7 @@ class GlyphView(Element):
         TODO: Show more font metrics and glyph metrics here. Add labels of values and names.
         """
 
-        # Set the contextx to font and fontSize, so we get the right descender back.
+        # Set the context to font and fontSize, so we get the right descender back.
         doc.context.font(self.font, self.fontSize) # Set to new fontSize, so metrics do fit
         descender = doc.context.fontDescender() # Scaled descender of current font/fontSize
         # If the fontSize is down scaled to match the string width, then evenely 

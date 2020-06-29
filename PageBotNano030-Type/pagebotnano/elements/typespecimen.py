@@ -24,7 +24,7 @@ import drawBot
 
 from pagebotnano.elements import Element, Rect, Line, Text
 from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox.color import noColor, color
+from pagebotnano.toolbox.color import noColor, Color
 from pagebotnano.constants import CENTER, LEFT
 
 FONT_NAME = 'Verdana'

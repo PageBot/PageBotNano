@@ -37,8 +37,10 @@ def testPath(path, level=0):
             os.system('python3 ' + fileName)
     os.chdir('..')
 
+# Versions that pass the doc tests
 RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 #RUNNING_VERSIONS = [10]
+# Version under development
 DEVELOPMENT_VERSIONS = [10, 20, 30, 40, 50]
 
 for fileName in sorted(os.listdir('.')):

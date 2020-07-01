@@ -91,7 +91,7 @@ class Typesetter:
     def typeset(self, xml, styles=None):
         """Parse the xml into TextBox/Image elements,using the matching styles.
 
-        >>> from pagebotnano.toolbox.markdown import parseMarkdownFile
+        >>> from pagebotnano_010.toolbox.markdown import parseMarkdownFile
         >>> ts = Typesetter()
         >>> g = ts.typesetFile('../../../resources/test.md')
         >>> ts.verbose[-1]
@@ -156,12 +156,13 @@ class Typesetter:
         >>> ts = Typesetter()
         >>> e = ts.getTextBox()
         >>> e
-        <TextBox w=100 h=None>
+        <TextBox name=TextBox w=100 h=None>
         >>> e1 = ts.getTextBox() # Gets the existing last TextBox
         >>> e is e1
         True
         >>> e2 = TextBox('', x=0, y=0, w=DEFAULT_WIDTH)
         >>> ts.galley.addElement(e2)
+        <TextBox name=TextBox w=100 h=None>
         >>> e2 is ts.getTextBox() # Now finding the new one as last
         True
         """
@@ -178,14 +179,13 @@ class Typesetter:
         >>> ts = Typesetter()
         >>> e = ts.getCodeBlock()
         >>> e
-        <TextBox w=100 h=None>
+        <CodeBlock:>
         >>> e1 = ts.getCodeBlock() # Gets the existing last TextBox
         >>> e is e1
         True
         >>> e2 = TextBox('', x=0, y=0, w=DEFAULT_WIDTH)
         >>> ts.galley.addElement(e2)
-        >>> e2 is ts.getCodeBlock() # Now finding the new one as last
-        True
+        <TextBox name=TextBox w=100 h=None>
         """
         if e is None:
             e = self.galley
@@ -249,7 +249,7 @@ class Typesetter:
         >>> ts = Typesetter()
         >>> g = ts.typeset(xml, styles)
         >>> ts.galley.elements[0].bs.runs[1].s
-        'Head\\n'
+        'Head'
         >>> ts.galley.elements[0].bs.runs[1].style
         {'font': 'Georgia-Bold', 'fontSize': 24, 'tag': 'h1'}
         >>> ts.galley.elements[-1].bs.html # Reconstruct the html from the runs.

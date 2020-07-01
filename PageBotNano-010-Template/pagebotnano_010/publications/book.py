@@ -35,10 +35,10 @@ class Book(Publication):
     as markdown document, composing book pages and export as
     PDF document.
 
-    >>> from pagebotnano.elements import Rect, Text
-    >>> from pagebotnano.constants import A5
-    >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
-    >>> from pagebotnano.templates.onecolumn import *
+    >>> from pagebotnano_010.elements import Rect, Text
+    >>> from pagebotnano_010.constants import A5
+    >>> from pagebotnano_010.toolbox.loremipsum import loremipsum, randomName, randomTitle
+    >>> from pagebotnano_010.templates.onecolumn import *
     >>> w, h = A5
     >>> title = randomTitle()
     >>> author = randomName()
@@ -49,7 +49,7 @@ class Book(Publication):
     >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, styles)    
     >>> imagePath = '../../../resources/images/cookbot1.jpg'
-    >>> templates = [CoverPage(), FrenchPage(), TitlePage(), TOCPage(), OneColumnPage(), ColophonPage()]
+    >>> templates = dict(cover=coverPage, french=frenchPage, title=titlePage, toc=tableOfContentPage, main=oneColumnPage, colophon=colophonPage)
     >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath, templates=templates)
     >>> book.export('_export/Book.pdf')
     """
@@ -139,8 +139,8 @@ class Book(Publication):
             page.addElement(e)
 
         # Make “French” “Voordehandse” page.
-        page = self.doc.newPage() # No page number here.
-        page.applyTemplate()
+        page = self.templates['french'](self.doc) # No page number here.
+
         # CENTER text alignment overwrites the value in headStyle.
         # fontSize overwrites the value in headStyle
         bs = BabelString(self.title+'\n', headStyle, fontSize=fontSize, align=CENTER)
@@ -148,7 +148,8 @@ class Book(Publication):
         page.addElement(e)
 
         # Make Title page.
-        page = self.doc.newPage(template=TitlePage()) # No page number here.
+        template = self.templates['title'] # Template function that generates a title page.
+        page = template(self.doc) # No page number here.
         page.compose(self.doc, page)
         bs = BabelString(self.title+'\n', headStyle, align=CENTER)
         bs.append(BabelString(self.author, subHeadStyle, align=CENTER))

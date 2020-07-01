@@ -1,6 +1,6 @@
 **(Use MacDown to view this document)**
 
-# PageBotNano #021 Type Specimens
+# PageBotNano-021-Type
 
 Changes in this version:
 

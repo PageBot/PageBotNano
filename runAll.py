@@ -38,6 +38,7 @@ def testPath(path, level=0):
     os.chdir('..')
 
 RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+#RUNNING_VERSIONS = [10]
 DEVELOPMENT_VERSIONS = [10, 20, 30, 40, 50]
 
 for fileName in sorted(os.listdir('.')):

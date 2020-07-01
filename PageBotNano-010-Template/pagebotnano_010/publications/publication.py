@@ -45,8 +45,8 @@ class Publication:
     >>> page.addElement(e)
     >>> pub.export('_export/Publication.pdf')
     """
-    def __init__(self, w=None, h=None, theme=None, galley=None, templates=None,
-            context=None):
+    def __init__(self, w=None, h=None, theme=None, galley=None, 
+            templates=None, styles=None, context=None):
         # The theme contains (or can produce) all stylistic parameters
         # of a publication, such as color, typographic values and the 
         # selected mood (lightest, light, dark, darkest) to create
@@ -54,6 +54,10 @@ class Publication:
         if theme is None: # If not default, we choose one here.
             theme = DefaultTheme()
         self.theme = theme
+        
+        if styles is None:
+            styles = {}
+        self.styles = styles
         
         # The galley is the main source of content, typically generated
         # by a Typesetter instance, reading from a markdown file.

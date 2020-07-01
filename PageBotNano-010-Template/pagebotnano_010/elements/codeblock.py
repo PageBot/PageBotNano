@@ -22,6 +22,7 @@ import drawBot
 if __name__ == '__main__':
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
+from pagebotnano_010.babelstring import BabelString
 from pagebotnano_010.elements import Text
 from pagebotnano_010.toolbox.color import noColor, color
 
@@ -37,7 +38,8 @@ class CodeBlock(Text):
             if style is None:
                 style = self.DEFAULT_CODE_STYLE
         # Use a Text to store the code on the parent galley.
-        Text.__init__(self, bs=code, fill=fill, style=style, **kwargs)
+        bs = BabelString(code, style)
+        Text.__init__(self, bs, fill=fill, **kwargs)
         assert isinstance(code, str)
         self.code = code
         self.tryExcept = False# tryExcept
@@ -70,30 +72,30 @@ class CodeBlock(Text):
         Note that it is the author's responsibility not to overwrite global values
         that are owned by the calling composer instance.
 
-        >>> from pagebot.document import Document
-        >>> doc = Document(size=(500, 500), autoPages=10)
-        >>> view = doc.view
-        >>> page = doc[1]
-        >>> code = 'a = 100 * 300\\npage = page.next.next.next\\npage.w = 300'
-        >>> cb = CodeBlock(code, parent=page, tryExcept=False)
+        >>> from pagebotnano_010.document import Document
+        >>> doc = Document(w=500, h=500)
+        >>> page = doc.newPage()
+        >>> code = 'a = 100 * 300\\npage = doc.newPage()\\npage.w = 300'
+        >>> cb = CodeBlock(code, x=0, y=0, tryExcept=False)
+        >>> page.addElement(cb)
         >>> cb
-        <CodeBlock:a = 100 * 300;page = page.next.next.next;page.w = 300>
+        <CodeBlock:a = 100 * 300;page = doc.newPage();page.w = 300>
         >>> # Create globals dictionary for the script to work with
-        >>> g = dict(page=page, view=view, doc=doc)
+        >>> g = dict(page=page, doc=doc)
         >>> result = cb.run(g) # Running the code selects 3 pages ahead
         >>> result is g # Result global dictionary is same object as g
         True
         >>> sorted(result.keys())
-        ['__code__', 'a', 'doc', 'page', 'view']
+        ['__code__', 'a', 'doc', 'page']
         >>> resultPage = result['page']
         >>> resultPage # Running code block changed width of new selected page.
-        <Page #4 default (300pt, 500pt)>
+        <Page pn=2 w=300 h=500 elements=0>
         >>> resultPage.w, resultPage.pn
-        (300pt, (4, 0))
+        (300, 2)
         >>> cb.code = 'aa = 200 * a' # Change code of the code block, using global
         >>> result = cb.run(g) # And run with the same globals dictionary
         >>> sorted(result.keys()), g['aa'] # Result is added to the globals
-        (['__code__', 'a', 'aa', 'doc', 'page', 'view'], 6000000)
+        (['__code__', 'a', 'aa', 'doc', 'page'], 6000000)
         """
         if targets is None:
             # If no globals defined, create a new empty dictionary as storage of result

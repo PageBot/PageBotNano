@@ -5,5 +5,10 @@ Various versions of the library (with examples) are kept in a numbered sequence,
 
 The level of comments in the code changes with the versions. Explaining much about Python itself in the beginning, later versions are more addressing the characteriscs of the classes, such **Document**, **Page** and **Element**
 
+## Running versions, validated by runAll.py
+RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+## Versions under development, where not all doc tests run yet.
+DEVELOPMENT_VERSIONS = [10, 20, 30, 40, 50]
 
 

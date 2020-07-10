@@ -22,7 +22,7 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 import drawBot
 from random import random
 
-from pagebotnano.elements import Element
+from pagebotnano_050.elements import Element
 
 class Page(Element):
     # Class names start with a capital. See a class as a factory

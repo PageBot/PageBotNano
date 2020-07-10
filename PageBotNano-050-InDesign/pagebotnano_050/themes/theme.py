@@ -21,8 +21,8 @@ import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.toolbox.color import color
-from pagebotnano.constants import (EN, CENTER, LEFT, RIGHT, 
+from pagebotnano_050.toolbox.color import color
+from pagebotnano_050.constants import (EN, CENTER, LEFT, RIGHT, 
     DEFAULT_FONT, DEFAULT_BODYSIZE, LIGHT, DARK)
 
 class BaseTheme:
@@ -55,11 +55,11 @@ class BaseTheme:
         (white <--) lightest <-- light <-- lighter <-- base
         base --> darker --> dark --> darkest (--> black)
 
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.themes import AllThemes, BackToTheCity
-        >>> from pagebotnano.constants import *
-        >>> from pagebotnano.elements import Rect, Text
-        >>> from pagebotnano.babelstring import BabelString
+        >>> from pagebotnano_050.document import Document
+        >>> from pagebotnano_050.themes import AllThemes, BackToTheCity
+        >>> from pagebotnano_050.constants import *
+        >>> from pagebotnano_050.elements import Rect, Text
+        >>> from pagebotnano_050.babelstring import BabelString
         >>> theme = BackToTheCity()
         >>> len(theme.colors)
         6

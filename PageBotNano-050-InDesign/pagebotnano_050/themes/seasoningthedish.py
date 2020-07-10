@@ -16,8 +16,8 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.themes.theme import BaseTheme
-from pagebotnano.toolbox.color import spotColor
+from pagebotnano_050.themes.theme import BaseTheme
+from pagebotnano_050.toolbox.color import spotColor
 
 class SeasoningTheDish(BaseTheme):
     """The SeasoningTheDish theme is ..."""

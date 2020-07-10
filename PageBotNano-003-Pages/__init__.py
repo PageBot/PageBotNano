@@ -12,7 +12,7 @@
 # -----------------------------------------------------------------------------
 #
 #   This source makes it possible to import other sources
-#   from this diretory/folder
+#   from this directory/folder
 #
 #   Try two types of import, so we don't need to install the pagebotnano 
 #   package into the Python of your system.

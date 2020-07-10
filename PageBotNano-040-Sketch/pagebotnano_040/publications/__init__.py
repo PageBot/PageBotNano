@@ -12,7 +12,7 @@
 # -----------------------------------------------------------------------------
 #
 #   This source makes it possible to import other sources
-#   from this diretory/folder
+#   from this directory/folder
 #
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.

@@ -17,11 +17,11 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import (MAIN, LEFT, RIGHT, CENTER, NONE,
+from pagebotnano_050.constants import (MAIN, LEFT, RIGHT, CENTER, NONE,
     PN_LEFT, PN_CENTER, PN_RIGHT)
-from pagebotnano.elements import Text, TextBox, Rect, Image
-from pagebotnano.babelstring import BabelString
-from pagebotnano.templates import BaseTemplate
+from pagebotnano_050.elements import Text, TextBox, Rect, Image
+from pagebotnano_050.babelstring import BabelString
+from pagebotnano_050.templates import BaseTemplate
 
 class OneColumnTemplates(BaseTemplate):
 
@@ -63,8 +63,8 @@ class OneColumnTemplates(BaseTemplate):
     @classmethod
     def oneColumnPage(cls, theme, doc, page=None, parent=None, pageNumbers=None, **kwargs):
         """
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.themes import BackToTheCity
+        >>> from pagebotnano_050.document import Document
+        >>> from pagebotnano_050.themes import BackToTheCity
         >>> template = OneColumnTemplate()
         >>> theme = BackToTheCity()
         >>> doc = Document()
@@ -100,8 +100,8 @@ class OneColumnTemplates(BaseTemplate):
         Empty page, with only the title of the book centere on the page width.
         BabelString alignment should be CENTER.
 
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.themes import BackToTheCity
+        >>> from pagebotnano_050.document import Document
+        >>> from pagebotnano_050.themes import BackToTheCity
         >>> template = OneColumnTemplate()
         >>> theme = BackToTheCity()
         >>> doc = Document()
@@ -120,8 +120,8 @@ class OneColumnTemplates(BaseTemplate):
         """Compose the template page with the position of the TitlePage.
         Empty page, with only the title of the book centere on the page width.
 
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.themes import BackToTheCity
+        >>> from pagebotnano_050.document import Document
+        >>> from pagebotnano_050.themes import BackToTheCity
         >>> template = OneColumnTemplate()
         >>> theme = BackToTheCity()
         >>> doc = Document()
@@ -140,8 +140,8 @@ class OneColumnTemplates(BaseTemplate):
         """Compose the template page with the position of the ColophonPage.
         Empty page, with only the title of the book centere on the page width.
 
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.themes import BackToTheCity
+        >>> from pagebotnano_050.document import Document
+        >>> from pagebotnano_050.themes import BackToTheCity
         >>> template = OneColumnTemplates()
         >>> theme = BackToTheCity()
         >>> doc = Document()

@@ -12,7 +12,7 @@
 # -----------------------------------------------------------------------------
 #
 #   This source makes it possible to import other sources
-#   from this diretory/folder
+#   from this directory/folder
 #
 class BaseTemplates:
     """Defines the mininum set of page generating/composing functions that a

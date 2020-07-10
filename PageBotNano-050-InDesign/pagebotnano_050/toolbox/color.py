@@ -19,7 +19,7 @@ from copy import copy
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebot.constants import CSS_COLOR_NAMES, SPOT_RGB, RAL_NAMERGB, NAME_RALRGB
+from pagebotnano_050.constants import CSS_COLOR_NAMES, SPOT_RGB, RAL_NAMERGB, NAME_RALRGB
 
 def value01(v):
     """Round float to 0 or 1 int if equal.

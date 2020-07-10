@@ -1,47 +1,88 @@
-from pagebot.elements import *
-from pagebot.document import Document
-from pagebot.toolbox.color import color
-from pagebot.toolbox.units import p, pt, em
-from pagebot.fonttoolbox.objects.font import findFont
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
+#
+#   P A G E B O T  N A N O
+#
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
+#
+#   Supporting DrawBot, www.drawbot.com
+# -----------------------------------------------------------------------------
+#
+#   GenerativeDesign.py
+#
+from pagebotnano_050.elements import Image, Text, Rect, Image
+from pagebotnano_050.document import Document
+from pagebotnano_050.babelstring import BabelString
+from pagebotnano_050.toolbox.color import color
 
-from indesigncontext.context import InDesignContext
-from pagebotcocoa.contexts.drawbot.context import DrawBotContext
-
-if 0:
+from pagebotnano_050.contexts.indesign.context import InDesignContext
+from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+from pagebotnano_050.toolbox import p
+if 1:
     context = InDesignContext()
     EXPORT_PATHS = ['Image.js']
 else:
     context = DrawBotContext()
     EXPORT_PATHS = ['_export/Image.pdf']
 
-font = findFont('Upgrade-Medium') # Is available in Adobe 
+font = 'Georgia' # Is available in Adobe 
 styles = {}
-styles['h0'] = dict(name='h0', font=font, fontSize=pt(48), leading=em(0.9), textFill=color(1, 0, 0))
-styles['h1'] = dict(name='h1', font=font, fontSize=pt(24), leading=em(0.9), textFill=color(1, 0, 0))
-doc = Document(w=510, h=720, context=context, autoPages=8, padding=p(4))
+styles['h0'] = dict(name='h0', font=font, fontSize=48, leading=44, textFill=color(1, 0, 0))
+styles['h1'] = dict(name='h1', font=font, fontSize=24, leading=22, textFill=color(1, 0, 0))
+doc = Document(w=510, h=720, context=context)
 doc.styles = styles # Overwrite all default styles.
-page = doc[2]
+page = doc.newPage()
+page.padding = p(4)
 scaleType = None #SCALE_TYPE_FITWH # for non-proportional
-e = Image('resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, scaleImage=False, fill=color(0.5), scaleType=scaleType)
-page = doc[3]
-e = Image('resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, scaleImage=False, fill=color(0.2), scaleType=scaleType)
-e = newRect(parent=page, w=p(16), h=p(16), x=p(20), y=p(11), stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
-e = newRect(parent=page, w=p(16), h=p(16), x=page.pl, y=page.pt, fill=color(1, 0, 0))
-e = newRect(parent=page, w=p(16), h=p(16), x=page.pl+p(2), y=p(20), fill=color(c=0.5, m=1, y=0, k=0, a=0.5))
-e = newOval(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=0, y=1, k=0, a=0.5))
-e = newTextBox('ABCD EFGH IJKL MNOP', style=doc.styles['h1'], parent=page, w=p(16), h=p(8), x=p(34), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
-page = page.next        
-e = Image('resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, scaleImage=False, fill=color(0.5), scaleType=scaleType)
-e = newOval(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=0, y=1, k=0, a=0.5))
-e = newTextBox('@XYZ', style=doc.styles['h0'], parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
-page = page.next
-e = Image('resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, scaleImage=False, fill=color(0, 0, 1), scaleType=scaleType)
-e = newRect(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=1, y=1, k=0, a=0.5))
-e = newTextBox('@EEE', style=doc.styles['h0'], parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
-page = page.next
-e = Image('resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, scaleImage=False, fill=color(1, 0, 0), scaleType=scaleType)
-e = newRect(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=1, y=1, k=0, a=0.5))
-e = newTextBox('@EEE', style=doc.styles['h0'], parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
+
+e = Rect(parent=page, w=p(16), h=p(16), x=p(20), y=p(11), 
+	stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
+
+"""
+e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
+	w=page.pw, h=page.pw, fill=color(0.5))
+
+
+page = doc.newPage()
+e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
+	w=page.pw, h=page.pw, fill=color(0.2))
+e = Rect(parent=page, w=p(16), h=p(16), x=p(20), y=p(11), 
+	stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
+e = Rect(parent=page, w=p(16), h=p(16), x=page.pl, y=page.pt, fill=color(1, 0, 0))
+e = Rect(parent=page, w=p(16), h=p(16), x=page.pl+p(2), y=p(20), 
+	fill=color(c=0.5, m=1, y=0, k=0, a=0.5))
+bs = BabelString('ABCD EFGH IJKL MNOP', style=doc.styles['h1'])
+pad = p(1) # Padding of text in text box
+e = Text(bs, parent=page, w=p(16), h=p(8), x=p(34), y=p(22), padding=pad,
+	fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
+
+page = doc.newPage()       
+e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
+	w=page.pw, h=page.pw, fill=color(0.5))
+bs = BabelString('@XYZ', style=doc.styles['h0'])
+e = Text(bs, parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=pad,
+	fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
+
+page = doc.newPage()
+e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
+	w=page.pw, h=page.pw, fill=color(0, 0, 1))
+e = Rect(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=1, y=1, k=0, a=0.5))
+bs = BabelString('@EEE', style=doc.styles['h0'])
+e = Text(bs, parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=pad, 
+	fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
+
+page = doc.newPage()
+e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
+	w=page.pw, h=page.pw, fill=color(1, 0, 0))
+e = Rect(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=1, y=1, k=0, a=0.5))
+bs = BabelString('@EEE', style=doc.styles['h0'])
+e = Text(bs, parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=pad,  
+	fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
+
+"""
 for exportPath in EXPORT_PATHS:
     doc.export(exportPath)
 

@@ -47,3 +47,4 @@ print(typeSpecimen)
 # It seems like nothing happened yet, because the class/factory is
 # still empty, but that will change soon. That it worked is visible
 # because there was no error when running this in DrawBot.
+

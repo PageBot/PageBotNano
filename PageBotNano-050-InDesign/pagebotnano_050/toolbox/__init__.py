@@ -12,12 +12,12 @@
 # -----------------------------------------------------------------------------
 #
 #   This source makes it possible to import other sources
-#   from this diretory/folder
+#   from this directory/folder
 #
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import PADDING
+from pagebotnano_050.constants import PADDING
 
 def extensionOf(path):
     """Answer the extension of path. Answer None of there is no extension.
@@ -67,6 +67,16 @@ def cm(cm):
     842
     """
     return int(round(cm * 72 * 0.039370 * 10)) # Approximated 1" = 25.400051mm
+
+def p(pica):
+    """Convert pica to points
+
+    >>> p(12)
+    144
+    >>> p(6)
+    72
+    """
+    return pica*12
 
 def makePadding(padding):
     """Check on the various ways that padding can be defined.

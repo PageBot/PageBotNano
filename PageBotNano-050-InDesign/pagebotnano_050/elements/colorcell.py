@@ -21,10 +21,10 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 import drawBot
 
-from pagebotnano.elements import Element, Rect, Text
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox.color import noColor, color
-from pagebotnano.constants import CENTER
+from pagebotnano_050.elements import Element, Rect, Text
+from pagebotnano_050.babelstring import BabelString
+from pagebotnano_050.toolbox.color import noColor, color
+from pagebotnano_050.constants import CENTER
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10
@@ -33,14 +33,14 @@ LEADING = 12
 class ColorCell(Element):
     """The ColorCell offers various options to display the recipe of a color.
 
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_050.document import Document
     >>> doc = Document(w=120, h=120)
     >>> page = doc.newPage()
     >>> page.padding = 10
     >>> c = color(name='orange')
     >>> e = ColorCell(c, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
     >>> page.addElement(e)
-    >>> doc.export('_export/ColorCell.pdf')
+    >>> doc.export('_export/ColorCell.png')
     """
     def __init__(self, c, style=None, themePosition=None, **kwargs):
         Element.__init__(self, **kwargs)

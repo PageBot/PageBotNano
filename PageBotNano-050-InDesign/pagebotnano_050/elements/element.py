@@ -21,25 +21,25 @@ from copy import deepcopy
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import CENTER
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox import makePadding, fileNameOf
-from pagebotnano.toolbox.color import color
+from pagebotnano_050.constants import CENTER
+from pagebotnano_050.babelstring import BabelString
+from pagebotnano_050.toolbox import makePadding, fileNameOf
+from pagebotnano_050.toolbox.color import color
 
 class Element:
     """Base class of all elements that can be placed on a page.
     Class names start with a capital. See a class as a factory of element objects 
     (name spelled with an initial lower case.)
     
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_050.document import Document
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> page
     <Page pn=1 w=595 h=842 elements=0>
     """
-    def __init__(self, x=None, y=None, w=None, h=None, name=None, 
+    def __init__(self, x=None, y=None, w=None, h=None, name=None, parent=None,
             template=None, fill=None, stroke=None, strokeWidth=0, 
-            pt=None, pr=None, pb=None, pl=None):
+            padding=None, margin=None):
         self.x = x or 0 # (x, y) position of the element from bottom left of parent.
         self.y = y or 0
         self.w = w # Width and height of the element bounding box
@@ -47,12 +47,17 @@ class Element:
         self.fill = color(fill) # Default is drawing a black rectangle.
         self.stroke = color(stroke) # Default is drawing no stroke frame
         self.strokeWidth = strokeWidth
-        self.padding = pt, pr, pb, pl # Initialize the padding
+        self.padding = padding # Initialize the padding
+        self.margin = margin
         self.elements = [] # Storage in case there are child elements
 
         # Optional name, e.g. for template or element finding. Defaults to class name.
         self.name = name or self.__class__.__name__ 
         self.template = template # Optional template function for this element.
+
+        # If a parent is defined, then add self to the parent children.
+        if parent is not None:
+            parent.addElement(self)
 
         # Allow elements, pages and templates to initialize themselves
         # by implementing the self.initialize method.
@@ -67,9 +72,18 @@ class Element:
     def _get_padding(self):
         """Answer a tuple of the 4 padding values of the element
 
-        >>> e = Element(pl=10)
-        >>> e.padding # Other values are default PADDING
-        (30, 30, 30, 10)
+        >>> e = Element() # Other values are default PADDING
+        >>> e.padding
+        (30, 30, 30, 30)
+        >>> e = Element(padding=20)
+        >>> e.padding
+        (20, 20, 20, 20)
+        >>> e.padding = 40
+        >>> e.padding
+        (40, 40, 40, 40)
+        >>> e.padding = 10, 20, 30, 40
+        >>> e.padding 
+        (10, 20, 30, 40)
         """
         return self.pt, self.pr, self.pb, self.pl 
     def _set_padding(self, padding):
@@ -79,9 +93,9 @@ class Element:
     def _get_pw(self):
         """Answer the usable element space, withing the horizontal padding
 
-        >>> e = Element(w=500, pl=100, pr=50)
+        >>> e = Element(w=500, padding=(50, 50, 100, 50))
         >>> e.pw
-        350
+        400
         """
         return self.w - self.pl - self.pr
     pw = property(_get_pw)
@@ -89,7 +103,7 @@ class Element:
     def _get_ph(self):
         """Answer the usable element space, withing the vertical padding
 
-        >>> e = Element(h=500, pt=100, pb=50)
+        >>> e = Element(h=500, padding=(50, 50, 100, 50))
         >>> e.ph
         350
         """
@@ -136,12 +150,14 @@ class Element:
         to the children. To be redefined by inheriting Element to make their own
         layout composition.
 
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.templates.onecolumn import oneColumnPage
-        >>> from pagebotnano.themes import SeasoningTheDish
+        >>> from pagebotnano_050.document import Document
+        >>> from pagebotnano_050.templates.onecolumn import OneColumnTemplates
+        >>> from pagebotnano_050.themes import SeasoningTheDish
         >>> theme = SeasoningTheDish()
         >>> doc = Document()
-        >>> page = oneColumnPage(theme, doc)
+        >>> page = OneColumnTemplates.oneColumnPage(theme, doc)
+        >>> page
+        <Page pn=1 w=595 h=842 elements=2>
         """
         if self.template is not None:
             self.template(doc, page, self)
@@ -154,7 +170,7 @@ class Element:
         """Build the content of the element, including background color,
         stroked frame and content of the inheriting classes.
 
-        >>> from pagebotnano.document import Document
+        >>> from pagebotnano_050.document import Document
         >>> doc = Document()
         >>> page = doc.newPage()
         >>> e = Element(10, 10, 100, 100, fill=color(1, 0, 0))
@@ -222,12 +238,11 @@ class Rect(Element):
     """This element draws a simple rectangle. This is identical to the default 
     behavior of the base Element class, so nothing needs to be defined here.
         
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_050.document import Document
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> padding = 40
-    >>> e = Rect(padding, padding, page.w-2*padding, page.h-2*padding, fill=color(1, 0.2, 1))
-    >>> page.addElement(e)
+    >>> e = Rect(parent=page, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=color(1, 0.2, 1))
     >>> doc.export('_export/Rect.pdf') # Build and export.
     """
 
@@ -235,23 +250,22 @@ class Text(Element):
     """This element draws a FormattedString on a defined place. Not text wrapping
     is done. 
 
-    >>> from pagebotnano.document import Document
-    >>> from pagebotnano.babelstring import BabelString
+    >>> from pagebotnano_050.document import Document
+    >>> from pagebotnano_050.babelstring import BabelString
     >>> style = dict(font='Georgia', fontSize=100)
     >>> bs = BabelString('Hello world', style)
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> padding = 40
-    >>> e = Text(bs, padding, page.h/2, fill=color(1, 0, 0))
+    >>> e = Text(bs, padding=padding, w=page.h/2, fill=color(1, 0, 0))
     >>> page.addElement(e)
     >>> doc.export('_export/Text.pdf') # Build and export.
     """
 
-    def __init__(self, bs, x, y, w=None, h=None, name=None, 
-        fill=None, stroke=None, strokeWidth=None):
+    def __init__(self, bs, **kwargs):
         # Call the base element with all standard attributes.
-        Element.__init__(self, x=x, y=y, w=w, h=h, name=name, 
-            fill=fill, stroke=stroke, strokeWidth=strokeWidth)
+        Element.__init__(self, **kwargs)
+
         if not isinstance(bs, BabelString):
             bs = BabelString(bs)
         self.bs = bs # Store the BabelString in self.
@@ -268,9 +282,9 @@ class TextBox(Text):
     with a defined width. It handles overflow and hyphenation for the given language
     code. 
 
-    >>> from pagebotnano.document import Document
-    >>> from pagebotnano.babelstring import BabelString
-    >>> from pagebotnano.toolbox.loremipsum import loremipsum
+    >>> from pagebotnano_050.document import Document
+    >>> from pagebotnano_050.babelstring import BabelString
+    >>> from pagebotnano_050.toolbox.loremipsum import loremipsum
     >>> headLine = 'Example of TextBox overflow\\n'
     >>> txt = loremipsum()
     >>> fontSize = 30
@@ -286,23 +300,20 @@ class TextBox(Text):
     ...     page = doc.newPage()
     ...        # Add text element with page number
     ...     pn = BabelString(str(page.pn), dict(align=CENTER, font='Georgia', fontSize=16))
-    ...     e = Text(pn, page.w/2, padding/2)
-    ...     page.addElement(e)
-    ...     e = TextBox(bs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
-    ...     page.addElement(e)
+    ...     e = Text(pn, w=page.w/2, parent=page)
+    ...     e = TextBox(bs, parent=page, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
     ...     bs = e.getOverflow(bs, doc=doc)
     ...     if not bs.fs: # Test on this “incomplete” BabelString, as it only has a cached FS
     ...         break
     >>> doc.export('_export/TextBox-Overflow.pdf') # Build and export.
 
     """
-    def __init__(self, bs, x, y, w, h=None, name=None, fill=None, stroke=None, 
-            strokeWidth=None):
+    def __init__(self, bs, w=None, **kwargs):
         """Call the super class element with all standard attributes.
         Different from the Text class, now the width `w` is a required attribute.
         """
-        Text.__init__(self, bs, x=x, y=y, w=w, h=h, name=name, 
-            fill=fill, stroke=stroke, strokeWidth=strokeWidth)
+        assert w is not None
+        Text.__init__(self, bs, w=w, **kwargs)
 
     def getOverflow(self, bs=None, w=None, h=None, doc=None):
         """Flow the text into self and put any overflow in self.next.
@@ -366,7 +377,7 @@ class TextBox(Text):
 class Image(Element):
     """This element draws an image on a defined place. 
 
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_050.document import Document
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> padding = 40
@@ -381,11 +392,9 @@ class Image(Element):
     >>> doc.export('_export/Image.pdf') # Build and export as PDF
     >>> doc.export('_export/Image.png') # Build and export as PNG
     """
-    def __init__(self, path=None, x=None, y=None, w=None, h=None, name=None, 
-        fill=None, stroke=None, strokeWidth=None):
+    def __init__(self, path=None, **kwargs):
         # Call the base element with all standard attributes.
-        Element.__init__(self, x=x, y=y, w=w, h=h, name=name, 
-            fill=fill, stroke=stroke, strokeWidth=strokeWidth)
+        Element.__init__(self, **kwargs)
         assert path is None or os.path.exists(path), ('Image: Path "%s" does not exist.' % path)
         self.path = path # Path can be None for later filling. 
 
@@ -396,7 +405,7 @@ class Image(Element):
     def imageSize(cls, path, doc):
         """Answer the images size in points.
 
-        >>> from pagebotnano.document import Document
+        >>> from pagebotnano_050.document import Document
         >>> doc = Document()
         >>> path = '../../../resources/images/cookbot10.jpg'
         >>> Image.imageSize(path, doc)
@@ -407,7 +416,7 @@ class Image(Element):
     def getSize(self, doc):
         """Answer the scaled size of the image.
 
-        >>> from pagebotnano.document import Document
+        >>> from pagebotnano_050.document import Document
         >>> doc = Document()
         >>> imagePath = '../../../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
@@ -424,7 +433,7 @@ class Image(Element):
         Detect if the image should proportionally scaled to (w, h) in case one 
         of the two is undefined.
 
-        >>> from pagebotnano.document import Document
+        >>> from pagebotnano_050.document import Document
         >>> doc = Document()
         >>> imagePath = '../../../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)

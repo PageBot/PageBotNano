@@ -12,7 +12,7 @@
 # -----------------------------------------------------------------------------
 #
 #   This source makes it possible to import other sources
-#   from this diretory/folder
+#   from this directory/folder
 #
 def extensionOf(path):
     """Answer the extension of path. Answer None of there is no extension.

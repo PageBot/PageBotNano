@@ -47,10 +47,9 @@ class Booklet(Publication):
     >>> ts = Typesetter()
     >>> galley = ts.galley
     >>> xml = '<xml><h1>%s</h1><p>%s</p></xml>' % (title, (loremipsum() + ' ') * 50)
-    >>> styles = {}
-    >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
-    >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
-    >>> g = ts.typeset(xml, styles)    
+    >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
+    >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
+    >>> g = ts.typeset(xml, theme.styles)    
     >>> imagePath = '../../../resources/images/cookbot1.jpg'
     >>> booklet = Booklet(w=w, h=h, theme=theme, galley=galley, templates=OneColumnTemplates())
     >>> booklet.export('_export/Booklet.pdf')
@@ -112,7 +111,7 @@ class Booklet(Publication):
 
 
         # Make the cover page.
-        page = coverPage(self.theme, self.doc)
+        page = coverPage(self.doc, self.theme)
 
         # Make “French” “Voordehandse” page.
         page = self.doc.newPage() # No page number here.

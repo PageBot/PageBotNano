@@ -73,7 +73,7 @@ class Document:
         for page in self.pages:
             page.build(self) # Passing self as document, in case the page needs more info.
 
-    def export(self, path):
+    def export(self, path, multipage=True):
         """Export the document into the _export folder. We assume that the 
         document and pages are built. We don't do that here, in case multiple
         formats are saved from the same build.
@@ -83,7 +83,9 @@ class Document:
             os.mkdir(EXPORT_DIR)
         # Now all the pages drew them themselfs, we can export to the path.
         # let DrawBot do its work, saving it.
-        drawBot.saveImage(path)
+        # The optional `multipage` parametes saves “single page file formats”
+        # (such as PNG and JPG) into a numbered sequence of image files.
+        drawBot.saveImage(path, multipage=multipage)
 
 if __name__ == "__main__":
     import doctest

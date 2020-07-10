@@ -48,6 +48,7 @@ xml = '<xml><h1>%s</h1>\n<p>%s</p></xml>' % (title, (loremipsum() + ' ') * 20)
 ts = Typesetter()
 # Do the typesetting. Galley is now another type of element
 # that contains text and image elements in a sequence.
+# Padding the styles dictionary here, in laters versions this becomes the Theme object.
 galley = ts.typeset(xml, styles)
 
 # Create the Book publication and feed it with the processed galley content.

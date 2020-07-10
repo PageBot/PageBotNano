@@ -17,7 +17,8 @@ import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 class BaseContext:
-    pass
+	def __repr__(self):
+		return '<%s>' % self.__class__.__name__
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

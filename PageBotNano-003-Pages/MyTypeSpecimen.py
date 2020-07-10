@@ -23,22 +23,26 @@
 from pagebotnano_003.document import Document
 
 class TypeSpecimen(Document):
-    # Class names start with a capital. See a class as a factory
-    # of type specimen objects (name spelled with an initial lower case.)
-    # In this case we inherit from what is already defined in Document.
-    # Similar how a Volkswagen factory would inherit the functions already
-    # defined in a generic car factory. Inheriting is one of the most 
-    # powerful aspects of Python programming, so an object can perform
-    # complex tasks, without the need to add these functions again for
-    # every new project.
-    pass # For now it will do nothing, but that will change.
-
+    """Class names start with a capital. See a class as a factory
+    of type specimen objects (name spelled with an initial lower case.)
+    In this case we inherit from what is already defined in Document.
+    Similar how a Volkswagen factory would inherit the functions already
+    defined in a generic car factory. Inheriting is one of the most 
+    powerful aspects of Python programming, so an object can perform
+    complex tasks, without the need to add these functions again for
+    every new project.
+    """
+    # For now it will define a differece with the base Document class,
+    # but that will change in later versions.
+    pass 
 
 # Now we create a new type specimen, by executing the class.
 # Compare that by letting a car factory produce a car. We only need
 # one factory ("TypeSpecimen" name starting with capital), which
 # then can product an inlimited number of typeSpecimen objects (name
 # starting with a lower case.)
+# Similar to how the base class `Document` behaves, calling without
+# `w` and `h` parameters, creates a default A4 document.
 
 typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
 
@@ -50,13 +54,13 @@ for n in range(10):
 # Build the document, all pages and their contained elements.
 typeSpecimen.build() 
 
-# Shows: I am a TypeSpecimen(w=595, h=842, pages=10) with default size
-# and the amount of created images.
+# Shows: I am a TypeSpecimen(w=595, h=842, pages=10) showing the default 
+# size and the amount of created images.
 print(typeSpecimen) 
 
 # Create the "_export" folder if it does not exist yet.
 # This Github repository is filtering file to not upload _export.
 # Export the specimen as empty page as PDF and PNG.
 typeSpecimen.export('_export/MyTypeSpecimen.pdf')
-typeSpecimen.export('_export/MyTypeSpecimen.png')
+typeSpecimen.export('_export/MyTypeSpecimen.png', multipage=True)
 

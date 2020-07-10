@@ -16,7 +16,10 @@
 A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
 A5 = 421, 595
 
+DEFAULT_FONT_SIZE = 12
+DEFAULT_LEADING = 1.3 # Default multiplication factor to the current font size.
 DEFAULT_WIDTH = 100 # Default width for some of the element types.
+DEFAULT_HEIGHT = 100 # Default width for some of the element types.
 PADDING = 30 # Default padding of pages, template and elements.
 
 # Types of text alignment

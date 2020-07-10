@@ -19,12 +19,12 @@ import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import A4, EXPORT_DIR
-from pagebotnano.elements import Element, Page
-from pagebotnano.contexts.drawbotcontext.context import DrawBotContext
-from pagebotnano.toolbox import makePadding
-from pagebotnano.themes import BaseTheme, DefaultTheme
-from pagebotnano.templates.onecolumn import OneColumnTemplates
+from pagebotnano_050.constants import A4, EXPORT_DIR
+from pagebotnano_050.elements import Element, Page
+from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+from pagebotnano_050.toolbox import makePadding
+from pagebotnano_050.themes import BaseTheme, DefaultTheme
+from pagebotnano_050.templates.onecolumn import OneColumnTemplates
 
 class Document:
     # Class names start with a capital. See a class as a factory
@@ -170,15 +170,18 @@ class Document:
         """Build the document by looping trough the pages, and then recursively
         tell every page to build itself (and its contained elements).
         """
+        self.context.newDocument(w=self.w, h=self.h, doc=self)
+
         # Clear all previous drawing in the context canvas.
         self.context.newDrawing()
 
         # Tell each page to build itself in context, including their child elements.
         for page in self.pages:
+            self.context.newPage(w=page.w, h=page.h, e=page)
             page.build(doc=self) # Passing self as document, in case the page needs more info.
         self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 
-    def export(self, path, force=False, multipage=True):
+    def export(self, path, force=False, multiPage=True):
         """Export the document into the _export folder. We assume that the 
         document and pages are built. We don't do that here, in case multiple
         formats are saved from the same build.
@@ -200,7 +203,7 @@ class Document:
             os.mkdir(EXPORT_DIR)
         # Now all the pages drew them themselfs, we can export to the path.
         # let the context do its work, saving it.
-        self.context.saveImage(path, multipage=multipage)
+        self.context.saveImage(path, multiPage=multiPage)
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

@@ -20,7 +20,7 @@ if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_010.constants import MAIN, LEFT, RIGHT, CENTER, NONE
-from pagebotnano_010.elements import Text, TextBox, Rect
+from pagebotnano_010.elements import Text, TextBox, Rect, Image
 from pagebotnano_010.babelstring import BabelString
 
 def _initialize(doc, page):
@@ -31,9 +31,9 @@ def _initialize(doc, page):
     page.padding = doc.padding
     return page
 
-def coverPage(doc, theme=None, page=None, **kwargs):
+def coverPage(doc, theme=None, page=None, coverImagePath=None, **kwargs):
     page = _initialize(doc, page)
-    # Fill the cover page with a theme background color
+    # Fill the cover page with a theme background color (color select=y, shade=x)
     e = Rect(0, 0, page.w, page.h, fill=theme.getColor(1, 4)) # Dark cover color
     page.addElement(e) 
 
@@ -41,8 +41,9 @@ def coverPage(doc, theme=None, page=None, **kwargs):
     e = TextBox('', name='Title', x=page.pl/2, y=page.h/2, w=page.pw, h=page.ph/2)
     page.addElement(e)
 
-    e = Image(x=pad, y=pad, w=page.w-2*pad)
-    page.addElement(e)
+    if coverImagePath is not None:
+        e = Image(x=page.pl, y=page.pb, w=page.pw)
+        page.addElement(e)
 
 def tableOfContentPage(doc, theme=None, page=None, **kwargs):
     page = _initialize(doc, page)

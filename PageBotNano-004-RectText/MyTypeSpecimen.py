@@ -36,7 +36,6 @@ class TypeSpecimen(Document):
     # every new project.
     pass # For now it will do nothing, but that will change.
 
-
 # Now we create a new type specimen, by executing the class.
 # Compare that by letting a car factory produce a car. We only need
 # one factory ("TypeSpecimen" name starting with capital), which

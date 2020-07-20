@@ -41,12 +41,13 @@ def testPath(path, level=0):
     os.chdir('..')
 
 # Versions that pass the doc tests
-RUNNING_VERSIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+MAIN_VERSION = [0]
+RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 # Version under development
 DEVELOPMENT_VERSIONS = [10, 20, 30, 40, 50]
 # Versions to test
 TEST_VERSIONS = RUNNING_VERSIONS
-TEST_VERSIONS = [50]
+TEST_VERSIONS = [5]
 
 for fileName in sorted(os.listdir('.')):
     if not os.path.isdir(fileName) or fileName.startswith('.'):
@@ -55,7 +56,7 @@ for fileName in sorted(os.listdir('.')):
         version = 0
     elif fileName.startswith('PageBotNano'):
         version = int(fileName.split('-')[1])
-    if version in RUNNING_VERSIONS:
+    if version in TEST_VERSIONS:
         testPath(fileName)
 
-print('Done running %s tests' % len(TEST_VERSIONS))
+print('Done running %s test(s)' % len(TEST_VERSIONS))

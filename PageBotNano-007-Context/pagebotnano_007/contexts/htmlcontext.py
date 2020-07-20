@@ -26,9 +26,13 @@ class HtmlContext:
 <html>
     <head>
         %(head)s
+        %(css)s
     </head>
     <body>
         %(body)s
+        <script>
+            %(js)s
+        </script>
     </body>
 </html>
     """    
@@ -56,10 +60,12 @@ class HtmlContext:
         self.pages = []
         self.css = []
         self.style = {}
-        self.newPage() # Set a current page to draw in.
+        self.newPage() # Set a current self.page to draw in.
 
     def newPage(self):
-        self.page = page = dict(head='', body='')
+        # The page is a dict, with the exact format that the PAGE template
+        # can substite all code chunk in the right places.
+        self.page = page = dict(head='', css='', js='', body='')
         self.pages.append(page)
 
     def stroke(self, stroke, strokeWidth=None):
@@ -71,10 +77,10 @@ class HtmlContext:
         self.style['fill'] = fill
 
     def rect(self, x, y, w, h):
-        self.page['body'] += '<div width="%d"></div>' % w
+        self.page['body'] += ('<div width="%d"></div>\n' % w)
 
     def text(self, bs, p):
-        self.page['body'] += '<p>%s</p>' % bs.html
+        self.page['body'] += ('<p>%s</p>\n' % bs.html)
 
     def saveImage(self, path, multipage=True):
         """Create folder names `path` if it does not already exist.
@@ -99,3 +105,4 @@ if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest
     doctest.testmod()[0]
+

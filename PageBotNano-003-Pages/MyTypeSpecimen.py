@@ -23,16 +23,16 @@
 from pagebotnano_003.document import Document
 
 class TypeSpecimen(Document):
-    """Class names start with a capital. See a class as a factory
+    """Class names start with a capital letter. See a class as a factory
     of type specimen objects (name spelled with an initial lower case.)
-    In this case we inherit from what is already defined in Document.
+    In this example we inherit from what is already defined in Document.
     Similar how a Volkswagen factory would inherit the functions already
     defined in a generic car factory. Inheriting is one of the most 
     powerful aspects of Python programming, so an object can perform
-    complex tasks, without the need to add these functions again for
+    complex tasks, without the need of adding these functions again for
     every new project.
     """
-    # For now it will define a differece with the base Document class,
+    # For now it will define without difference from the base Document class,
     # but that will change in later versions.
     pass 
 
@@ -46,8 +46,8 @@ class TypeSpecimen(Document):
 
 typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
 
-# Create a number of new pages in the document. If no new page size is given, 
-# it will take over the size of the document.
+# Create a number of new pages in the document. If no alternative page 
+# size is given, it will take over the size of the document.
 for n in range(10):
     typeSpecimen.newPage()
 

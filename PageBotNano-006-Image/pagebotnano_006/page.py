@@ -28,6 +28,7 @@ class Page:
         self.pn = pn # Store the page number in the page.
         # Store the elements on the page here. Start with an empty list.
         self.elements = []
+        self.background = None # Default is not drawing any background color
 
     def __repr__(self):
         # This method is called when print(page) is executed.
@@ -48,6 +49,11 @@ class Page:
 
         """
         drawBot.newPage(self.w, self.h) # Create a new DrawBot page.
+        # If there is a background defined, then draw it
+        if self.background is not None:
+            r, g, b, a = self.background
+            drawBot.fill(r, g, b, a)
+            drawBot.rect(0, 0, self.w, self.h)
         for element in self.elements:
             # Passing on doc and this page in case an element needs more info.
             # Since this bottom-left corner of the page is the origin for position,

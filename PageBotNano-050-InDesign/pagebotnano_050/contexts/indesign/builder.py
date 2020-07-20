@@ -37,9 +37,10 @@ class InDesignBuilder:
     >>> b.newDocument(w=w, h=h)
     >>> b.docW, b.docH
     (595, 842)
-    >>> b.newPage()
+    >>> b.fill(color(0)) # Fill entire page background color
+    >>> b.rect(0, 0, w, h)
     >>> b.fill(color(1, 0, 0))
-    >>> b.rect(100, 100, 200, 300)
+    >>> b.rect(50, 0, 100, 200) # Landscape rectangle at bottom-left
     >>> b.newPage()
     >>> b.newPage()
     >>> b.saveDocument('InDesignBuilder.js')
@@ -55,9 +56,10 @@ class InDesignBuilder:
         self._fillColor = noColor
         self._strokeColor = noColor
         self._strokeWidth = 1
-        self.pageIndex = None
+        self.pageIndex = 0
         self.unit = 'pt'
         self.docW = self.docH = None # Defined by self.newDocument()
+        self.pageW = self.pageH = None # Defined by self.newPage()
 
         self.jsOut = []
 
@@ -76,25 +78,25 @@ class InDesignBuilder:
     def getOut(self):
         return '\n'.join(self.jsOut)
 
-    def newDocument(self, w=None, h=None, numPages=1):
+    def newDocument(self, w=None, h=None):
 
-        self.docW = w or DEFAULT_WIDTH
-        self.docH = h or DEFAULT_HEIGHT
+        self.docW = self.pageW = w or DEFAULT_WIDTH
+        self.docH = self.pageH = h or DEFAULT_HEIGHT
         self._out('/* Document */')
         self._out(JSX_LIB)
         self._out('var pbDoc = app.documents.add();')
-        self._out('pbDoc.documentPreferences.pagesPerDocument = %d;' % numPages)
+        self._out('pbDoc.documentPreferences.pagesPerDocument = 1;')
 
         self._out('pbDoc.documentPreferences.pageWidth = "%s%s";' % (self.docW, self.unit))
         self._out('pbDoc.documentPreferences.pageHeight = "%s%s";' % (self.docH, self.unit))
         if w > h:
-            self._out('pbDoc.documentPreferences.pageOrientation = PageOrientation.landscape;')
+            orientation = 'landscape'
         else:
-            self._out('pbDoc.documentPreferences.pageOrientation = PageOrientation.portrait;')
-
+            orientation = 'portrait'
+        self._out('pbDoc.documentPreferences.pageOrientation = PageOrientation.%s;' % orientation)
         self._out('pbDoc.documentPreferences.facingPages = false;')
-        self._out('var pbPage;')
-        self._out('var pbPageIndex;') # Index of the current page.
+        self._out('var pbPage = pbDoc.pages.item(0)')
+        self._out('var pbPageIndex = 0;') # Index of the current page.
         self._out('var pbElement;') # Current parent element.
 
     def outStyles(self, styles):    
@@ -107,10 +109,10 @@ class InDesignBuilder:
         >>> from pagebotnano_050.document import Document
         >>> from pagebotnano_050.contexts.indesign.context import InDesignContext
         >>> context = InDesignContext()
-        >>> font = 'Geordgia'
+        >>> font = ''
         >>> styles = dict(h1=dict(font=font, fontSize=12, leading=14, textFillColor=color(1, 0, 0)))
         >>> styles = styles # Overwrite all default styles.
-        >>> #context.b.outStyles(styles)
+        >>> context.b.outStyles(styles)
         >>> #context.b.getOut()
         """
         self._out('/* Paragraph styles */')
@@ -123,7 +125,7 @@ class InDesignBuilder:
                     self._out('\tfontStyle:"%s",' % font.info.styleName)
             if 'fontSize' in style:
                 fontSize = style['fontSize']
-                self._out('\tpointSize:"%s",' % style['fontSize'])
+                self._out('\tpointSize:"%s%s",' % (style['fontSize'], self.unit))
             if 'leading' in style:
                 leading = style.get('leading', fontSize*DEFAULT_LEADING)
                 self._out('\tleading:"%s",' % leading)
@@ -151,6 +153,8 @@ class InDesignBuilder:
         self._out('pbPage = pbDoc.pages.item(pbPageIndex);')
 
     def newPage(self, w=None, h=None, padding=None):
+        self.pageW = w or self.docW
+        self.pageH = h or self.docH
         if self.pageIndex is None:
             self.pageIndex = 0
         else:
@@ -161,7 +165,7 @@ class InDesignBuilder:
         self._out('pbPage.resize(CoordinateSpaces.INNER_COORDINATES,')
         self._out('    AnchorPoint.CENTER_ANCHOR,')
         self._out('    ResizeMethods.REPLACING_CURRENT_DIMENSIONS_WITH,')
-        self._out('    [%d, %d]);' % (w or self.docW, h or self.docH))
+        self._out('    [%d, %d]);' % (self.pageW, h or self.pageH))
 
         pt, pr, pb, pl = padding or (30, 30, 30, 40) # Padding is called margin in InDesign script.
         self._out('pbPage.marginPreferences.top = "%s%s";' % (pt, self.unit))
@@ -172,20 +176,23 @@ class InDesignBuilder:
     def rect(self, x, y, w=None, h=None):
         w = w or DEFAULT_WIDTH
         h = h or DEFAULT_HEIGHT
-        px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
+        px1, py1, px2, py2 = x, y+self.pageH-h, x+w, y+self.pageH
         self._out('/* Rect */')
-        self._out('pbElement = pbPage.rectangles.add({geometricBounds:["%s%s", "%s%s", "%s%s", "%s%s"]});' % (py1, self.unit, px1, self.unit, py2, self.unit, px2, self.unit))
+        self._out('pbElement = pbPage.rectangles.add({geometricBounds:["%s%s", "%s%s", "%s%s", "%s%s"]});' %\
+            (py1, self.unit, px1, self.unit, py2, self.unit, px2, self.unit))
         self._outElementFillColor()
         self._outElementStrokeColor()
 
-    def oval(self, x, y, w=None, h=None, e=None):
-        w, h = self.getWH(w, h, e)
+    def oval(self, x, y, w=None, h=None):
+        w = w or DEFAULT_WIDTH
+        h = h or DEFAULT_HEIGHT
         px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
         self._out('/* Oval */')
-        self._outSelectPage(e)
-        self._out('pbElement = pbPage.ovals.add({geometricBounds:["%s%s", "%s%s", "%s%s", "%s%s"]});' % (py1, self.unit, px1, self.unit, py2, self.unit, px2, self.unit))
-        self._outElementFillColor(e)
-        self._outElementStrokeColor(e)
+        self._outSelectPage()
+        self._out('pbElement = pbPage.ovals.add({geometricBounds:["%s%s", "%s%s", "%s%s", "%s%s"]});' %\
+            (py1, self.unit, px1, self.unit, py2, self.unit, px2, self.unit))
+        self._outElementFillColor()
+        self._outElementStrokeColor()
 
     def fill(self, c):
         self._fillColor = c

@@ -14,13 +14,3 @@
 #   This source makes it possible to import other sources
 #   from this directory/folder
 #
-#   Try two types of import, so we don't need to install the pagebotnano 
-#   package into the Python of your system.
-#
-import sys # Import access to some deep Python functions
-sys.path.insert(0, "..") # So we can import pagebotnano_002 without installing.
-
-from pagebotnano_004.constants import *
-from pagebotnano_004.document import Document
-from pagebotnano_004.page import Page
-from pagebotnano_004.elements import Element

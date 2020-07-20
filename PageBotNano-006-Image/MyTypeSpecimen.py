@@ -25,6 +25,7 @@ from random import random
 from pagebotnano_006.document import Document
 from pagebotnano_006.elements import Rect, Text, TextBox, Image
 from pagebotnano_006.toolbox.loremipsum import loremipsum
+from pagebotnano_006.toolbox.color import asColor
 
 class TypeSpecimen(Document):
     # Class names start with a capital. See a class as a factory
@@ -36,7 +37,6 @@ class TypeSpecimen(Document):
     # complex tasks, without the need to add these functions again for
     # every new project.
     pass # For now it will do nothing, but that will change.
-
 
 # Now we create a new type specimen, by executing the class.
 # Compare that by letting a car factory produce a car. We only need
@@ -50,7 +50,7 @@ fontName = 'Georgia'
 titleSize = 64
 headSize = 24
 bodyFontSize = 16
-leading = 1.4 # Multiplier for the fontSize;lineHe
+leading = 1.2 # Multiplier for the fontSize;lineHe
 padding = 60 # Padding of the page. Outside CSS called "margin" of the page.
 
 def makeCoverPage(doc, title):
@@ -65,7 +65,7 @@ def makeCoverPage(doc, title):
     page.addElement(rectangleElement) # Add the rectangle element to the page.
 
     # Make a FormattedString for the text box
-    fs = Text.FS(title,
+    fs = Text.FS(title, stroke=None,
         font=fontName, fontSize=titleSize, lineHeight=titleSize*1.1, fill=1)
     # Make a Text element with an (x, y) position and add it to the page.
     textElement = Text(fs, x=padding, y=page.h-1.5*padding)
@@ -89,8 +89,10 @@ def makeBodyPages(doc, bodyText):
     fs = Text.FS(bodyText, font=fontName, fontSize=bodyFontSize, lineHeight=bodyFontSize*leading)
     while True:
         page = doc.newPage()
+        page.background = asColor(1)
         # Add text element with page number
-        pn = TextBox.FS(str(page.pn), align='center', font=fontName, fontSize=bodyFontSize)
+        pn = TextBox.FS(str(page.pn), stroke=None,
+            align='center', font=fontName, fontSize=bodyFontSize)
         page.addElement(Text(pn, page.w/2, padding/2))
         e = TextBox(fs, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=1)
         page.addElement(e)
@@ -104,6 +106,8 @@ makeCoverPage(typeSpecimen, 'Type specimen\n'+fontName)
 makeBodyPages(typeSpecimen, txt)
 
 # Build the document, all pages and their contained elements.
+# This effectively makes all pages and elements draw themselves
+# in the DrwaBot canvas.
 typeSpecimen.build() 
 
 # Create the "_export" folder if it does not exist yet.

@@ -13,7 +13,7 @@
 #
 #   MyManual.py
 #
-#   This MyBook.py shows an example how to import
+#   This MyManual.py shows an example how to import
 #   existing libaries, that contain knowledge about a publication,
 #   document, pages and the elements on the pages.
 #

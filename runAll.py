@@ -47,7 +47,7 @@ RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 DEVELOPMENT_VERSIONS = [10, 20, 30, 40, 50]
 # Versions to test
 TEST_VERSIONS = RUNNING_VERSIONS
-TEST_VERSIONS = [5]
+TEST_VERSIONS = [8]
 
 for fileName in sorted(os.listdir('.')):
     if not os.path.isdir(fileName) or fileName.startswith('.'):

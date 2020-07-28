@@ -28,9 +28,10 @@ class Document:
     I am a Document
     """
     def __repr__(self):
-        # This method is called when print(document) is executed.
-        # It shows the name of the class, which can be different for
-        # classes that inherit from this Document class.
+        """This method is called when print(document) is executed.
+        It shows the name of the class, which can be different for
+        classes that inherit from this Document class.
+        """
         return 'I am a ' + self.__class__.__name__ # Answer the name of this class.
 
 if __name__ == "__main__":

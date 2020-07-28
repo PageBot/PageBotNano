@@ -19,4 +19,6 @@
 class Element:
     # Class names start with a capital. See a class as a factory
     # of element objects (name spelled with an initial lower case.)
-    pass # For now it will do nothing, but that will change.
+    
+    def build(self, doc, page):
+    	"""For now it will do nothing, but that will change."""

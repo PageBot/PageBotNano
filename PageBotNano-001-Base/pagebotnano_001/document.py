@@ -16,6 +16,7 @@
 #   This source contains the class with knowledge about a generic document.
 #
 class Document:
+    # Maurice is testing GitHub Desktop.
     """Class names start with a capital. See a class as a factory
     of document objects (name spelled with an initial lower case.)
     For now it will do nothing, but that will change.

@@ -57,5 +57,3 @@ book = Book(w=w, h=h, title=title, author=author, galley=galley,
     coverColor=coverColor)
 book.export('_export/MyBook.pdf')
 
-if __name__ == "__main__":
-    print('Done')

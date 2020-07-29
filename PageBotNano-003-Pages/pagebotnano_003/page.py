@@ -39,7 +39,6 @@ class Page:
             # Passing on doc and this page in case an element needs more info.
             element.build(doc, self) 
 
-
         # Now let DrawBot do its work, creating the page and saving it.
         # For now to have something visible.
         # Fill the page with a random dark color (< 50% for (r, g, b))

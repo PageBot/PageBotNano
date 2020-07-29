@@ -60,7 +60,7 @@ styles = dict(
     bi=dict(font='Georgia-BoldItalic', fontSize=9, lineHeight=13, 
         language=EN, align=JUSTIFIED),
 )
-print('Generating the manual “%s” by %s' % (title, author))
+print('Generating MyTypeSpecimen “%s” by %s' % (title, author))
 
 # Create the typesetter that will do content parsing into a “Galley”
 ts = Typesetter()
@@ -75,4 +75,5 @@ pub = Book(w=w, h=h, title=title, author=author, galley=galley,
     coverColor=coverColor)
 pub.export('_export/WorkshopResults.pdf')
 
-print('Done')
+if __name__ == "__main__":
+    print('Done')

@@ -110,7 +110,9 @@ class InDesignBuilder:
         >>> from pagebotnano_050.contexts.indesign.context import InDesignContext
         >>> context = InDesignContext()
         >>> font = ''
-        >>> styles = dict(h1=dict(font=font, fontSize=12, leading=14, textFillColor=color(1, 0, 0)))
+        >>> styles = dict(
+        ...    h1=dict(font=font, fontSize=48, leading=52, textFillColor=color(1, 0, 0))
+        ... )
         >>> styles = styles # Overwrite all default styles.
         >>> context.b.outStyles(styles)
         >>> #context.b.getOut()

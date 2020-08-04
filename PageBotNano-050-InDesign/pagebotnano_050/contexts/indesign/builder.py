@@ -289,9 +289,16 @@ class InDesignBuilder:
         w, h = drawBot.imageSize(path)
         return int(round(w)), int(round(h))
 
-      
     def textBox(self, bs, p, w=None, h=None, clipPath=None, e=None):
-        w, h = self.getWH(w, h, e)
+        """Draw a text box on the given position.
+
+        >>> from pagebotnano_050.babelstring import BabelString
+        >>> builder = InDesignBuilder()
+        >>> bs = BabelString('ABCD', dict(fontSize=12))
+        >>> builder.textBox(bs, (100, 100))
+        """
+        w = w or DEFAULT_WIDTH
+        h = h or bs.getTextSize(w=w)
         x, y = point2D(p)
         px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
         self._out('/* TextBox */')

@@ -71,6 +71,8 @@ def cm(cm):
 def p(pica):
     """Convert pica to points
 
+    >>> p(1)
+    12
     >>> p(12)
     144
     >>> p(6)

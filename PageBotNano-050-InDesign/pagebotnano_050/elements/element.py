@@ -246,6 +246,39 @@ class Rect(Element):
     >>> doc.export('_export/Rect.pdf') # Build and export.
     """
 
+# Oval = Element would have been the same.
+class Oval(Element):
+    """This element draws a simple oval. 
+        
+    >>> from pagebotnano_050.document import Document
+    >>> doc = Document()
+    >>> page = doc.newPage()
+    >>> padding = 40
+    >>> e = Oval(parent=page, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=color(1, 0.2, 1))
+    >>> doc.export('_export/Rect.pdf') # Build and export.
+    """
+    def drawBackground(self, ox, oy, doc, page, parent):
+        """Draw the background of the element. Default is to just draw the 
+        oval with the fill color, if it is defined. This method should be 
+        redefined by inheriting subclasses that need different foreground drawing.
+        """
+        if self.fill is not None:
+            doc.context.stroke(None) # Any stroke drawing is done in foreground
+            doc.context.fill(self.fill)
+            if self.w is not None and self.h is not None:
+                doc.context.oval(ox, oy, self.w, self.h)
+
+    def drawForeground(self, ox, oy, doc, page, parent):
+        """Draw the foreground of the element. Default is to just draw the 
+        rectangle with the fill color, if it is defined. This method should be 
+        redefined by inheriting subclasses that need different foreground drawing.
+        """
+        if self.stroke is not None and self.strokeWidth: # Only if defined.
+            doc.context.fill(None) # Fill is done in background drawing.
+            doc.context.stroke(self.stroke, self.strokeWidth)
+            if self.w is not None and self.h is not None:
+                doc.context.oval(ox, oy, self.w, self.h)
+
 class Text(Element):
     """This element draws a FormattedString on a defined place. Not text wrapping
     is done. 

@@ -16,6 +16,7 @@
 #   InDesign JavaScript file specifications here:
 #   https://www.adobe.com/content/dam/acom/en/devnet/indesign/sdk/cs6/scripting/InDesign_ScriptingGuide_JS.pdf
 #
+import os
 import sys
 sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
 
@@ -83,15 +84,15 @@ class InDesignContext(BaseContext):
         self._fill = None
         self.sx = self.sy = 1 # Drawing scale
 
-    def newDocument(self, w=None, h=None, doc=None):
-        self.b.newDocument(w, h, doc)
+    def newDocument(self, w=None, h=None):
+        self.b.newDocument(w, h)
 
     def newDrawing(self):
         pass
 
-    def newPage(self, w=None, h=None, e=None):
+    def newPage(self, w=None, h=None):
         """Have the builder create a new page in the document."""
-        self.b.newPage(w, h, e)
+        self.b.newPage(w, h)
 
     def frameDuration(self, frameDuration, e=None):
         """Ignore for now in this context."""
@@ -132,25 +133,48 @@ class InDesignContext(BaseContext):
         self.b.stroke(c)
         
     def strokeWidth(self, strokeWidth):
+        """Set the current stroke witdh.
+
+        >>> context = InDesignContext()
+        >>> context.strokeWidth(None)
+        >>> context.strokeWidth(10)
+        """
         self.b.strokeWidth(strokeWidth)
 
     # Basic shapes.
 
-    def rect(self, x, y, w=None, h=None, e=None):
-        """New rectangle by the builder"""
-        self.b.rect(x, y, w=w, h=h, e=e)
+    def rect(self, x, y, w=None, h=None):
+        """Draw new rectangle by the builder
 
-    def oval(self, x, y, w=None, h=None, e=None):
-        """Ignore for now in this context."""
-        self.b.oval(x, y, w=w, h=h, e=e)
+        >>> context = InDesignContext()
+        >>> context.newPage(500, 500)
+        >>> context.rect(100, 200)
+        >>> context.rect(100, 200, 300, 400)
+        """
+        self.b.rect(x, y, w=w or DEFAULT_WIDTH, h=DEFAULT_HEIGHT)
 
-    def textBox(self, sOrBs, p, w=None, h=None, clipPath=None, e=None):
-        self.b.textBox(sOrBs, p, w=w, h=h, clipPath=clipPath, e=e)
+    def oval(self, x, y, w=None, h=None):
+        """Draw new oval by the builde that fits in this bounding box
+
+        >>> context = InDesignContext()
+        >>> context.newPage(500, 500)
+        >>> context.oval(100, 200)
+        >>> context.oval(100, 200, 300, 400)
+        """
+        self.b.oval(x, y, w=w or DEFAULT_WIDTH, h=h or DEFAULT_HEIGHT)
+
+    def textBox(self, sOrBs, p, w=None, h=None, clipPath=None):
+        self.b.textBox(sOrBs, p, w=w, h=h, clipPath=clipPath)
 
     def scaleImage(self, path, w, h, index=0, showImageLoresMarker=False, exportExtension=None):
         pass
 
     def image(self, path, p, alpha=1, pageNumber=None, w=None, h=None, scaleType=None):
+        """Draw the image
+
+        >>> context = InDesignContext()
+        >>> context.image('../../../../resources/images/cookbot10.jpg', (100, 200))
+        """
         self.b.image(path, p, alpha=alpha, pageNumber=pageNumber, w=w, h=h, scaleType=scaleType)
 
     def newString(self, s, e=None, style=None, w=None, h=None, pixelFit=True):
@@ -174,15 +198,15 @@ class InDesignContext(BaseContext):
         """Answers the (w, h) image size of the image file at path. If the path is an SVG
         image, then determine by parsing the SVG-XML.
 
-        if path.lower().endswith('.'+FILETYPE_SVG):
-            import xml.etree.ElementTree as ET
-            svgTree = ET.parse(path)
-            print(svgTree)
-            return pt(1000, 1000)
-
-        return pt(self.b.imageSize(path))
+        >>> context = InDesignContext()
+        >>> context.imageSize('../../../../resources/images/cookbot10.jpg')
+        (2058, 946)
+        >>> context.imageSize('../../../../resources/images/Berthold-Grid.pdf')
+        (590, 842)
+        >>> context.imageSize('../../../NOTEXIST.pdf') is None
+        True
         """
-        return 1000, 1000
+        return self.b.imageSize(path)
 
     def saveDocument(self, path, multiPage=True):
         self.b.saveDocument(path)

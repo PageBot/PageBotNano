@@ -13,7 +13,7 @@
 #
 #   GenerativeDesign.py
 #
-from pagebotnano_050.elements import Image, Text, Rect, Image
+from pagebotnano_050.elements import Image, Text, Rect, Oval, Image
 from pagebotnano_050.document import Document
 from pagebotnano_050.babelstring import BabelString
 from pagebotnano_050.toolbox.color import color
@@ -41,11 +41,15 @@ scaleType = None #SCALE_TYPE_FITWH # for non-proportional
 e = Rect(parent=page, w=p(16), h=p(16), x=p(20), y=p(11), 
 	stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
 
-"""
+# Make an oval that fits in this bounding box.
+e = Oval(parent=page, w=p(16), h=p(16), x=p(20), y=p(31), 
+	stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
+
+# Make an image element
 e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
 	w=page.pw, h=page.pw, fill=color(0.5))
 
-
+"""
 page = doc.newPage()
 e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
 	w=page.pw, h=page.pw, fill=color(0.2))

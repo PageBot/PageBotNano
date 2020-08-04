@@ -17,6 +17,8 @@
 import sys
 sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
 
+DEFAULT_WIDTH = DEFAULT_HEIGHT = 100
+
 JSX_LIB = """
 function pbGetColor(doc, c){
     if (c.length == 4){

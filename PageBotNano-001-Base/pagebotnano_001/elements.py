@@ -13,26 +13,25 @@
 #
 #   elements.py
 #
-#   This source contains the class with knowledge about elements that
+#   This source contains the class with information about elements that
 #   can be placed on a page.
 #
 class Element:
-    """Class names start with a capital. See a class as a factory
-    of element objects (name spelled with an initial lower case.)
+    """Class names start with a capital letter.
+    Think of classes as factories for making objects (in this case, element objects) 
+    whose names start with a lowercase letter.
     
-    Running this Python file, is testing the consistency by executing
-    the docstring below. 
+    Running this Python file tests consistency by executing the docstring below. 
     
     >>> e = Element()
     >>> e
     I am an Element
     """
-    pass # For now it will do nothing, but that will change in later version.
+    pass # For now the code does nothing, but that will change in later versions.
 
     def __repr__(self):
-        # This method is called when print(document) is executed.
-        # It shows the name of the class, which can be different, if the
-        # object inherits from Document.
+        # This method is called when print(element) is executed. It returns the name of 
+        # its class, which can be different for classes that inherit from the Element class.
         return 'I am an ' + self.__class__.__name__
 
 if __name__ == "__main__":

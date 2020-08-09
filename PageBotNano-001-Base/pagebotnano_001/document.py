@@ -21,7 +21,7 @@ class Document:
     whose names start with a lowercase letter.
     In this version of the code, the class doesn`t make anything, but that will change.
 
-    Running this Python file tests the consistency of the class by executing the docstring below.
+    Running this Python file tests consistency by executing the docstring below.
 
     >>> doc = Document()
     >>> doc # Prints the `doc` object showing the line answered by `__repr__`

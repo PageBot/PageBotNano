@@ -75,17 +75,12 @@ def _compare(d1, d2, result, path=None):
 def sketchCompare(sketchFile1, sketchFile2, result=None):
     """
     >>> from sketchappreader import SketchAppReader
-    >>> PATH = '../../Test/' 
+    >>> PATH = '../resources/'
     >>> EXPORT_PATH = '_export/' 
     >>> if not os.path.exists(EXPORT_PATH):
     ...     os.path.mkdir(EXPORT_PATH)
     >>> testFileNames = (
-    ...     'TestImage.sketch',
-    ...     'TestRectangles.sketch',
-    ...     'TestStar.sketch',
-    ...     'TestPolygon.sketch',
-    ...     'TestOval.sketch',
-    ...     'TestABC.sketch',
+    ...     'TemplateSquare.sketch',
     ... )
     >>> reader = SketchAppReader()
     >>> writer = SketchAppWriter()
@@ -118,17 +113,12 @@ def prettyPrint(d, name=None, result=None, tab=0):
     """
     >>> from sketchappreader import SketchAppReader
     >>> testFileNames = (
-    ...     #'TestImage.sketch',
-    ...     'TestRectangles.sketch',
-    ...     #'TestStar.sketch',
-    ...     #'TestPolygon.sketch',
-    ...     #'TestOval.sketch',
-    ...     #'TestABC.sketch',
+    ...     'TemplateSquare.sketch',
     ... )
     >>> for fileName in testFileNames:
     ...     result = []
     ...     reader = SketchAppReader()
-    ...     readPath = '../../Test/' + fileName
+    ...     readPath = '../resources/' + fileName
     ...     skf = reader.read(readPath)
     ...     result = prettyPrint(skf)
     """

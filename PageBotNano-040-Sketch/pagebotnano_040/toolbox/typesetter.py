@@ -25,11 +25,11 @@ from xml.etree import ElementTree as ET
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox.markdown import parseMarkdownFile, parseMarkdown
-from pagebotnano.elements import Element, TextBox, Image, CodeBlock
-from pagebotnano.toolbox import extensionOf, fileNameOf
-from pagebotnano.constants import DEFAULT_WIDTH
+from pagebotnano_040.babelstring import BabelString
+from pagebotnano_040.toolbox.markdown import parseMarkdownFile, parseMarkdown
+from pagebotnano_040.elements import Element, TextBox, Image, CodeBlock
+from pagebotnano_040.toolbox import extensionOf, fileNameOf
+from pagebotnano_040.constants import DEFAULT_WIDTH
 
 class Galley(Element):
     def __repr__(self):

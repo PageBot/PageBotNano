@@ -4,8 +4,7 @@ box = page.select('Article')
 
 # PageBot
 
-PageBot is a page layout program that enables designers to create high quality documents using code. It is available both as Python library working with [DrawBot](http://www.drawbot.com) and as part of a collection of stand-alone desktop applications that can be created from it. Other contexts such as [Flat](http://xxyxyz.org/flat) (currently under development) allow *PageBot* to run environments other Mac OS X, for example on web servers. The aim of the developers of *PageBot* is to create a system for
-scriptable applications generating professionally designed documents that use high quality typography.
+PageBot is a page layout program that enables designers to create high quality documents using code. It is available both as Python library working with [DrawBot](http://www.drawbot.com) and as part of a collection of stand-alone desktop applications that can be created from it. Other contexts such as [Flat](http://xxyxyz.org/flat) (currently under development) allow *PageBot* to run environments other Mac OS X, for example on web servers. The aim of the developers of *PageBot* is to create a system for scriptable applications generating professionally designed documents that use high quality typography.
 
 - The core library, tutorial and basic examples for PageBot are available under MIT Open Source license from
 [github.com/TypeNetwork/PageBot](https://github.com/TypeNetwork/PageBot).
@@ -42,9 +41,9 @@ test all functions. Issue reports and contributions are highly appreciated!
 
 We keep track of known bugs, development and future features in the issue tracker:
 
- * https://github.com/TypeNetwork/PageBot/issues
- * https://github.com/TypeNetwork/PageBot/projects
- * https://github.com/TypeNetwork/PageBot/milestones
+ * https://github.com/PageBot/issues
+ * https://github.com/PageBot/projects
+ * https://github.com/PageBot/milestones
 
 ## Current Functionality
 

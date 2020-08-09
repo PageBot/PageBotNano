@@ -17,5 +17,5 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_050.elements.element import Element, Text, TextBox, Rect, Image
+from pagebotnano_050.elements.element import Element, Text, TextBox, Rect, Oval, Image
 from pagebotnano_050.elements.page import Page

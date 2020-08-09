@@ -170,14 +170,14 @@ class Document:
         """Build the document by looping trough the pages, and then recursively
         tell every page to build itself (and its contained elements).
         """
-        self.context.newDocument(w=self.w, h=self.h, doc=self)
+        self.context.newDocument(w=self.w, h=self.h)
 
         # Clear all previous drawing in the context canvas.
         self.context.newDrawing()
 
         # Tell each page to build itself in context, including their child elements.
         for page in self.pages:
-            self.context.newPage(w=page.w, h=page.h, e=page)
+            self.context.newPage(w=page.w, h=page.h)
             page.build(doc=self) # Passing self as document, in case the page needs more info.
         self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 

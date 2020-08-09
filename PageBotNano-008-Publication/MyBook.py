@@ -41,7 +41,7 @@ styles = dict(
     h2=dict(font='Georgia-Italic', fontSize=14, lineHeight=16, paragraphBottomSpacing=10),
     p=dict(font='Georgia', fontSize=10, lineHeight=14)
 )
-print('Generating the book “%s” by %s' % (title, author))
+print('Generating MyBook “%s” by %s' % (title, author))
 
 # Construct the content as “xml” document.
 xml = '<xml><h1>%s</h1>\n<p>%s</p></xml>' % (title, (loremipsum() + ' ') * 20)
@@ -57,4 +57,3 @@ book = Book(w=w, h=h, title=title, author=author, galley=galley,
     coverColor=coverColor)
 book.export('_export/MyBook.pdf')
 
-print('Done')

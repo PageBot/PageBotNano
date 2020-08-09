@@ -21,8 +21,8 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 import drawBot
 
-from pagebotnano.elements import Element
-from pagebotnano.toolbox.color import noColor, color
+from pagebotnano_040.elements import Element
+from pagebotnano_040.toolbox.color import noColor, color
 
 class CodeBlock(Element):
 
@@ -65,7 +65,7 @@ class CodeBlock(Element):
         Note that it is the author's responsibility not to overwrite global values
         that are owned by the calling composer instance.
 
-        >>> from pagebotnano.document import Document
+        >>> from pagebotnano_040.document import Document
         >>> doc = Document()
         >>> page = doc.newPage()
         >>> code = 'a = 100 * 300'
@@ -122,7 +122,7 @@ class CodeBlock(Element):
                 page = self.doc.newPage()
             page = self.doc.pages[-1] # Get the last page
 
-            targets = dict(pub=self, doc=self.doc, page=page, 
+            targets = dict(pub=self, doc=self.doc, page=page)
             if doc is not None:
                 targets['doc'] = doc
         if not self.tryExcept: # For debugging show full error of code block run.

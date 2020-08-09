@@ -20,6 +20,7 @@ import zipfile
 import sys
 sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
 
+import drawBot
 from pagebotnano_050.contexts.indesign.constants import JSX_LIB
 from pagebotnano_050.toolbox.color import color, noColor
 from pagebotnano_050.constants import *
@@ -56,6 +57,7 @@ class InDesignBuilder:
         self._fillColor = noColor
         self._strokeColor = noColor
         self._strokeWidth = 1
+        self._padding = None
         self.pageIndex = 0
         self.unit = 'pt'
         self.docW = self.docH = None # Defined by self.newDocument()
@@ -110,7 +112,9 @@ class InDesignBuilder:
         >>> from pagebotnano_050.contexts.indesign.context import InDesignContext
         >>> context = InDesignContext()
         >>> font = ''
-        >>> styles = dict(h1=dict(font=font, fontSize=12, leading=14, textFillColor=color(1, 0, 0)))
+        >>> styles = dict(
+        ...    h1=dict(font=font, fontSize=48, leading=52, textFillColor=color(1, 0, 0))
+        ... )
         >>> styles = styles # Overwrite all default styles.
         >>> context.b.outStyles(styles)
         >>> #context.b.getOut()
@@ -152,7 +156,7 @@ class InDesignBuilder:
         self._out('pbPageIndex = %d' % self.pageIndex)
         self._out('pbPage = pbDoc.pages.item(pbPageIndex);')
 
-    def newPage(self, w=None, h=None, padding=None):
+    def newPage(self, w=None, h=None):
         self.pageW = w or self.docW
         self.pageH = h or self.docH
         if self.pageIndex is None:
@@ -167,7 +171,7 @@ class InDesignBuilder:
         self._out('    ResizeMethods.REPLACING_CURRENT_DIMENSIONS_WITH,')
         self._out('    [%d, %d]);' % (self.pageW, h or self.pageH))
 
-        pt, pr, pb, pl = padding or (30, 30, 30, 40) # Padding is called margin in InDesign script.
+        pt, pr, pb, pl = self._padding or (30, 30, 30, 40) # Padding is called margin in InDesign script.
         self._out('pbPage.marginPreferences.top = "%s%s";' % (pt, self.unit))
         self._out('pbPage.marginPreferences.right = "%s%s";' % (pr, self.unit))
         self._out('pbPage.marginPreferences.bottom = "%s%s";' % (pb, self.unit))
@@ -176,7 +180,7 @@ class InDesignBuilder:
     def rect(self, x, y, w=None, h=None):
         w = w or DEFAULT_WIDTH
         h = h or DEFAULT_HEIGHT
-        px1, py1, px2, py2 = x, y+self.pageH-h, x+w, y+self.pageH
+        px1, py1, px2, py2 = x, self.pageH-y-h, x+w, self.pageH-y
         self._out('/* Rect */')
         self._out('pbElement = pbPage.rectangles.add({geometricBounds:["%s%s", "%s%s", "%s%s", "%s%s"]});' %\
             (py1, self.unit, px1, self.unit, py2, self.unit, px2, self.unit))
@@ -186,7 +190,7 @@ class InDesignBuilder:
     def oval(self, x, y, w=None, h=None):
         w = w or DEFAULT_WIDTH
         h = h or DEFAULT_HEIGHT
-        px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
+        px1, py1, px2, py2 = x, self.pageH-y-h, x+w, self.pageH-y
         self._out('/* Oval */')
         self._outSelectPage()
         self._out('pbElement = pbPage.ovals.add({geometricBounds:["%s%s", "%s%s", "%s%s", "%s%s"]});' %\
@@ -243,6 +247,15 @@ class InDesignBuilder:
 
     def image(self, path, p, alpha=None, pageNumber=1, w=None, h=None, scaleType=None):
         x, y = p
+        imageSize = self.imageSize(path)
+        assert imageSize is not None
+        iw, ih = imageSize
+        if w is None and h is None:
+            w = h = DEFAULT_WIDTH
+        elif h is None:
+            h = w/iw * ih
+        elif w is None:
+            w = h/ih * iw
         px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
         self._out('/* Image %s */' % path)
         self._outSelectPage(e)
@@ -258,9 +271,34 @@ class InDesignBuilder:
             scaleType = SCALE_TYPE_FITWH
         if scaleType  != SCALE_TYPE_FITWH:
             self._out('pbElement.fit(FitOptions.PROPORTIONALLY);')
-      
+
+    def imageSize(self, path):
+        """Answers the (w, h) image size of the image file at path. If the path is an SVG
+        image, then determine by parsing the SVG-XML.
+
+        >>> builder = InDesignBuilder()
+        >>> builder.imageSize('../../../../resources/images/cookbot10.jpg')
+        (2058, 946)
+        >>> builder.imageSize('../../../../resources/images/Berthold-Grid.pdf')
+        (590, 842)
+        >>> builder.imageSize('../../../NOTEXIST.pdf') is None
+        True
+        """
+        if not os.path.exists(path):
+            return None
+        w, h = drawBot.imageSize(path)
+        return int(round(w)), int(round(h))
+
     def textBox(self, bs, p, w=None, h=None, clipPath=None, e=None):
-        w, h = self.getWH(w, h, e)
+        """Draw a text box on the given position.
+
+        >>> from pagebotnano_050.babelstring import BabelString
+        >>> builder = InDesignBuilder()
+        >>> bs = BabelString('ABCD', dict(fontSize=12))
+        >>> builder.textBox(bs, (100, 100))
+        """
+        w = w or DEFAULT_WIDTH
+        h = h or bs.getTextSize(w=w)
         x, y = point2D(p)
         px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
         self._out('/* TextBox */')

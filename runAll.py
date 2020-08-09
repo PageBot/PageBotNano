@@ -42,9 +42,9 @@ def testPath(path, level=0):
 
 # Versions that pass the doc tests
 MAIN_VERSION = [0]
-RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+RUNNING_VERSIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
 # Version under development
-DEVELOPMENT_VERSIONS = [10, 20, 30, 40, 50]
+DEVELOPMENT_VERSIONS = [10, 30, 40, 50]
 # Versions to test
 TEST_VERSIONS = RUNNING_VERSIONS
 TEST_VERSIONS = [8]

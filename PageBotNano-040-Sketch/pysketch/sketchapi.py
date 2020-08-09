@@ -54,14 +54,14 @@ class SketchApi:
     >>> page.name
     'Page 1'
     >>> len(page.layers[0]), page.artBoards, len(page.artBoards[0])
-    (7, [<SketchArtboard name=Artboard 1 w=576 h=783>], 7)
+    (6, [<SketchArtboard name=Artboard 1 w=576 h=783>], 6)
     >>> artBoard = page.artBoards[0]
     >>> e = artBoard.layers[3]
     >>> e, e.name
     (<SketchRectangle name=Rectangle Middle Right>, 'Rectangle Middle Right')
     >>> e = page.find(pattern='Top Left')[0]
     >>> e.name, e.frame
-    ('Rectangle Top Left', <SketchRect x=60 y=0 w=216 h=168>)
+    ('Rectangle Top Left', <SketchRect x=60 y=96 w=216 h=168>)
     >>> #e.style['fills']
     """
 

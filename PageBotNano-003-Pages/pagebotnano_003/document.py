@@ -64,7 +64,8 @@ class Document:
         # Make a new page and add the page number from the total number of pages.
         page = Page(w or self.w, h or self.h, pn=len(self.pages)+1) 
         self.pages.append(page)
-
+        return page # Return the created page as convenience for the caller.
+        
     def build(self):
         """Build the document by looping trough the pages, an then recursively
         tell every page to build itself (and its contained elements).

@@ -14,11 +14,11 @@
 #   drawbotcontext.py
 #
 import sys
-sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+sys.path.insert(0, "../../../") # So we can import pagebotnano without installing.
 
 import drawBot
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox.color import color, Color
+from pagebotnano_040.babelstring import BabelString
+from pagebotnano_040.toolbox.color import color, Color
 
 class DrawBotContext:
     

@@ -21,17 +21,17 @@ from copy import deepcopy
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import CENTER
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox import makePadding, fileNameOf
-from pagebotnano.toolbox.color import color
+from pagebotnano_040.constants import CENTER
+from pagebotnano_040.babelstring import BabelString
+from pagebotnano_040.toolbox import makePadding, fileNameOf
+from pagebotnano_040.toolbox.color import color
 
 class Element:
     """Base class of all elements that can be placed on a page.
     Class names start with a capital. See a class as a factory of element objects 
     (name spelled with an initial lower case.)
     
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_040.document import Document
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> page

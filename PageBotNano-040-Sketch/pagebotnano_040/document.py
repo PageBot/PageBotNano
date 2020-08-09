@@ -19,11 +19,10 @@ import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import A4, EXPORT_DIR
-from pagebotnano.elements import Element, Page
-from pagebotnano.contexts.drawbotcontext import DrawBotContext
-from pagebotnano.toolbox import makePadding
-from pagebotnano.themes.theme import BaseTheme
+from pagebotnano_040.constants import A4, EXPORT_DIR
+from pagebotnano_040.elements import Element, Page
+from pagebotnano_040.contexts.drawbot.context import DrawBotContext
+from pagebotnano_040.toolbox import makePadding
 
 class Document:
     # Class names start with a capital. See a class as a factory
@@ -54,21 +53,6 @@ class Document:
         self.padding = pt, pr, pb, pl # Initialize the default padding
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
-
-        # The TemplateSet dictionary contains a set of functions that
-        # compose the pages and containing elements for a particular
-        # type of publications.
-        if templates is None:
-            templates = OneColumnTemplates()
-        self.templates = templates
-
-        # The theme contains (or can produce) all stylistic parameters
-        # of a publication, such as color, typographic values and the 
-        # selected mood (lightest, light, dark, darkest) to create
-        # dark-on-light or light-on-dark moods with the same color palette.
-        if theme is None: # If not default, we choose one here.
-            theme = DefaultTheme()
-        self.theme = theme
  
         # Keep the flag is self.build was already executed when calling self.export
         self.hasComposed = False
@@ -85,6 +69,9 @@ class Document:
         return '<%s w=%d h=%d pages=%d>' % (self.__class__.__name__, 
             self.w, self.h, len(self.pages))
 
+    def __getitem__(self, index):
+        return self.pages[index]
+        
     def _get_padding(self):
         """Answer a tuple of the 4 padding values of the element
 

@@ -18,8 +18,8 @@ sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 from copy import copy
 import drawBot
 
-from pagebotnano.toolbox.color import Color
-from pagebotnano.constants import (EN, FS_ATTRIBUTES, CSS_ATTRIBUTES, 
+from pagebotnano_040.toolbox.color import Color
+from pagebotnano_040.constants import (EN, FS_ATTRIBUTES, CSS_ATTRIBUTES, 
     HTML_TEXT_TAGS)
 
 class BabelRun:

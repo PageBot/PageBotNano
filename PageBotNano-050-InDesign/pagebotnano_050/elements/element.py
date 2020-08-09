@@ -32,7 +32,9 @@ class Element:
     (name spelled with an initial lower case.)
     
     >>> from pagebotnano_050.document import Document
-    >>> doc = Document()
+    >>> from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+    >>> context = DrawBotContext()
+    >>> doc = Document(context=context)
     >>> page = doc.newPage()
     >>> page
     <Page pn=1 w=595 h=842 elements=0>
@@ -171,7 +173,9 @@ class Element:
         stroked frame and content of the inheriting classes.
 
         >>> from pagebotnano_050.document import Document
-        >>> doc = Document()
+        >>> from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+        >>> context = DrawBotContext()
+        >>> doc = Document(context=context)
         >>> page = doc.newPage()
         >>> e = Element(10, 10, 100, 100, fill=color(1, 0, 0))
         >>> page.addElement(e)
@@ -184,7 +188,10 @@ class Element:
         oy = y + self.y
 
         # Do building of the element background here. 
-        #Let inheriting subclasses handle what must appear on the background.
+        # Let inheriting subclasses handle what must appear on the background.
+        # Disadvantage of this method is that fill objects with a stroke get
+        # drawn double in InDesign. Bit allows to use the stroke outlines as
+        # clipping frame if other content is added to between the two layers.
         self.drawBackground(ox, oy, doc, page, parent)
 
         # Then let inheriting subclasses draw any content (if they have it)
@@ -196,14 +203,9 @@ class Element:
             element.build(ox, oy, doc, page, parent=self)
 
         # Do building of the element foreground here. 
-        #Let inheriting subclasses handle what must appear on the background.
+        # Let inheriting subclasses handle what must appear on the background.
+        # Draw the stroke of the element, in case a color and tickness was defined. 
         self.drawForeground(ox, oy, doc, page, parent)
-
-    # Rough example of implementing HTML/CSS generator in this architecture
-    #def build_html(self, x, y, doc, page, parent=None):
-    #   print('<div class="" style="background-color: %s">' % asHtmlColor(self.fill))
-    #   self.drawContent(ox, oy, doc, page, parent)
-    #   print('</div>')
 
     def drawContent(self, ox, oy, doc, page, parent):
         """Default behavior is to do nothing, as the Element (and e.h. Rect)
@@ -239,7 +241,9 @@ class Rect(Element):
     behavior of the base Element class, so nothing needs to be defined here.
         
     >>> from pagebotnano_050.document import Document
-    >>> doc = Document()
+    >>> from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+    >>> context = DrawBotContext()
+    >>> doc = Document(context=context)
     >>> page = doc.newPage()
     >>> padding = 40
     >>> e = Rect(parent=page, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=color(1, 0.2, 1))
@@ -284,10 +288,13 @@ class Text(Element):
     is done. 
 
     >>> from pagebotnano_050.document import Document
+
     >>> from pagebotnano_050.babelstring import BabelString
+    >>> from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+    >>> context = DrawBotContext()
     >>> style = dict(font='Georgia', fontSize=100)
     >>> bs = BabelString('Hello world', style)
-    >>> doc = Document()
+    >>> doc = Document(context=context)
     >>> page = doc.newPage()
     >>> padding = 40
     >>> e = Text(bs, padding=padding, w=page.h/2, fill=color(1, 0, 0))
@@ -318,6 +325,8 @@ class TextBox(Text):
     >>> from pagebotnano_050.document import Document
     >>> from pagebotnano_050.babelstring import BabelString
     >>> from pagebotnano_050.toolbox.loremipsum import loremipsum
+    >>> from pagebotnano_050.contexts.drawbot.context import DrawBotContext
+    >>> context = DrawBotContext()
     >>> headLine = 'Example of TextBox overflow\\n'
     >>> txt = loremipsum()
     >>> fontSize = 30
@@ -327,7 +336,7 @@ class TextBox(Text):
     >>> bs = BabelString(headLine, headStyle)
     >>> bs2 = BabelString(txt, textStyle)
     >>> bs.append(bs2)
-    >>> doc = Document()
+    >>> doc = Document(context=context)
     >>> padding = 80
     >>> while True:
     ...     page = doc.newPage()

@@ -1,0 +1,24 @@
+{
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "script.js",
+      "name" : "AnotherScript",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+    }
+  ],
+  "menu" : {
+    "title" : "AnotherScript",
+    "items" : [
+      "com.bohemiancoding.sketch.runscriptidentifier"
+    ]
+  },
+  "identifier" : "com.example.sketch.28e11d34-b511-42e4-8cfb-7f49dc7e2831",
+  "version" : "1.0",
+  "description" : "",
+  "authorEmail" : "",
+  "name" : "AnotherScript"
+}

@@ -48,6 +48,14 @@ def fileNameOf(path):
 
 #   M E A S U R E S
 
+def pt(pt):
+    """Convert to points, so do nothing.
+
+    >>> pt(12)
+    12
+    """
+    return pt
+    
 def mm(mm):
     """Convert from millimeter values to rounded points
     

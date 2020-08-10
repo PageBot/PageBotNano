@@ -22,7 +22,7 @@ import importlib
 from random import random
 import drawBot
 
-VERBOSE = False # If True, show all file name as they are tested.
+VERBOSE = False # If True, show all file names as they are tested.
 
 def testPath(path, level=0):
     os.chdir(path)

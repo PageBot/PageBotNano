@@ -33,7 +33,7 @@ class SketchJSBuilder:
         >>> b.rect(10, 20, 100, 200)
         >>> b.jsOut
         ['var rect = new Rectangle(10.00, 20.00, 100.00, 200.00);']
-        >>> b.save('_export/SketchJSBuilder_init.js')
+        >>> b.save('_export/SketchJSBuilder_init.sketchplugin')
         """
         super().__init__(**kwargs)
         self.prepare = set() # Initialising code, place only once.

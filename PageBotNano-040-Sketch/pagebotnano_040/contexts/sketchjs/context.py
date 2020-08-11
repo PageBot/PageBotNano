@@ -141,10 +141,10 @@ class SketchJSContext:
 
         >>> context = SketchJSContext()
         >>> context.w, context.h
-
+        (595, 842)
         >>> context.setSize(w=300)
         >>> context.w
-        300pt
+        300
         """
         self.w = w or A4[0]
         self.h = h or A4[1]
@@ -155,6 +155,7 @@ class SketchJSContext:
         >>> context = SketchJSContext()
         >>> context.setPath('_export/Demo.sketchplugin')
         >>> context.b.path
+        '_export/Demo.sketchplugin'
         """
         self.b.path = path
 

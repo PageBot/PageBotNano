@@ -17,6 +17,7 @@
 #
 import os
 import sys
+import shutil
 sys.path.insert(0, "../../../") # So we can import pagebotnano without installing.
 import codecs
 
@@ -33,7 +34,7 @@ class SketchJSBuilder:
         >>> b.rect(10, 20, 100, 200)
         >>> b.jsOut
         ['var rect = new Rectangle(10.00, 20.00, 100.00, 200.00);']
-        >>> b.save('_export/SketchJSBuilder_init.js')
+        >>> b.save('_export/SketchJSBuilder.sketchplugin')
         """
         super().__init__(**kwargs)
         self.prepare = set() # Initialising code, place only once.
@@ -49,18 +50,59 @@ class SketchJSBuilder:
     def frameDuration(self, frameDuration):
         pass
 
+    SCRIPT_JS = 'script.js'
+    MANIFEST_JSON = """
+{
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "%(fileName)s",
+      "name" : "%(name)s",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+    }
+  ],
+  "menu" : {
+    "title" : "%(name)s",
+    "items" : [
+      "com.bohemiancoding.sketch.runscriptidentifier"
+    ]
+  },
+  "identifier" : "com.example.sketch.28e11d34-b511-42e4-8cfb-7f49dc7e2831",
+  "version" : "1.0",
+  "description" : "%(description)s",
+  "authorEmail" : "%(email)s",
+  "name" : "%(name)s"
+}
+"""
     def save(self, path=None):
-        fileDir = '/'.join(path.split('/')[:-1])
-        if not os.path.exists(fileDir):
-            os.makedirs(fileDir)
+        # Make sure the path does not exist, otherwise delete it.
         if path is None:
             path = '_export/Untitled.sketchplugin'
-        f = codecs.open(path, 'w', encoding='utf-8')
+        # Make sure we have an empty plugin folder
+        if os.path.exists(path):
+            shutil.rmtree(path)
+        contentsPath = path + '/Contents'
+        sketchPath = contentsPath + '/Sketch'
+        # Make the new plugin folder and populate it.
+        os.makedirs(sketchPath) 
+        f = codecs.open(sketchPath + '/' + self.SCRIPT_JS, 'w', encoding='utf-8')
         f.write('\n'.join(self.prepare))
         f.write('\n\n\n')
         f.write('\n'.join(self.jsOut))
         f.close()
 
+        manifestParams = dict(
+            name=path.split('/')[-1].replace('.sketchplugin', ''),
+            email='info@designdesign.space',
+            description='Description of the plugin',
+            fileName=self.SCRIPT_JS,
+        )
+        f = codecs.open(sketchPath + '/manifest.json', 'w', encoding='utf-8')
+        f.write(self.MANIFEST_JSON % manifestParams)
+        f.close()
 
     def fill(self, e, g, b, alpha=None):
         pass

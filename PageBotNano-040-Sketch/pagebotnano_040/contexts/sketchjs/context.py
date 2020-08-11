@@ -43,6 +43,7 @@ class SketchJSContext:
     # The directory where SketchApp keeps the plugins. Note that it starts with a "~"
     # so that must be inside the local user area.
     PLUGIN_PATH = """~/Library/Application Support/com.bohemiancoding.sketch3/Plugins"""
+    PLUGIN_EXTENSION = 'sketchplugin'
 
     def __init__(self, path=None):
         """Constructor of Sketch context.
@@ -175,8 +176,11 @@ class SketchJSContext:
         >>> context.newDocument()
         >>> context.newPage()
         >>> context.rect(10, 20, 100, 200)
-        >>> context.save('_export/SaveExample.sketchplugin')
+        >>> context.save('_export/SaveExample.' + context.PLUGIN_EXTENSION)
         """
+        if path is None:
+            path = self.getPluginPath()
+        assert path.endswith('.'+self.PLUGIN_EXTENSION)
         self.b.save(path)
 
     def newDocument(self, w=None, h=None):

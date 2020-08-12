@@ -160,7 +160,8 @@ class SketchJSContext:
         """
         self.b.path = path
 
-    def getPluginPath(self):
+    @classmethod
+    def getPluginPath(cls):
         """Answer the path where the plugin can be saved. Answer None if the
         the directory cannot be found, e.g. because SketchApp is not installend.
 
@@ -168,7 +169,7 @@ class SketchJSContext:
         >>> context.getPluginPath().endswith('/Plugins')
         True
         """
-        return os.path.expanduser(self.PLUGIN_PATH)
+        return os.path.expanduser(cls.PLUGIN_PATH)
 
     def save(self, path=None):
         """Save the current builder data into Sketch plugin, indicated by path.

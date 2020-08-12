@@ -13,13 +13,16 @@
 #
 #   color.py
 #
+#   Copied from PageBot/toolbox/color.py
 #   This source contains supporting functions for PageBotNano classes.
 #
 from copy import copy
 import sys
-sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebot.constants import CSS_COLOR_NAMES, SPOT_RGB, RAL_NAMERGB, NAME_RALRGB
+if __name__ == "__main__":
+    sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+from pagebotnano_040.constants import CSS_COLOR_NAMES, SPOT_RGB, RAL_NAMERGB, NAME_RALRGB
 
 def value01(v):
     """Round float to 0 or 1 int if equal.
@@ -622,6 +625,8 @@ class Color:
         True
         """
         if isinstance(c, self.__class__):
+            if (self.isName or c.isName) and self.name == c.name:
+                return True
             if (self.isRgba or c.isRgba) and self.rgba == c.rgba and self.tint == c.tint:
                 return True
             if (self.isRgb or c.isRgb) and self.rgb == c.rgb and self.tint == c.tint:
@@ -680,6 +685,17 @@ class Color:
         return '%s(r=%s, g=%s, b=%s, c=%s, m=%s, y=%s, k=%s, spot=%s, ral=%s, name=%s)' % (self.__class__.__name__, self.r, self.g, self.b, self.c, self.m, self.y, self.k, self._spot, self._ral, self._name)
     fullString = property(_get_fullString)
 
+    def _get_isName(self):
+        """Answer if the base of this color is defined by name.
+
+        >>> color(name='red').isName
+        True
+        >>> color(spot=300).isName
+        False
+        """
+        return self._name is not None
+    isName = property(_get_isName)
+    
     def _get_isRgb(self):
         """Answers if the base of this color is defined as RGB or if an (RGB)
         name is defined.
@@ -977,6 +993,18 @@ class Color:
         return 'rgba(%0.2f, %0.2f, %0.2f, %0.2f' % (r, g, b, self.a)
     css = property(_get_css)
 
+    def _get_averageRgb(self):
+        """Answer the average light of self.rgb.
+
+        >>> color(0, 0.5, 1).averageRgb
+        0.5
+        >>> color(0.2, 0.1, 0.6).averageRgb
+        0.3
+        """
+        r, g, b = self.rgb
+        return (r + g + b)/3
+    averageRgb = property(_get_averageRgb)
+
     def warmer(self, v=0.5):
         """Answers warmer version of `self`. This converts to internal RGB storage.
 
@@ -1236,5 +1264,4 @@ def ralColor(ral):
 
 if __name__ == "__main__":
     import doctest
-    import sys
-    sys.exit(doctest.testmod()[0])
+    doctest.testmod()[0]

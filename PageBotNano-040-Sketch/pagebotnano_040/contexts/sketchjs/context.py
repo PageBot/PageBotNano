@@ -13,13 +13,14 @@
 #
 #   context.py
 #
-#   The SketchJS Context generates the Sketch-API compatible Javascript
-#   that generate one single document, as template for later use.
+#   The SketchJS Context generates the Sketch-API compatible Javascript,
+#   that generate one single Sketch document, as template for later manual editing.
 #   The code is not intended to be maintained as application, it is more
-#   like a PostScript file, transferring PageBot generated output to create
+#   like a PostScript file, transferring PageBotNano generated output to create
 #   documents in SketchApp on Javascript-API level.
 #   The script is wrapped and saved as SketchApp plugin.
 #
+#   https://developer.sketch.com/reference/api/
 #   https://developer.sketch.com/reference/api/#create-a-new-document
 #
 import os
@@ -39,11 +40,6 @@ class SketchJSContext:
     '''
 
     W, H = A4 # Default size of a document, as SketchApp has infinite canvas.
-
-    # The directory where SketchApp keeps the plugins. Note that it starts with a "~"
-    # so that must be inside the local user area.
-    PLUGIN_PATH = """~/Library/Application Support/com.bohemiancoding.sketch3/Plugins"""
-    PLUGIN_EXTENSION = 'sketchplugin'
 
     def __init__(self, path=None):
         """Constructor of Sketch context.
@@ -66,7 +62,6 @@ class SketchJSContext:
         self.setSize()
 
     def installedFonts(self, patterns=None):
-        # TODO: share with Flat context.
         pass
 
     def setStyles(self, styles):

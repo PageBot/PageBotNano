@@ -254,6 +254,14 @@ class SketchContext:
                     x=frame.x, y=y, w=frame.w, h=frame.h, fill=fillColor,
                     stroke=strokeColor, strokeWidth=strokeWidth)
 
+            elif isinstance(layer, SketchTriangle):
+                y = e.h - frame.h - frame.y # Flip the y-axis
+                fillColor, strokeColor, strokeWidth = self._extractColor(layer)
+                # TODO: Make PageBotNano triangle element
+                newRect(name=layer.name, parent=e, sId=layer.do_objectID,
+                    x=frame.x, y=y, w=frame.w, h=frame.h, fill=fillColor,
+                    stroke=strokeColor, strokeWidth=strokeWidth)
+
             elif isinstance(layer, SketchOval):
                 y = e.h - frame.h - frame.y # Flip the y-axis
                 fillColor, strokeColor, strokeWidth = self._extractColor(layer)

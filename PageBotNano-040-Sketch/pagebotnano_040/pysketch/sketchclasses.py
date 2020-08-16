@@ -1611,6 +1611,63 @@ class SketchRectangle(SketchBase):
     'style': (SketchStyle, None),
   }
 
+
+class SketchTriangle(SketchBase):
+  """
+  _class: 'triangle',
+  do_objectID: UUID,
+  booleanOperation: number,
+  exportOptions: SketchExportOptions,
+  frame: SketchRect,
+  isFixedToViewport': bool,
+  isFlippedHorizontal: bool,
+  isFlippedVertical: bool,
+  isLocked: bool,
+  isVisible: bool,
+  layerListExpandedType: number,
+  name: string,
+  nameIsFixed: bool,
+  resizingType: number,
+  resizingConstraint: number,
+  rotation: number,
+  shouldBreakMaskChain: bool,
+  edited: bool,
+  isClosed: bool,
+  pointRadiusBehaviour: number,
+  points: CurvePointList,
+  path: SketchPathOptional,
+  fixedRadius: number,
+  hasConvertedToNewRoundCorners: bool,
+  style: SketchStyle,
+  """
+  CLASS = 'rectangle'
+  ATTRS = {
+    'do_objectID': (asId, None),
+    'booleanOperation': (asInt, -1),
+    'exportOptions': (SketchExportOptions, {}),
+    'frame': (SketchRect, BASE_FRAME),
+    'isFixedToViewport': (asBool, False),
+    'isFlippedHorizontal': (asBool, bool),
+    'isFlippedVertical': (asBool, bool),
+    'isLocked': (asBool, bool),
+    'isVisible': (asBool, bool),
+    'layerListExpandedType': (asNumber, 0),
+    'name': (asString, 'Rectangle'),
+    'nameIsFixed': (asBool, bool),
+    'resizingConstraint': (asNumber, 63),
+    'resizingType': (asInt, 0),
+    'rotation': (asNumber, 0),
+    'shouldBreakMaskChain': (asBool, False),
+    'edited': (asBool, False),
+    'isClosed': (asBool, True),
+    'pointRadiusBehaviour': (asInt, 0),
+    'path': (SketchPathOptional, {}),
+    'points': (SketchCurvePointList, []),
+    'fixedRadius': (asNumber, 0),
+    'hasConvertedToNewRoundCorners': (asBool, True),
+    'style': (SketchStyle, None),
+  }
+
 class SketchOval(SketchBase):
   """
   _class: 'oval',
@@ -1815,6 +1872,7 @@ SKETCHLAYER_PY = {
   'symbolMaster': SketchSymbolMaster,
   'group': SketchGroup,
   'rectangle': SketchRectangle,
+  'triangle': SketchTriangle,
   'oval': SketchOval,
   'star': SketchStar,
   'polygon': SketchPolygon,

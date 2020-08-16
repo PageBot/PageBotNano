@@ -34,6 +34,8 @@ from pagebotnano_040.pysketch.sketchclasses import *
 class SketchAppWriter(SketchAppBase):
   """
   >>> from pagebotnano_040.pysketch.sketchappreader import SketchAppReader
+  >>> PATH = 'resources/test/'
+  >>> EXPORT_PATH = 'resources/test/_export/'
   >>> testFileNames = (
   ...     'TestImage.sketch',
   ...     'TestRectangles.sketch',
@@ -42,17 +44,22 @@ class SketchAppWriter(SketchAppBase):
   ...     'TestOval.sketch',
   ...     'TestABC.sketch',
   ... )
+  >>> if not os.path.exists(EXPORT_PATH):
+  ...     os.makedirs(EXPORT_PATH)
   >>> for fileName in testFileNames:
   ...     reader = SketchAppReader()
-  ...     readPath = 'resources/test/' + fileName
+  ...     readPath = PATH + fileName
   ...     skf = reader.read(readPath)
-  ...     writePath = readPath.replace('.sketch', 'Write.sketch')
+  ...     writePath = EXPORT_PATH + fileName.replace('.sketch', 'Write.sketch')
   ...     writer = SketchAppWriter()
   ...     writer.write(writePath, skf)
   """
 
   def write(self, path, sketchFile):
-    assert path.endswith('.sketch')
+    """Write the sketchFile to zipped .sketch. Check on the right extension.
+    Allow .zip for debuggin purposes.
+    """
+    assert path.endswith('.sketch') or path.endswith('.zip')
     zf = zipfile.ZipFile(path, mode='w') # Open the file.sketch as Zip.
 
     tmpPath = '/tmp/'+DOCUMENT_JSON
@@ -118,5 +125,4 @@ class SketchAppWriter(SketchAppBase):
 
 if __name__ == '__main__':
   import doctest
-  import sys
-  sys.exit(doctest.testmod()[0])
+  doctest.testmod()[0]

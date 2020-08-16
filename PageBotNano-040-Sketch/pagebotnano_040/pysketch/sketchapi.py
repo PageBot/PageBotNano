@@ -40,12 +40,14 @@ class SketchApi:
     """
     >>> api = SketchApi()
     >>> api
-    <SketchApi path=Base.sketch>
+    <SketchApi path=Template.sketch>
     >>> api.sketchFile
-    <SketchFile path=Base.sketch>
-    >>> api.sketchFile.path.endswith('/resources/Base.sketch')
+    <SketchFile path=Template.sketch>
+    >>> api.sketchFile.path.endswith('resources/Template.sketch')
     True
     >>> api.filePath == api.sketchFile.path
+    True
+    >>> api.baseFile.path.endswith('resources/Base.sketch')
     True
     >>> path = 'Resources/TemplateSquare.sketch'
     >>> api = SketchApi(path)
@@ -65,13 +67,17 @@ class SketchApi:
     ('RectangleTopLeft', <SketchRect x=60 y=96 w=216 h=168>)
 
     """
-    BASE_SKETCH = '/resources/Base.sketch' # Default base template document.
+    BASE_SKETCH = 'resources/Base.sketch' # Default base template document.
+    TEMPLATE_SKETCH = 'resources/Template.sketch'
 
     def __init__(self, path=None):
         if path is None:
             path = self.getTemplatePath()
 
         self.sketchFile = SketchAppReader().read(path)
+        # Read the base file with models of layers to copy.
+        self.baseFile = SketchAppReader().read(self.BASE_SKETCH)
+
         self.page = None # Current selected page or artboard
         self.layer = None # Curerent selected layer
         self._fill = None # Current fill color
@@ -79,8 +85,8 @@ class SketchApi:
         self._path = None # Current open path-plygon to add points to
 
     def getTemplatePath(self):
-        resourcesPath = '/'.join(__file__.split('/')[:-1])
-        return resourcesPath + self.BASE_SKETCH
+        resourcesPath = '/'.join(__file__.split('/')[:-1]) + '/'
+        return resourcesPath + self.TEMPLATE_SKETCH
 
     def __repr__(self):
         return '<%s path=%s>' % (self.__class__.__name__, self.sketchFile.path.split('/')[-1])
@@ -115,7 +121,7 @@ class SketchApi:
         <SketchShapeGroup name=Rectangle>
         >>> api.save('_export/Save.sketch')
         >>> api.sketchFile
-        <SketchFile path=Base.sketch>
+        <SketchFile path=Template.sketch>
         """
         if path is None:
             path = self.path
@@ -133,10 +139,10 @@ class SketchApi:
         >>> page = api.selectPage(0)
         >>> layers = api.selectLayer(name='Artboard1').layers
         >>> len(layers)
-        9
+        6
         >>> g = api.newGroup(10, 20, 110, 120, fill=(0,0, 0.5))
         >>> len(layers)
-        10
+        7
         >>> g.style.fills[0]
         <SketchColor red=0 green=0 blue=0.5 alpha=0>
         """
@@ -237,7 +243,7 @@ class SketchApi:
 
         >>> api = SketchApi()
         >>> len(api.getIdLayers())
-        10
+        7
         """
         idLayers = {}
         for page in self.pages:
@@ -290,7 +296,10 @@ class SketchApi:
         print('Sketch.line not implented yet', p1, p2)
 
     def oval(self, x, y, w, h, name=None, **kwargs):
-        """Draws the oval with current fill and stroke.
+        """Draws the oval with current fill and stroke, by copying
+        the layer from the self.baseFile document. This way all 
+        settings for the layer are already done, even if the 
+        resources/Base.sketch is updated to a new SketchApp version.
 
         >>> api = SketchApi()
         >>> page = api.selectPage(0)
@@ -301,10 +310,10 @@ class SketchApi:
         <SketchArtboard name=Artboard1 w=576 h=783>
         >>> layers = artboard.layers
         >>> len(layers)
-        9
+        6
         >>> g = api.oval(100, 110, 200, 210, fill=(1, 0, 0.5, 0.25))
         >>> len(layers)
-        10
+        7
         >>> layers[0].style.fills
         [<SketchFill>]
         """
@@ -343,10 +352,10 @@ class SketchApi:
         <SketchArtboard name=Artboard1 w=576 h=783>
         >>> layers = artboard.layers
         >>> len(layers)
-        9
+        6
         >>> r = api.rect(100, 110, 200, 210, fill=(1, 0, 0, 0.5))
         >>> len(layers)
-        10
+        7
         >>> r.style.fills
         [<SketchColor red=1 green=0 blue=0 alpha=0.5>]
         """

@@ -2,35 +2,36 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#  S K E T C H A P P 2 P Y
+#   P A G E B O T  N A N O
 #
-#  Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
-#  www.pagebot.io
-#  Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#  Supporting DrawBot, www.drawbot.com
-#  Supporting Flat, xxyxyz.org/flat
-#  Supporting Sketch, https://github.com/Zahlii/python_sketch_api
+#   Supporting DrawBot, www.drawbot.com
+#   Supporting Sketch, https://github.com/Zahlii/python_sketch_api
 # -----------------------------------------------------------------------------
 #
-#  classes.py
+#   classes.py
 #
-#  Site page opening any sketch file format:
-#  https://xaviervia.github.io/sketch2json/
+#   Site page opening any sketch file format:
+#   https://xaviervia.github.io/sketch2json/
 #
-#  https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
-#  This description is not complete.
-#  Additions made where found in the Reading specification of this context.
+#   https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
+#   This description is not complete.
+#   Additions made where found in the Reading specification of this context.
 #
-#  http://sketchplugins.com/d/87-new-file-format-in-sketch-43
+#   http://sketchplugins.com/d/87-new-file-format-in-sketch-43
 #
-#  This source will not import PageBot. But it is written in close
-#  conntection to it, so PageBot can read/write Document and Element
-#  instances into SketchApp files.
+#   This source will not import PageBot. But it is written in close
+#   conntection to it, so PageBot can read/write Document and Element
+#   instances into SketchApp files.
 #
-#  Webviewer
-#  https://github.com/AnimaApp/sketch-web-viewer
+#   Webviewer
+#   https://github.com/AnimaApp/sketch-web-viewer
 #
+import sys
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
 
 import os
 import zipfile
@@ -1181,13 +1182,13 @@ class SketchLayer(SketchBase):
         layer.find(_class=_class, name=name, pattern=pattern, found=found)
     return found
 
-  def _get_artBoards(self):
-    artBoards = []
+  def _get_artboards(self):
+    artboards = []
     for layer in self.layers:
       if isinstance(layer, SketchArtboard):
-        artBoards.append(layer)
-    return artBoards
-  artBoards = property(_get_artBoards)
+        artboards.append(layer)
+    return artboards
+  artboards = property(_get_artboards)
 
   def asJson(self):
     """Get attributes from base as JSON dict."""

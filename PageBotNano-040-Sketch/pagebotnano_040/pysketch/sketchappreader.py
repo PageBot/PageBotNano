@@ -2,39 +2,41 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#  S K E T C H A P P 2 P Y
+#   P A G E B O T  N A N O
 #
-#  Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
-#  www.pagebot.io
-#  Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#  Supporting DrawBot, www.drawbot.com
-#  Supporting Flat, xxyxyz.org/flat
-#  Supporting Sketch, https://github.com/Zahlii/python_sketch_api
+#   Supporting DrawBot, www.drawbot.com
+#   Supporting Sketch, https://github.com/Zahlii/python_sketch_api
 # -----------------------------------------------------------------------------
 #
-#  sketchappreader.py
+#   sketchappreader.py
 #
-#  Write the Sketch classes into a valid Sketch file.
+#   Write the Sketch classes into a valid Sketch file.
 #
-#  Inspect sketch file:
-#  https://xaviervia.github.io/sketch2json/
+#   Inspect sketch file:
+#   https://xaviervia.github.io/sketch2json/
 #
-#  https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
-#  This description is not complete.
-#  Additions made where found in the Reading specification of this context.
+#   https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
+#   This description is not complete.
+#   Additions made where found in the Reading specification of this context.
 #
-#  Webviewer
-#  https://github.com/AnimaApp/sketch-web-viewer
+#   Webviewer
+#   https://github.com/AnimaApp/sketch-web-viewer
 #
-from pysketch.sketchclasses import *
+import sys
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
+
+from pagebotnano_040.pysketch.sketchclasses import *
 
 class SketchAppReader(SketchAppBase):
 
   def read(self, path):
     """Read a sketch file and answer a SketchDocument that contains the interpreted data.
 
-    >>> path = '../../Test/TestStar.sketch'
+    >>> path = 'resources/TemplateSquare.sketch'
     >>> reader = SketchAppReader()
     >>> skf = reader.read(path)
     >>> skf.document.do_objectID is not None
@@ -57,11 +59,11 @@ class SketchAppReader(SketchAppBase):
     >>> artboard = page.layers[0]
     >>> artboard
     <SketchArtboard name=Artboard1 w=576 h=783>
-    >>> artboard.layers
-    [<SketchStar name=Star>]
+    >>> artboard.layers[0]
+    <SketchRectangle name=RectangleTopLeft>
     >>> bitmap = artboard.layers[0]
     >>> bitmap.frame
-    <SketchRect x=60 y=181 w=345 h=345>
+    <SketchRect x=60 y=96 w=216 h=168>
     """
 
     assert path.endswith('.'+FILETYPE_SKETCH)

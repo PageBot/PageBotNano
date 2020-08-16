@@ -2,26 +2,27 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#  S K E T C H A P P 2 P Y
+#   P A G E B O T  N A N O
 #
-#  Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
-#  www.pagebot.io
-#  Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#  Supporting DrawBot, www.drawbot.com
-#  Supporting Flat, xxyxyz.org/flat
-#  Supporting Sketch, https://github.com/Zahlii/python_sketch_api
+#   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#  sketchcompare.py
+#   sketchcompare.py
 #
-#  Take two SketchApp files and compare them. 
-#  Output an oveview of differences.
+#   Take two SketchApp files and compare them. 
+#   Output an oveview of differences.
 #
+import sys
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
+
 import os
-from pysketch.sketchclasses import *
-from pysketch.sketchappreader import SketchAppReader
-from pysketch.sketchappwriter import SketchAppWriter
+from pagebotnano_040.pysketch.sketchclasses import *
+from pagebotnano_040.pysketch.sketchappreader import SketchAppReader
+from pagebotnano_040.pysketch.sketchappwriter import SketchAppWriter
 
 CHECK_ID = False
 
@@ -75,7 +76,7 @@ def _compare(d1, d2, result, path=None):
 def sketchCompare(sketchFile1, sketchFile2, result=None):
     """
     >>> from sketchappreader import SketchAppReader
-    >>> PATH = '../../Test/' 
+    >>> PATH = 'resources/test/' 
     >>> EXPORT_PATH = '_export/' 
     >>> if not os.path.exists(EXPORT_PATH):
     ...     os.path.mkdir(EXPORT_PATH)
@@ -118,17 +119,17 @@ def prettyPrint(d, name=None, result=None, tab=0):
     """
     >>> from sketchappreader import SketchAppReader
     >>> testFileNames = (
-    ...     #'TestImage.sketch',
+    ...     'TestImage.sketch',
     ...     'TestRectangles.sketch',
-    ...     #'TestStar.sketch',
-    ...     #'TestPolygon.sketch',
-    ...     #'TestOval.sketch',
-    ...     #'TestABC.sketch',
+    ...     'TestStar.sketch',
+    ...     'TestPolygon.sketch',
+    ...     'TestOval.sketch',
+    ...     'TestABC.sketch',
     ... )
     >>> for fileName in testFileNames:
     ...     result = []
     ...     reader = SketchAppReader()
-    ...     readPath = '../../Test/' + fileName
+    ...     readPath = 'resources/test/' + fileName
     ...     skf = reader.read(readPath)
     ...     result = prettyPrint(skf)
     """

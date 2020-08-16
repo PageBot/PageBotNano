@@ -2,38 +2,39 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#  S K E T C H A P P 2 P Y
+#   P A G E B O T  N A N O
 #
-#  Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
-#  www.pagebot.io
-#  Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#  Supporting DrawBot, www.drawbot.com
-#  Supporting Flat, xxyxyz.org/flat
-#  Supporting Sketch, https://github.com/Zahlii/python_sketch_api
+#   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#  sketchapi.py
+#   sketchapi.py
 #
-#  This api is compatible with the context builders of PageBot.
+#   This api is compatible with the context builders of PageBotNano.
 #
-#  Write the Sketch classes into a valid Sketch file.
+#   Write the Sketch classes into a valid Sketch file.
 #
-#  Inspect sketch file:
-#  https://xaviervia.github.io/sketch2json/
-#  https://developer.sketch.com/file-format/
+#   Inspect sketch file:
+#   https://xaviervia.github.io/sketch2json/
+#   https://developer.sketch.com/file-format/
 #
-#  https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
-#  This description is not complete.
-#  Additions made where found in the Reading specification of this context.
+#   https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
+#   This description is not complete.
+#   Additions made where found in the Reading specification of this context.
 #
-#  Webviewer
-#  https://github.com/AnimaApp/sketch-web-viewer
+#   Webviewer
+#   https://github.com/AnimaApp/sketch-web-viewer
 #
+import sys
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
+
 import os
-from pysketch.sketchclasses import *
-from pysketch.sketchappreader import SketchAppReader
-from pysketch.sketchappwriter import SketchAppWriter
+from pagebotnano_040.pysketch.sketchclasses import *
+from pagebotnano_040.pysketch.sketchappreader import SketchAppReader
+from pagebotnano_040.pysketch.sketchappwriter import SketchAppWriter
 
 class SketchApi:
     """
@@ -42,7 +43,7 @@ class SketchApi:
     <SketchApi path=Template.sketch>
     >>> api.sketchFile
     <SketchFile path=Template.sketch>
-    >>> api.sketchFile.path.endswith('/Resources/Template.sketch')
+    >>> api.sketchFile.path.endswith('/resources/Template.sketch')
     True
     >>> api.filePath == api.sketchFile.path
     True
@@ -53,16 +54,16 @@ class SketchApi:
     (<SketchPage name=Page 1>, <SketchPage name=Page 1>)
     >>> page.name
     'Page 1'
-    >>> len(page.layers[0]), page.artBoards, len(page.artBoards[0])
-    (7, [<SketchArtboard name=Artboard 1 w=576 h=783>], 7)
-    >>> artBoard = page.artBoards[0]
+    >>> len(page.layers[0]), page.artboards, len(page.artboards[0])
+    (6, [<SketchArtboard name=Artboard1 w=576 h=783>], 6)
+    >>> artBoard = page.artboards[0]
     >>> e = artBoard.layers[3]
     >>> e, e.name
-    (<SketchRectangle name=Rectangle Middle Right>, 'Rectangle Middle Right')
-    >>> e = page.find(pattern='Top Left')[0]
+    (<SketchRectangle name=RectangleMiddleRight>, 'RectangleMiddleRight')
+    >>> e = page.find(pattern='TopLeft')[0]
     >>> e.name, e.frame
-    ('Rectangle Top Left', <SketchRect x=60 y=0 w=216 h=168>)
-    >>> #e.style['fills']
+    ('RectangleTopLeft', <SketchRect x=60 y=96 w=216 h=168>)
+
     """
 
     def __init__(self, path=None):
@@ -78,7 +79,7 @@ class SketchApi:
 
     def getTemplatePath(self):
         resourcesPath = '/'.join(__file__.split('/')[:-1])
-        return resourcesPath + '/Resources/Template.sketch' # Default template document.
+        return resourcesPath + '/resources/Template.sketch' # Default template document.
 
     def __repr__(self):
         return '<%s path=%s>' % (self.__class__.__name__, self.sketchFile.path.split('/')[-1])
@@ -131,10 +132,10 @@ class SketchApi:
         >>> page = api.selectPage(0)
         >>> layers = api.selectLayer(name='Artboard 1').layers
         >>> len(layers)
-        0
+        6
         >>> g = api.newGroup(10, 20, 110, 120, fill=(0,0, 0.5))
         >>> len(layers)
-        1
+        7
         >>> g.style.fills[0]
         <SketchColor red=0 green=0 blue=0.5 alpha=0>
         """
@@ -235,7 +236,7 @@ class SketchApi:
 
         >>> api = SketchApi()
         >>> len(api.getIdLayers())
-        1
+        13
         """
         idLayers = {}
         for page in self.pages:
@@ -299,12 +300,12 @@ class SketchApi:
         <SketchArtboard name=Artboard 1 w=576 h=783>
         >>> layers = artboard.layers
         >>> len(layers)
-        0
+        6
         >>> g = api.oval(100, 110, 200, 210, fill=(1, 0, 0.5, 0.25))
         >>> len(layers)
-        1
+        7
         >>> layers[0].style.fills
-        [<SketchColor red=1 green=0 blue=0.5 alpha=0.25>]
+        [<SketchFill>]
         """
         if w is None:
             w = DEFAULT_WIDTH
@@ -341,10 +342,10 @@ class SketchApi:
         <SketchArtboard name=Artboard 1 w=576 h=783>
         >>> layers = artboard.layers
         >>> len(layers)
-        0
+        6
         >>> r = api.rect(100, 110, 200, 210, fill=(1, 0, 0, 0.5))
         >>> len(layers)
-        1
+        7
         >>> r.style.fills
         [<SketchColor red=1 green=0 blue=0 alpha=0.5>]
         """

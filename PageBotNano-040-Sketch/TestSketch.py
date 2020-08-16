@@ -36,7 +36,7 @@ class SketchTester:
     >>> # sketchPage --> PageBotNano Document
     >>> sketchArtBoard --> PageBotNano Page
     >>> sketchRectangle --> PageBotNano Rect element
-    >>> artBoard = sketchPage.artBoards[0] 
+    >>> artBoard = sketchPage.artboards[0] 
     >>> artBoard
     <SketchArtboard name=Artboard 1 w=576 h=783>
     >>> # Get one of the rectangles on this artBoard

@@ -2,37 +2,40 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
 #
-#  S K E T C H A P P 2 P Y
+#   P A G E B O T  N A N O
 #
-#  Copyright (c) 2016+ Buro Petr van Blokland + Claudia Mens
-#  www.pagebot.io
-#  Licensed under MIT conditions
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
-#  Supporting DrawBot, www.drawbot.com
-#  Supporting Flat, xxyxyz.org/flat
-#  Supporting Sketch, https://github.com/Zahlii/python_sketch_api
+#   Supporting DrawBot, www.drawbot.com
+#   Supporting Sketch, https://github.com/Zahlii/python_sketch_api
 # -----------------------------------------------------------------------------
 #
-#  sketchappwriter.py
+#   sketchappwriter.py
 #
-#  Write the Sketch classes into a valid Sketch file.
+#   Write the Sketch classes into a valid Sketch file.
 #
-#  Inspect sketch file:
-#  https://xaviervia.github.io/sketch2json/
+#   Inspect sketch file:
+#   https://xaviervia.github.io/sketch2json/
 #
-#  https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
-#  This description is not complete.
-#  Additions made where found in the Reading specification of this context.
+#   https://gist.github.com/xaviervia/edbea95d321feacaf0b5d8acd40614b2
+#   This description is not complete.
+#   Additions made where found in the Reading specification of this context.
 #
-#  Webviewer
-#  https://github.com/AnimaApp/sketch-web-viewer
+#   Webviewer
+#   https://github.com/AnimaApp/sketch-web-viewer
 #
-from pysketch.sketchclasses import *
+import sys
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
+
+from pagebotnano_040.pysketch.sketchclasses import *
 
 class SketchAppWriter(SketchAppBase):
   """
-  >>> from sketchappreader import SketchAppReader
-  >>> testFileNames = ('TestImage.sketch',
+  >>> from pagebotnano_040.pysketch.sketchappreader import SketchAppReader
+  >>> testFileNames = (
+  ...     'TestImage.sketch',
   ...     'TestRectangles.sketch',
   ...     'TestStar.sketch',
   ...     'TestPolygon.sketch',
@@ -41,7 +44,7 @@ class SketchAppWriter(SketchAppBase):
   ... )
   >>> for fileName in testFileNames:
   ...     reader = SketchAppReader()
-  ...     readPath = '../../Test/' + fileName
+  ...     readPath = 'resources/test/' + fileName
   ...     skf = reader.read(readPath)
   ...     writePath = readPath.replace('.sketch', 'Write.sketch')
   ...     writer = SketchAppWriter()

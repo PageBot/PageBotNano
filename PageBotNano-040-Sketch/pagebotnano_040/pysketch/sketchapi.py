@@ -47,8 +47,6 @@ class SketchApi:
     True
     >>> api.filePath == api.sketchFile.path
     True
-    >>> api.baseFile.path.endswith('resources/Base.sketch')
-    True
     >>> path = 'Resources/TemplateSquare.sketch'
     >>> api = SketchApi(path)
     >>> page = api.selectPage(0)
@@ -75,9 +73,6 @@ class SketchApi:
             path = self.getTemplatePath()
 
         self.sketchFile = SketchAppReader().read(path)
-        # Read the base file with models of layers to copy.
-        self.baseFile = SketchAppReader().read(self.BASE_SKETCH)
-
         self.page = None # Current selected page or artboard
         self.layer = None # Curerent selected layer
         self._fill = None # Current fill color
@@ -296,10 +291,7 @@ class SketchApi:
         print('Sketch.line not implented yet', p1, p2)
 
     def oval(self, x, y, w, h, name=None, **kwargs):
-        """Draws the oval with current fill and stroke, by copying
-        the layer from the self.baseFile document. This way all 
-        settings for the layer are already done, even if the 
-        resources/Base.sketch is updated to a new SketchApp version.
+        """Draws the oval with current fill and stroke.
 
         >>> api = SketchApi()
         >>> page = api.selectPage(0)

@@ -46,8 +46,8 @@ e.frame.x += 50
 e.frame.y += 50
 
 # Set the parent layer in the api
-#api.layer = skArtboard
-#g = api.rect(100, 110, 200, 210, fill=(1, 0, 0.5, 0.25))
+api.layer = skArtboard
+g = api.rect(100, 110, 200, 210, fill=(1, 0, 0.5, 0.25))
 
 if not os.path.exists(EXPORT_PATH):
     os.makedirs(EXPORT_PATH)

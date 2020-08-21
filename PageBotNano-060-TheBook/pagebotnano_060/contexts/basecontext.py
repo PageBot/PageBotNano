@@ -11,7 +11,16 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   This source makes it possible to import other sources
-#   from this directory/folder
+#   basecontext.py
 #
-VERSION = '050-0001'
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+class BaseContext:
+	def __repr__(self):
+		return '<%s>' % self.__class__.__name__
+
+if __name__ == "__main__":
+    # Running this document will execute all >>> comments as test of this source.
+    import doctest
+    doctest.testmod()[0]

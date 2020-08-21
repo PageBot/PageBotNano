@@ -18,8 +18,8 @@ sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 from copy import copy
 import drawBot
 
-from pagebotnano_050.toolbox.color import Color
-from pagebotnano_050.constants import (EN, FS_ATTRIBUTES, CSS_ATTRIBUTES, 
+from pagebotnano_060.toolbox.color import Color
+from pagebotnano_060.constants import (EN, FS_ATTRIBUTES, CSS_ATTRIBUTES, 
     HTML_TEXT_TAGS)
 
 class BabelRun:
@@ -219,7 +219,7 @@ class BabelString:
     textSize = property(_get_textSize)
 
     def getTextSize(self, w=None):
-        return drawBot.textSize(self.fs, width=w)
+        return drawBot.textSize(self.fs, w=w)
         
     def _getFSStyle(self, style):
         """Answer a style dict that only contains names that are allowed 

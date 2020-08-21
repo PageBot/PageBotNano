@@ -14,4 +14,3 @@
 #   This source makes it possible to import other sources
 #   from this directory/folder
 #
-VERSION = '050-0001'

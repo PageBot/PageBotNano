@@ -11,7 +11,6 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   This source makes it possible to import other sources
-#   from this directory/folder
+#   MakeItSmall-TheBook.py
 #
-VERSION = '050-0001'
+

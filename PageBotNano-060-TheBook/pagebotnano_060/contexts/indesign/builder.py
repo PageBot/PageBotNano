@@ -21,16 +21,16 @@ import sys
 sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
 
 import drawBot
-from pagebotnano_050.contexts.indesign.constants import JSX_LIB
-from pagebotnano_050.toolbox.color import color, noColor
-from pagebotnano_050.constants import *
+from pagebotnano_060.contexts.indesign.constants import JSX_LIB
+from pagebotnano_060.toolbox.color import color, noColor
+from pagebotnano_060.constants import *
 
 class InDesignBuilder:
     """The InDesignBuilder is the interface between the InDesignContext and the 
     generated JavaScript files. It is on the same level as DrawBot builder/canvas.
     Similar to DrawBot, builders are not supposed to know anything about PageBotNano objects.
 
-    >>> from pagebotnano_050.constants import A4
+    >>> from pagebotnano_060.constants import A4
     >>> w, h = A4
     >>> b = InDesignBuilder()
     >>> b
@@ -43,14 +43,14 @@ class InDesignBuilder:
     >>> b.fill(color(1, 0, 0))
     >>> b.rect(50, 0, 100, 200) # Landscape rectangle at bottom-left
     >>> b.newPage()
+    >>> b.newPage()
     >>> b.saveDocument('InDesignBuilder.js')
 
     """
     PB_ID = 'inds'
 
-    # Exporting directly into the InDesign script folder
-    SCRIPT_PATH = '~/Library/Preferences/Adobe InDesign/Version 14.0/en_US/Scripts/Scripts Panel/PageBot/'
-    # Local export for verification.
+    # Exporting directly into the InDesign 
+    SCRIPT_PATH = '/Users/petr/Library/Preferences/Adobe InDesign/Version 14.0/en_US/Scripts/Scripts Panel/PageBot/'
     SCRIPT_PATH1 = '_export/'
 
     def __init__(self):
@@ -107,9 +107,9 @@ class InDesignBuilder:
             justification:Justification.CENTER_ALIGN,
             pointSize:300, leading:300, fillColor: pbGetColor(pbDoc, [255, 255, 255])});
 
-        >>> from pagebotnano_050.toolbox.color import color
-        >>> from pagebotnano_050.document import Document
-        >>> from pagebotnano_050.contexts.indesign.context import InDesignContext
+        >>> from pagebotnano_060.toolbox.color import color
+        >>> from pagebotnano_060.document import Document
+        >>> from pagebotnano_060.contexts.indesign.context import InDesignContext
         >>> context = InDesignContext()
         >>> font = ''
         >>> styles = dict(
@@ -258,10 +258,10 @@ class InDesignBuilder:
             w = h/ih * iw
         px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
         self._out('/* Image %s */' % path)
-        #self._outSelectPage(e)
+        self._outSelectPage(e)
         self._out('pbElement = pbPage.rectangles.add({geometricBounds:["%s", "%s", "%s", "%s"]});' % (py1, px1, py2, px2))
-        #self._outElementFillColor(e)
-        #self._outElementStrokeColor(e)
+        self._outElementFillColor(e)
+        self._outElementStrokeColor(e)
         #self._out('alert(myScriptPath() + "%s");' % path)
         self._out('pbElement.place(File(myScriptPath() + "%s"));' % path)
         # FitOptions: http://jongware.mit.edu/idcs4js/pe_FitOptions.html
@@ -292,24 +292,24 @@ class InDesignBuilder:
     def textBox(self, bs, p, w=None, h=None, clipPath=None, e=None):
         """Draw a text box on the given position.
 
-        >>> from pagebotnano_050.babelstring import BabelString
+        >>> from pagebotnano_060.babelstring import BabelString
         >>> builder = InDesignBuilder()
         >>> bs = BabelString('ABCD', dict(fontSize=12))
-        >>> #builder.textBox(bs, (100, 100))
+        >>> builder.textBox(bs, (100, 100))
         """
         w = w or DEFAULT_WIDTH
         h = h or bs.getTextSize(w=w)
-        x, y = p
+        x, y = point2D(p)
         px1, py1, px2, py2 = self.getXY(x, y, w, h) # Calculate positions.
         self._out('/* TextBox */')
-        #self._outSelectPage(e)
+        self._outSelectPage(e)
         self._out('pbElement = pbPage.textFrames.add({geometricBounds:["%s", "%s", "%s", "%s"]});' % (py1, px1, py2, px2))
-        #self._outElementFillColor(e)
-        #self._outElementStrokeColor(e)
-        #self._out('pbElement.contents = "%s";' % bs.s)
-        #if e is not None or e.style:
-        #    self._out('pbElement.parentStory.paragraphs.item(0).appliedParagraphStyle = pbDoc.paragraphStyles.item("%s", false);' % e.style['name'])   
-        #self._out('pbElement.textFramePreferences.insetSpacing = ["%s", "%s", "%s", "%s"]; // top, left, bottom, right' % (e.pt, e.pl, e.pb, e.pr))
+        self._outElementFillColor(e)
+        self._outElementStrokeColor(e)
+        self._out('pbElement.contents = "%s";' % bs.s)
+        if e is not None or e.style:
+            self._out('pbElement.parentStory.paragraphs.item(0).appliedParagraphStyle = pbDoc.paragraphStyles.item("%s", false);' % e.style['name'])   
+        self._out('pbElement.textFramePreferences.insetSpacing = ["%s", "%s", "%s", "%s"]; // top, left, bottom, right' % (e.pt, e.pl, e.pb, e.pr))
 
     def scale(self, sx, sy, center=None):
         pass

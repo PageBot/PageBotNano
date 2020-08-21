@@ -47,8 +47,8 @@ e = Oval(parent=page, w=p(16), h=p(16), x=p(20), y=p(31),
 	stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
 
 # Make an image element
-#e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
-#	w=page.pw, h=page.pw, fill=color(0.5))
+e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, 
+	w=page.pw, h=page.pw, fill=color(0.5))
 
 """
 page = doc.newPage()

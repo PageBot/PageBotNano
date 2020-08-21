@@ -11,7 +11,5 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   This source makes it possible to import other sources
-#   from this directory/folder
+#	__init__.py
 #
-VERSION = '050-0001'

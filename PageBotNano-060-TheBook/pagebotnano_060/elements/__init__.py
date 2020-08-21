@@ -14,4 +14,8 @@
 #   This source makes it possible to import other sources
 #   from this directory/folder
 #
-VERSION = '050-0001'
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+from pagebotnano_060.elements.element import Element, Text, TextBox, Rect, Oval, Image
+from pagebotnano_060.elements.page import Page

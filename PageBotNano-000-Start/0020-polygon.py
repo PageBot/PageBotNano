@@ -22,11 +22,14 @@ drawBot.newPage(600, 600)
 drawBot.fill(1)
 drawBot.rect(0, 0, W, H)
 # Set fill color to red (r, g, b)
-drawBot.fill(0.5, 0.5, 1)
+drawBot.fill(0.2, 1, 1)
 # Draw a black square (x, y, width, height)
-drawBot.rect(50, 50, 200, 200)
-drawBot.rect(50, 350, 200, 200)
-drawBot.rect(350, 350, 200, 200)
-drawBot.rect(350, 50, 200, 200)
+# draw a polygon with x-amount of points
+drawBot.polygon(
+	(50, 50), (100, 300), (50, 550), # Left
+	(300, 500), # Top
+	(550, 550), (500, 300), (550, 50), # Right
+	(300, 100), # Bottom
+	close=True)
 # Export as png file in created _export folder (that does not sync in Github)
-export('_export/0012-Squares.png')
+export('_export/0020-Polygon.png')

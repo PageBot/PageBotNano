@@ -27,6 +27,9 @@ rect(100, 100, 400, 400)
 
 ## DesignDesign.Space exercises
 
+DesignDesign.Space exercises in additions to the DrawBot website examples.
+These prepare for the PageBotNano version sequence, starting from scratch for people without Pything/coding experience.
+
 For a full list of exercises with design process see [DesignDesign.Space/Scales](https://designdesign.space/scales.html)
 
 The Scales are number coded. The specific focus of Scales assignment can be derived from their number range of 100. Note, however, that most assignment will have multiple aspects combined:

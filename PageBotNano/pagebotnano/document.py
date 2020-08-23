@@ -89,6 +89,23 @@ class Document:
         return '<%s w=%s h=%s pages=%d>' % (self.__class__.__name__, 
             self.w, self.h, len(self.pages))
 
+    def __getitem__(self, index):
+        """Answer the page of index. Answer None if the page does not exists.
+        Note that the page index is in general one lower than the page number,
+        since the first page start uneven on the right side of a spread.
+
+        >>> doc = Document()
+        >>> doc[0] is None
+        True
+        >>> page = doc.newPage()
+        >>> doc[0]
+        <Page pn=1 w=595pt h=842pt elements=0>
+        """
+        if index in range(len(self.pages)):
+            return self.pages[index]
+        return None
+
+
     def _get_padding(self):
         """Answer a tuple of the 4 padding values of the element.
         Order of values:  Padding top, right, bottom, left

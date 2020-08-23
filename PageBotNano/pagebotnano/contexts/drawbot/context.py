@@ -14,21 +14,27 @@
 #   drawbotcontext.py
 #
 import sys
+sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
+
 import drawBot
-
-if __name__ == "__main__":
-    sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
-
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.color import color, Color
+from pagebotnano.toolbox.units import upt # Convers units to points.
 
 class DrawBotContext:
     
+    def newDocument(self, w=None, h=None, doc=None):
+        pass
+
+    def newPage(self, w, h):
+        ptw, pth = upt(w, h)
+        return drawBot.newPage(ptw, pth)
+           
     def newDrawing(self):
         return drawBot.newDrawing()
 
-    def saveImage(self, path, multipage=True):
-        return drawBot.saveImage(path, multipage=multipage)
+    def saveImage(self, path, multiPage=True):
+        return drawBot.saveImage(path, multipage=multiPage)
 
     def fill(self, c):
         """Set the fill mode of the context. `c` can be None, a number,

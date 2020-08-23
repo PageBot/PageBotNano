@@ -19,15 +19,15 @@ import sys
 from random import random
 
 if __name__ == "__main__":
-    sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
-  
-from pagebotnano.constants import CENTER, LEFT, RIGHT, EN, MAIN
+    sys.path.insert(0, "../..") # So we can import pagebotnano002 without installing.
+
+from pagebotnano.constants import CENTER, LEFT, RIGHT, EN
 from pagebotnano.publications.publication import Publication
 from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, TextBox, Image
+from pagebotnano.elements import Rect, Text, TextBox, Image, Marker
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.typesetter import Typesetter
-from pagebotnano.templates.onecolumn import OneColumnTemplates
+from pagebotnano.toolbox.units import pt
 
 class Book(Publication):
     """A Book publication takes a volume of text/imges source
@@ -35,47 +35,142 @@ class Book(Publication):
     PDF document.
 
     >>> from pagebotnano.elements import Rect, Text
-    >>> from pagebotnano.constants import A5
+    >>> from pagebotnano.constants import PENGUIN_POCKET
     >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
     >>> from pagebotnano.templates.onecolumn import OneColumnTemplates
-    >>> w, h = A5
+    >>> w, h = PENGUIN_POCKET 
     >>> title = randomTitle()
     >>> author = randomName()
     >>> ts = Typesetter()
-    >>> xml = '<xml><h1>%s</h1><p>%s</p></xml>' % (title, (loremipsum() + ' ') * 50)
+    >>> xml = '<xml><title>%s</title><author>%s</author><h1>%s</h1><p>%s</p></xml>' % (title, author, title, (loremipsum() + ' ') * 50)
     >>> styles = {}
     >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
     >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, styles)    
-    >>> imagePath = '../../../resources/images/cookbot1.jpg'
-    >>> templates = OneColumnTemplates # Class holding template methods.
-    >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath, templates=templates)
-    >>> book.export('_export/Book.pdf')
+    >>> book = Book(w=w, h=h, templates=OneColumnTemplates, styles=styles, galley=g)
+    >>> book.galley.elements
+    [<Marker type=author index=None>, <TextBox name=TextBox w=100pt h=None>]
+    >>> book.export('_export/TestBook.pdf')
     """
     MAX_PAGES = 100
     
-    def __init__(self, w, h, title, author, galley=None, coverImagePath=None, 
-        coverColor=None, styles=None, context=None, templates=None):
-        Publication.__init__(self, w=w, h=h, styles=styles, context=context,
-            templates=templates)
-        self.title = title
-        self.author = author
-        self.galley = galley # Typesetter.galley
-        self.coverImagePath = coverImagePath
-        if coverColor is None:
-            coverColor = random()*0.3, random()*0.1, random()*0.4 # Random dark blue
-        self.coverColor = coverColor
+    def __init__(self, w=None, h=None, templates=None, styles=None, galley=None, context=None):
+        Publication.__init__(self, w=w, h=h, templates=templates, styles=styles, galley=galley, context=context)
 
-    def compose(self):
-        """This is the core of a publication, composing the specific
-        content of the document. The compose method gets called
-        before building and exporting the self.doc document.
+    def compose(self, page=None, targets=None):
+        """This is the core of a publication, composing the specific content of the document, 
+        from tags found in the gally.
+        The compose method gets called before building and exporting the self.doc document.
+        The templates class is supposed to know how to query for tags to be places on various types of pages. 
+        Self (the Publications Book) is supposed to know which templates to call for certain page,
+        if that is not already defined by the markdown input stream.
+
+        >>> from pagebotnano.elements import Rect, Text
+        >>> from pagebotnano.constants import PENGUIN_POCKET
+        >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
+        >>> from pagebotnano.templates.onecolumn import OneColumnTemplates
+        >>> w, h = PENGUIN_POCKET 
+        >>> ts = Typesetter()
+        >>> styles = {}
+        >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
+        >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
+        >>> markdownPath = '../../MakeItSmall-TheBook.md'
+        >>> g = ts.typesetFile(markdownPath, styles)    
+        >>> book = Book(w=w, h=h, templates=OneColumnTemplates, styles=styles, galley=g)
+        >>> book.galley.find(cls='Marker')
+        <Marker type=chapter index=None>
+        >>> book.export('_export/Book.pdf')
+
         """
-        fontSize = 11
+        # For all the elements that are collected in the galley, assume that
+        # the TextBoxes are chapters, creating a new page for them.
+        # If the TextBox does not fit on the page, keep adding new pages 
+        # until all of the BabelString overfill is processed.
+
+        if targets is None:
+            if page is None:
+                if not self.doc.pages:
+                    pages = self.doc.newPage()
+                else:
+                    page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
+
+            # Transfer a whole packages of current resources to the stream parsing,
+            # so that information is accessable from the galley code block processing.
+            targets = dict(composer=self, doc=self.doc, page=page, styles=self.styles,
+                theme=self.theme, templates=self.templates)
+
+            if page is not None:
+                targets['box'] = page.select('main')
+
+        elif page is not None:
+            targets['page'] = page
+
+        if 'errors' not in targets:
+            targets['errors'] = []
+        errors = targets['errors']
+
+        if 'verbose' not in targets:
+            targets['verbose'] = []
+        verbose = targets['verbose']
+
+        composerName = self.__class__.__name__
+
+        for e in self.galley.elements:
+
+            if isinstance(e, Marker): # Marker can select a new page, chapter, footnote, etc.
+                if e.markerType == 'page': # $page$ in markdown file
+                    page = self.doc.newPage()
+                    verbose.append('%s.compose: Marker new page' % composerName)
+
+            elif targets.get('box') is not None and targets.get('box').isText and targets.get('box').bs is not None and e.isText:
+                # If new content and last content are both text boxes, then merge the string.
+                targets.get('box').bs += e.bs
+
+            elif targets.get('box') is not None:
+                # Otherwise just paste the galley-element onto the target box.
+                #e.parent = targets.get('box')
+                pass
+            else:
+                errors.append('%s.compose: No valid box or image selected "%s - %s"' % (composerName, page, e))
+
+        return targets
+        """
+        for ge in self.galley.elements:
+            print('Galley Element', ge.__class__.__name__)
+            continue
+            if isinstance(ge, TextBox):
+
+                bs = ge.bs # Get the BabelString from the galley box.
+
+                for n in range(self.MAX_PAGES):
+                    page = self.doc.newPage()
+
+                    # Add text element with page number
+                    self.templates.pageNumber(self.theme, self.doc, page, self.styles)
+
+                    
+                    # Add text element with the main text column of this page
+                    e = TextBox(bs, x=pad, y=pad, w=page.w-2*pad, h=page.h-2*pad)
+                    page.addElement(e)
+
+                    # If there is overflow on this page, continue looping creating
+                    # as many pages as needed to fill all the text in self.content.
+                    # Otherwise break the loop, as we are done placing content.
+                    bs = e.getOverflow(bs, doc=self.doc)
+                    # Test on this “incomplete” BabelString, as it only has a cached FS
+                    if not bs.fs:
+                        break
+                    
+        """
+
+    def XXX(self):
+
+        """
+        fontSize = pt(11)
         headSize = fontSize*1.5
-        titleSize = 36
+        titleSize = pt(36)
         subTitleSize = titleSize * 0.5
-        pad = 48
+        pad = pt(48)
 
         titleStyle = dict(font='Georgia-Bold', 
             lineHeight=titleSize*1.1, 
@@ -134,12 +229,13 @@ class Book(Publication):
         page.addElement(e)
 
         if self.coverImagePath is not None: # Only if not defined.
-            e = Image(self.coverImagePath, x=pad, y=pad, w=page.w-2*pad)
-            page.addElement(e)
+            e1 = Image(self.coverImagePath, x=pad, y=pad, w=page.w-2*pad)
+            e2 = Rect(x=pad, y=pad, w=page.w-2*pad, h=e1.h, fill=1)
+            page.addElement(e1)
+            page.addElement(e2)
 
         # Make “French” “Voordehandse” page.
         page = self.doc.newPage() # No page number here.
-        page.applyTemplate()
         # CENTER text alignment overwrites the value in headStyle.
         # fontSize overwrites the value in headStyle
         bs = BabelString(self.title+'\n', headStyle, fontSize=fontSize, align=CENTER)
@@ -147,12 +243,17 @@ class Book(Publication):
         page.addElement(e)
 
         # Make Title page.
-        page = self.doc.newPage(template=TitlePage()) # No page number here.
-        page.compose(self.doc, page)
+        page = self.doc.newPage() # No page number here.
         bs = BabelString(self.title+'\n', headStyle, align=CENTER)
         bs.append(BabelString(self.author, subHeadStyle, align=CENTER))
-        page.find(MAIN).bs = bs
+        e = Text(bs, x=page.w/2, y=page.h*3/4)
+        page.addElement(e)
 
+        
+        # Empty left page after title page
+        page = self.doc.newPage() # No page number here.
+        """
+        
         # For all the elements that are collected in the galley, assume that
         # the TextBoxes are chapters, creating a new page for them.
         # If the TextBox does not fit on the page, keep adding new pages 
@@ -168,8 +269,9 @@ class Book(Publication):
                     page = self.doc.newPage()
 
                     # Add text element with page number
-                    self.addPageNumber(page, pad, pageNumberLeftStyle, pageNumberRightStyle)
+                    self.templates.pageNumber(self.doc, page, self.styles)
 
+                    """
                     # Add text element with the main text column of this page
                     e = TextBox(bs, x=pad, y=pad, w=page.w-2*pad, h=page.h-2*pad)
                     page.addElement(e)
@@ -181,18 +283,21 @@ class Book(Publication):
                     # Test on this “incomplete” BabelString, as it only has a cached FS
                     if not bs.fs:
                         break
+                    """
 
-            elif isinstance(ge, Image): # Images not supported yet
+            elif isinstance(ge, Image):
                 page = self.doc.newPage()
 
                 self.addPageNumber(page, pad, pageNumberLeftStyle, pageNumberRightStyle)
-                page.addElement(ge)
-                ge.w = page.w - pad
                 iw, ih = ge.getSize(self.doc)
+                ge.w = page.w - pad
                 ge.x = pad/2
                 ge.y = page.h - pad - ih
+                #e = Rect(x=ge.x, y=ge.y, w=ge.w, h=ge.h, fill=(1, 0, 0))
+                #page.addElement(e)
+                page.addElement(ge)
 
-    def addPageNumber(self, page, pad, leftStyle, rightStyle):
+    def addPageNumberXXX(self, page, pad, leftStyle, rightStyle):
         # Add text element with page number
         if page.pn % 2 == 0: # Even page number?
             style = leftStyle 

@@ -17,14 +17,10 @@ import os # Import standard Python library to create the _export directory
 import sys
 
 if __name__ == "__main__":
-    sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+    sys.path.insert(0, "../..") # So we can import pagebotnano002 without installing.
 
 from pagebotnano.document import Document
 from pagebotnano.constants import CENTER
-from pagebotnano.themes import HappyHolidays as DefaultTheme
-from pagebotnano.toolbox.typesetter import Galley
-# Default set of template functions.
-from pagebotnano.templates.onecolumn import OneColumnTemplates 
 
 class Publication:
     """The Publication base class is a wrapper around a document.
@@ -35,7 +31,7 @@ class Publication:
     >>> from random import random
     >>> from pagebotnano.elements import Rect, Text
     >>> from pagebotnano.babelstring import BabelString
-        >>> pub = Publication() # Default size A4
+    >>> pub = Publication() # Default size A4
     >>> page = pub.doc.newPage()
     >>> e = Rect(0, 0, page.w, page.h, fill=random()*0.5) # Dark gray
     >>> page.addElement(e) 
@@ -45,16 +41,12 @@ class Publication:
     >>> page.addElement(e)
     >>> pub.export('_export/Publication.pdf')
     """
-    def __init__(self, w=None, h=None, theme=None, galley=None, templates=None,
-            context=None):       
-        # The galley is the main source of content, typically generated
-        # by a Typesetter instance, reading from a markdown file.
-        if galley is None:
-            galley = Galley() # If not defined, create an empty Galley
+    def __init__(self, w=None, h=None, templates=None, theme=None, styles=None, galley=None, context=None):
+        self.doc = Document(w=w, h=h, context=context)
         self.galley = galley
-
-        self.doc = Document(w=w, h=h, theme=theme, templates=templates, 
-            context=context)
+        self.templates = templates
+        self.styles = styles
+        self.theme = theme
 
     def compose(self):
         """Composing the publication allows inheriting class

@@ -967,7 +967,7 @@ def hex2char(hexadec):
 def makePadding(padding, default=0):
     """Check on the various ways that padding can be defined.
 
-    >>> from pagebotnano_060.toolbox.units import pt
+    >>> from pagebotnano.toolbox.units import pt
     >>> makePadding(pt(10, 20, 30, 40))
     (10pt, 20pt, 30pt, 40pt)
     >>> makePadding((10, 20, 30, 40))
@@ -977,7 +977,7 @@ def makePadding(padding, default=0):
     >>> makePadding(50)
     (50pt, 50pt, 50pt, 50pt)
     """
-    from pagebotnano_060.toolbox.units import units, Unit
+    from pagebotnano.toolbox.units import units, Unit
     
     if isinstance(padding, (list, tuple)):  
         if len(padding) == 2:

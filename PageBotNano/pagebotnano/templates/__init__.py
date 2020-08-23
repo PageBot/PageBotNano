@@ -19,22 +19,30 @@ class BaseTemplates:
     template should implement. Otherwise raise an error.
     """
     @classmethod
-    def coverPage(cls, theme, doc, page=None, parent=None, **kwargs):
+    def cover(cls, doc):
         raise NotImplementedError
 
     @classmethod
-    def tableOfContentPage(cls, theme, doc, page=None, parent=None, **kwargs):
+    def frenchTitle(cls, doc):
         raise NotImplementedError
 
     @classmethod
-    def indexPage(cls, theme, doc, page=None, parent=None, **kwargs):
+    def title(cls, doc):
         raise NotImplementedError
 
     @classmethod
-    def oneColumnPage(cls, theme, doc, page=None, parent=None, **kwargs):
+    def tableOfContent(cls, doc):
         raise NotImplementedError
 
     @classmethod
-    def oneColumnPage(cls, theme, doc, page=None, parent=None, **kwargs):
+    def page(cls, doc):
+        raise NotImplementedError
+
+    @classmethod
+    def index(cls, doc):
+        raise NotImplementedError
+
+    @classmethod
+    def colophon(cls, doc):
         raise NotImplementedError
 

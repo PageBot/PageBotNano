@@ -14,6 +14,7 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
+from pagebotnano.themes.theme import BaseTheme
 from pagebotnano.themes.backtothecity import BackToTheCity
 from pagebotnano.themes.businessasusual import BusinessAsUsual
 from pagebotnano.themes.fairytales import FairyTales

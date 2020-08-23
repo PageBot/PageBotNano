@@ -17,14 +17,15 @@
 #
 import os # Import standard Python library to create the _export directory
 import sys
-sys.path.insert(0, "..") # So we can import pagebotnano without installing.
+sys.path.insert(0, "../") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import A4, EXPORT_DIR
+from pagebotnano.constants import A4, EXPORT_DIR, PADDING
 from pagebotnano.elements import Element, Page
-from pagebotnano.contexts.drawbotcontext import DrawBotContext
-from pagebotnano.toolbox import makePadding
-from pagebotnano.themes import DefaultTheme
+from pagebotnano.contexts.drawbot.context import DrawBotContext
+from pagebotnano.themes import BaseTheme, DefaultTheme
 from pagebotnano.templates.onecolumn import OneColumnTemplates
+from pagebotnano.toolbox.units import units
+from pagebotnano.toolbox.transformer import makePadding
 
 class Document:
     # Class names start with a capital. See a class as a factory
@@ -39,22 +40,23 @@ class Document:
 
         >>> doc = Document()
         >>> doc
-        <Document w=595 h=842 pages=0>
+        <Document w=595pt h=842pt pages=0>
         >>> page = doc.newPage()
         >>> page = doc.newPage()
         >>> doc
-        <Document w=595 h=842 pages=2>
+        <Document w=595pt h=842pt pages=2>
         """
         if w is None: # If not defined, take the width of A4
             w, _ = A4
         if h is None: # If not defined, then take the height of A4
             _, h = A4
         # Store the values in the document instance.
-        self.w = w
-        self.h = h
-        self.padding = pt, pr, pb, pl # Initialize the default padding
+        self.w = units(w)
+        self.h = units(h)
+        self.padding = units(pt), units(pr), units(pb), units(pl) # Initialize the default padding
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
+        self.page = None # Currently selected page
 
         # The TemplateSet dictionary contains a set of functions that
         # compose the pages and containing elements for a particular
@@ -67,10 +69,11 @@ class Document:
         # of a publication, such as color, typographic values and the 
         # selected mood (lightest, light, dark, darkest) to create
         # dark-on-light or light-on-dark moods with the same color palette.
+        # The theme also contains the styles
         if theme is None: # If not default, we choose one here.
             theme = DefaultTheme()
         self.theme = theme
- 
+
         # Keep the flag is self.build was already executed when calling self.export
         self.hasComposed = False
         self.hasBuilt = False
@@ -83,19 +86,21 @@ class Document:
         # This method is called when print(document) is executed.
         # It shows the name of the class, which can be different, if the
         # object inherits from Document.
-        return '<%s w=%d h=%d pages=%d>' % (self.__class__.__name__, 
+        return '<%s w=%s h=%s pages=%d>' % (self.__class__.__name__, 
             self.w, self.h, len(self.pages))
 
     def _get_padding(self):
-        """Answer a tuple of the 4 padding values of the element
+        """Answer a tuple of the 4 padding values of the element.
+        Order of values:  Padding top, right, bottom, left
 
-        >>> doc = Document(pl=10)
+        >>> from pagebotnano.toolbox.units import mm
+        >>> doc = Document(pl=mm(10))
         >>> doc.padding # Other values are default PADDING
-        (30, 30, 30, 10)
+        (30pt, 30pt, 30pt, 10mm)
         """
         return self.pt, self.pr, self.pb, self.pl 
     def _set_padding(self, padding):
-        self.pt, self.pr, self.pb, self.pl = makePadding(padding)
+        self.pt, self.pr, self.pb, self.pl = makePadding(padding, default=PADDING) # Padding top, right, bottom, left
     padding = property(_get_padding, _set_padding)
 
     def _get_pw(self):
@@ -103,7 +108,7 @@ class Document:
 
         >>> doc = Document(w=500, pl=100, pr=50)
         >>> doc.pw
-        350
+        350pt
         """
         return self.w - self.pl - self.pr
     pw = property(_get_pw)
@@ -111,9 +116,13 @@ class Document:
     def _get_ph(self):
         """Answer the usable element space, withing the vertical padding
 
-        >>> doc = Document(h=500, pt=100, pb=50)
+        >>> from pagebotnano.toolbox.units import p, pt, mm # Don't confuse points (pt) with pading top (self.pt) 
+        >>> doc = Document(h=500, pt=100, pb=p(10))
         >>> doc.ph
-        350
+        280pt
+        >>> doc.pb = mm(28)
+        >>> doc.ph, mm(doc.ph)
+        (320.63pt, 113.11mm)
         """
         return self.h - self.pt - self.pb
     ph = property(_get_ph)
@@ -124,7 +133,7 @@ class Document:
 
         >>> doc = Document()
         >>> doc.newPage()
-        <Page pn=1 w=595 h=842 elements=0>
+        <Page pn=1 w=595pt h=842pt elements=0>
         """
         # Make a new page and add the page number from the total number of pages.
         # Note that the page number is 1 higher (starting at 1) than its index
@@ -144,7 +153,7 @@ class Document:
         (None, None)
         >>> doc.addPage(page)
         >>> page.w, page.h
-        (595, 842)
+        (595pt, 842pt)
         """
         if page.w is None:
             page.w = self.w
@@ -170,15 +179,18 @@ class Document:
         """Build the document by looping trough the pages, and then recursively
         tell every page to build itself (and its contained elements).
         """
+        self.context.newDocument(w=self.w, h=self.h)
+
         # Clear all previous drawing in the context canvas.
         self.context.newDrawing()
 
         # Tell each page to build itself in context, including their child elements.
         for page in self.pages:
+            self.context.newPage(w=page.w, h=page.h)
             page.build(doc=self) # Passing self as document, in case the page needs more info.
         self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 
-    def export(self, path, force=False, multipage=True):
+    def export(self, path, force=False, multiPage=True):
         """Export the document into the _export folder. We assume that the 
         document and pages are built. We don't do that here, in case multiple
         formats are saved from the same build.
@@ -187,7 +199,7 @@ class Document:
 
         >>> doc = Document()
         >>> doc.newPage()
-        <Page pn=1 w=595 h=842 elements=0>
+        <Page pn=1 w=595pt h=842pt elements=0>
         >>> doc.export('_export/Document-export.pdf')
         """
         if force or not self.hasComposed: # If forced or not done yet, compose the pages.
@@ -200,7 +212,7 @@ class Document:
             os.mkdir(EXPORT_DIR)
         # Now all the pages drew them themselfs, we can export to the path.
         # let the context do its work, saving it.
-        self.context.saveImage(path, multipage=multipage)
+        self.context.saveImage(path, multiPage=multiPage)
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

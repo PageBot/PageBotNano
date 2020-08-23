@@ -31,6 +31,30 @@ def parseMarkdownFile(path):
     return parseMarkdown(txt)
 
 def parseMarkdown(txt):
+    """
+    >>> xml = 'Initial text\\n==cover== Some remark until end of line\\n'
+    >>> parseMarkdown(xml)
+    '<xml><p>Initial text\\n</p><cover> Some remark until end of line</cover>\\n</xml>'
+    >>> xml = '## H2\\n==page== Some remark until end of line\\n'
+    >>> parseMarkdown(xml)
+    '<xml><h2>H2</h2>\\n<page> Some remark until end of line</page>\\n</xml>'
+    >>> xml = '## H2\\n==tableOfContent== Some remark until end of line\\n'
+    >>> parseMarkdown(xml)
+    '<xml><h2>H2</h2>\\n<tableOfContent> Some remark until end of line</tableOfContent>\\n</xml>'
+    >>> xml = '## H2\\nText with[^12] a footnote reference.\\n'
+    >>> parseMarkdown(xml)
+    '<xml><h2>H2</h2>\\n<p>Text with<footnote ref="12"/> a footnote reference.\\n</p></xml>'
+    >>> xml = '## H2\\nText with[^litSmith1994] a literature reference.\\n'
+    >>> parseMarkdown(xml)
+    '<xml><h2>H2</h2>\\n<p>Text with<literature ref="Smith1994"/> a literature reference.\\n</p></xml>'
+    >>> xml = '## H2\\n[^123]: This is the footnote text.\\n'
+    >>> parseMarkdown(xml)
+    '<xml><h2>H2</h2>\\n<footnote id="123"> This is the footnote text.</footnote>\\n</xml>'
+    >>> xml = '## H2\\n[^litSmith1994]: This is the literature text.\\n'
+    >>> parseMarkdown(xml)
+    '<xml><h2>H2</h2>\\n<literature id="Smith1994"> This is the literature text.</literature>\\n</xml>'
+
+    """
     # Solve Python comments inside <code>...</code>
     txt = re.sub('(\\~{3}[^#].*)#([^~]*\\1)$', '\\1<<pythonComment>>\\2', txt, flags=re.MULTILINE)
     # ~~~ ... ~~~ --> <code> ... </code>
@@ -39,6 +63,17 @@ def parseMarkdown(txt):
     txt = re.sub('\\!\\[([^\\[]+)\\]\\(([^\\)]+)\\)', '<img src="\\2" alt="\\1"/>', txt, flags=re.MULTILINE)
     # [text](link) --> <a href="link">text</a>
     txt = re.sub('\\[([^\\[]+)\\]\\(([^\\)]+)\\)', '<a href="\\2">\\1</a>', txt, flags=re.MULTILINE)
+    # [^litSmith1994]: --> <literature id="Smith1994">...</literature> # XML-based content tags
+    txt = re.sub('\\[\\^lit([^\\]]*)\\]\\:([^#].*)$', '<literature id="\\1">\\2</literature>', txt, flags=re.MULTILINE)
+    # [^1]: --> <footnote id="1">...</footnote> # XML-based content tags
+    txt = re.sub('\\[\\^([^\\]]*)\\]\\:([^#].*)$', '<footnote id="\\1">\\2</footnote>', txt, flags=re.MULTILINE)
+    # [^litSmith1994] --> <literature ref="Smith1994"/> # XML-based content tags
+    txt = re.sub('\\[\\^lit([^\\]]*)\\]', '<literature ref="\\1"/>', txt, flags=re.MULTILINE)
+    # [^1] --> <footnote ref="1"/> # XML-based content tags
+    txt = re.sub('\\[\\^([^\\]]*)\\]', '<footnote ref="\\1"/>', txt, flags=re.MULTILINE)
+    # ==cover== --> <cover>...</cover> # XML-based content tags
+    # ==tableOfContent== --> <tableOfContent>...</tableOfContent> # XML-based content tags
+    txt = re.sub('\\=\\=([a-zA-Z]*)\\=\\=([^#].*)$', '<\\1>\\2</\\1>', txt, flags=re.MULTILINE)
     # ### Header --> <h3>Header</h3>
     txt = re.sub('^#{6}\\ ([^#].*)$', '<h6>\\1</h6>', txt, flags=re.MULTILINE)
     txt = re.sub('^#{5}\\ ([^#].*)$', '<h5>\\1</h5>', txt, flags=re.MULTILINE)

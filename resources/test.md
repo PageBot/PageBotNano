@@ -1,6 +1,8 @@
-$page$
+==cover==
 
-$chapter$
+# Title of the book
+
+==chapter==
 
 # Title of this chapter
 
@@ -36,13 +38,14 @@ print(123)
 
 ### Subsubhead
 
-And here is normal text again.
+And here is normal text again with [^1] a footnote reference.
 
-$author$ Author name on rest of the line.
-$footnote1$ Foot not on the rest of the line.
+[^1]: Here is the footnote.
 
-$page$
+And here is normal text again with [^litSmith1994] a literature reference.
 
-$chapter$
+[^litSmith1994]: Here is the literature reference
+
+==chapter==
 
 # Title of a new chapter

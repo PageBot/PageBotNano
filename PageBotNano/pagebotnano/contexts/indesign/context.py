@@ -20,10 +20,10 @@ import os
 import sys
 sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.contexts.basecontext import BaseContext
-from pagebotnano_060.contexts.indesign.builder import InDesignBuilder
-from pagebotnano_060.constants import *
-from pagebotnano_060.toolbox.color import Color
+from pagebotnano.contexts.basecontext import BaseContext
+from pagebotnano.contexts.indesign.builder import InDesignBuilder
+from pagebotnano.constants import *
+from pagebotnano.toolbox.color import Color
     
 class InDesignContext(BaseContext):
 
@@ -33,10 +33,10 @@ class InDesignContext(BaseContext):
     def __init__(self):
         """Constructor of InDesignContext.
 
-        >>> from pagebotnano_060.document import Document
-        >>> from pagebotnano_060.elements.element import Image, Rect, Text
-        >>> from pagebotnano_060.toolbox.color import color
-        >>> from pagebotnano_060.toolbox import p
+        >>> from pagebotnano.document import Document
+        >>> from pagebotnano.elements.element import Image, Rect, Text
+        >>> from pagebotnano.toolbox.color import color
+        >>> from pagebotnano.toolbox import p
         >>> context = InDesignContext()
         >>> font = 'Georgia' # Is available in Adobe 
         >>> styles = {}

@@ -19,7 +19,7 @@ import sys
 if __name__ == "__main__":
 	sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.elements.element import Element, Text, TextBox, Rect, Image
+from pagebotnano.elements.element import Element, Text, TextBox, Rect, Image, Marker
 from pagebotnano.elements.page import Page
 from pagebotnano.elements.codeblock import CodeBlock
 from pagebotnano.elements.colorcell import ColorCell

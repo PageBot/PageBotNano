@@ -13,13 +13,24 @@
 #
 #   constants.py
 #
-A3 = 842, 1191 # Rounded equivalent in points of 297mm x 420mm
-A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
-A5 = 421, 595
+import sys
+sys.path.insert(0, "../") # So we can import pagebotnano without installing.
+import drawBot
 
-DEFAULT_WIDTH = 100 # Default width for some of the element types.
-DEFAULT_HEIGHT = 100 # Default height for some of the element types.
-PADDING = 30 # Default padding of pages, template and elements.
+from pagebotnano.toolbox.units import pt, mm
+
+A4 = pt(595, 842) # Rounded equivalent in points of 210mm x 297mm
+A5 = pt(421, 595)
+
+PENGUIN_POCKET = mm(130, 203)
+PENGUIN_POCKET_PLUS = mm(140, 214)
+
+DEFAULT_FONT = 'Georgia'
+DEFAULT_FONTSIZE = pt(12)
+DEFAULT_LEADING = DEFAULT_FONTSIZE*1.3 # Default multiplication factor to the current font size.
+DEFAULT_WIDTH = pt(100) # Default width for some of the element types.
+DEFAULT_HEIGHT = pt(100) # Default width for some of the element types.
+PADDING = pt(30) # Default padding of pages, template and elements.
 
 # Types of text alignment
 LEFT = 'left'
@@ -60,9 +71,6 @@ HTML_TEXT_TAGS = {'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'em'
 
 # Language codes for OSX
 EN = 'en' # English
-
-DEFAULT_FONT = 'Georgia'
-DEFAULT_BODYSIZE = 10
 
 # Mood names for Theme
 DARK = 'Dark' # Dark background, light text
@@ -261,7 +269,7 @@ RAL_NAMERGB = {
     9002: ('grey white', (240, 237, 230)), # f0ede6
     9003: ('signal white', (255, 255, 255)), # ffffff
     9004: ('signal black', (28, 28, 33)), # 1c1c21
-    9005: ('jet black', (3, 5, 10)), # 03050a
+    9005: ('jet black', (3, 5, 10)), # 03060a
     9006: ('white aluminium', (166, 171, 181)), # a6abb5
     9007: ('grey aluminium', (125, 121, 120)), # 7d7a78
     9010: ('pure white', (250, 255, 255)), # faffff

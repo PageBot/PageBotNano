@@ -21,16 +21,16 @@ import sys
 sys.path.insert(0, "../../..") # So we can import pagebotnano without installing.
 
 import drawBot
-from pagebotnano_060.contexts.indesign.constants import JSX_LIB
-from pagebotnano_060.toolbox.color import color, noColor
-from pagebotnano_060.constants import *
+from pagebotnano.contexts.indesign.constants import JSX_LIB
+from pagebotnano.toolbox.color import color, noColor
+from pagebotnano.constants import *
 
 class InDesignBuilder:
     """The InDesignBuilder is the interface between the InDesignContext and the 
     generated JavaScript files. It is on the same level as DrawBot builder/canvas.
     Similar to DrawBot, builders are not supposed to know anything about PageBotNano objects.
 
-    >>> from pagebotnano_060.constants import A4
+    >>> from pagebotnano.constants import A4
     >>> w, h = A4
     >>> b = InDesignBuilder()
     >>> b
@@ -107,9 +107,9 @@ class InDesignBuilder:
             justification:Justification.CENTER_ALIGN,
             pointSize:300, leading:300, fillColor: pbGetColor(pbDoc, [255, 255, 255])});
 
-        >>> from pagebotnano_060.toolbox.color import color
-        >>> from pagebotnano_060.document import Document
-        >>> from pagebotnano_060.contexts.indesign.context import InDesignContext
+        >>> from pagebotnano.toolbox.color import color
+        >>> from pagebotnano.document import Document
+        >>> from pagebotnano.contexts.indesign.context import InDesignContext
         >>> context = InDesignContext()
         >>> font = ''
         >>> styles = dict(
@@ -292,7 +292,7 @@ class InDesignBuilder:
     def textBox(self, bs, p, w=None, h=None, clipPath=None, e=None):
         """Draw a text box on the given position.
 
-        >>> from pagebotnano_060.babelstring import BabelString
+        >>> from pagebotnano.babelstring import BabelString
         >>> builder = InDesignBuilder()
         >>> bs = BabelString('ABCD', dict(fontSize=12))
         >>> builder.textBox(bs, (100, 100))

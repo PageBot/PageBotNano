@@ -43,7 +43,7 @@ import drawBot
 
 import re
 import math
-from pagebotnano_060.toolbox.transformer import (asNumberOrNone, asIntOrFloat,
+from pagebotnano.toolbox.transformer import (asNumberOrNone, asIntOrFloat,
         asFormatted, asNormalizedJSON)
 
 INCH = 72

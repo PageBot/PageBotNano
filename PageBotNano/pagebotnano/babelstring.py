@@ -218,6 +218,9 @@ class BabelString:
         return drawBot.textSize(self.fs)
     textSize = property(_get_textSize)
 
+    def getTextSize(self, w=None):
+        return drawBot.textSize(self.fs, w=w)
+        
     def _getFSStyle(self, style):
         """Answer a style dict that only contains names that are allowed 
         in the DrawBot.FormattedString attributes.

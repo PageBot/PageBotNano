@@ -11,7 +11,7 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   style.py
+#   theme.py
 #
 #   Defines the default style set and theme that every publication and document
 #   can start with.
@@ -23,7 +23,7 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano.toolbox.color import color
 from pagebotnano.constants import (EN, CENTER, LEFT, RIGHT, 
-    DEFAULT_FONT, DEFAULT_BODYSIZE, LIGHT, DARK)
+    DEFAULT_FONT, DEFAULT_FONTSIZE, LIGHT, DARK)
 
 class BaseTheme:
     def __init__(self, mood=LIGHT, name=None, fonts=None, styles=None):
@@ -154,7 +154,10 @@ class BaseTheme:
         """Answer the default set of styles, to get any theme started.
         At least, implement the tags defined in HTML_TEXT_TAGS
         """
-        ps = DEFAULT_BODYSIZE
+        if fonts is None:
+            fonts = self.getDefaultFonts()
+
+        ps = DEFAULT_FONTSIZE
         ps5 = 3*ps
         ps4 = 2.5*ps
         ps3 = 2*ps
@@ -196,6 +199,9 @@ class BaseTheme:
             'ul': dict(font=regular, fontSize=ps, lineHeight=lh14, fill=textColor), 
             'ol': dict(font=regular, fontSize=ps, lineHeight=lh14, fill=textColor), 
             'li': dict(font=regular, fontSize=ps, lineHeight=lh14, fill=textColor), 
+            'leftPageNumber': None, # Undefined prevents from being drawn
+            'centerPageNumber': dict(font=regular, fontSize=ps, lineHeight=lh14, fill=textColor),
+            'rightPageNumber': None,
         }
 
 if __name__ == "__main__":

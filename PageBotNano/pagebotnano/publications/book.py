@@ -55,8 +55,8 @@ class Book(Publication):
     """
     MAX_PAGES = 100
     
-    def __init__(self, w=None, h=None, templates=None, styles=None, galley=None, context=None):
-        Publication.__init__(self, w=w, h=h, templates=templates, styles=styles, galley=galley, context=context)
+    def __init__(self, w=None, h=None, templates=None, theme=None, galley=None, context=None):
+        Publication.__init__(self, w=w, h=h, templates=templates, theme=theme, galley=galley, context=context)
 
     def compose(self, page=None, targets=None):
         """This is the core of a publication, composing the specific content of the document, 
@@ -67,6 +67,7 @@ class Book(Publication):
         if that is not already defined by the markdown input stream.
 
         >>> from pagebotnano.elements import Rect, Text
+        >>> from pagebotnano.themes import HappyHolidays
         >>> from pagebotnano.constants import PENGUIN_POCKET_PLUS
         >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
         >>> from pagebotnano.templates.onecolumn import OneColumnTemplates
@@ -76,7 +77,7 @@ class Book(Publication):
         >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
         >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
         >>> markdownPath = '../../MakeItSmall-TheBook.md'
-        >>> g = ts.typesetFile(markdownPath, theme.styles)    
+        >>> g = ts.typesetFile(markdownPath, theme)    
         >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
         >>> book.galley.find(cls='Marker')
         <Marker type=chapter index=None>
@@ -99,8 +100,8 @@ class Book(Publication):
 
             # Transfer a whole packages of current resources to the stream parsing,
             # so that information is accessable from the galley code block processing.
-            targets = dict(composer=self, doc=self.doc, page=page, styles=self.styles,
-                theme=self.theme, templates=self.templates)
+            targets = dict(composer=self, doc=self.doc, page=page, theme=self.theme,
+                styles=self.theme.styles, templates=self.templates)
 
             if page is not None:
                 targets['box'] = page.select('main')

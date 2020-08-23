@@ -41,11 +41,10 @@ class Publication:
     >>> page.addElement(e)
     >>> pub.export('_export/Publication.pdf')
     """
-    def __init__(self, w=None, h=None, templates=None, theme=None, styles=None, galley=None, context=None):
+    def __init__(self, w=None, h=None, templates=None, theme=None, galley=None, context=None):
         self.doc = Document(w=w, h=h, context=context)
         self.galley = galley
         self.templates = templates
-        self.styles = styles
         self.theme = theme
 
     def compose(self):

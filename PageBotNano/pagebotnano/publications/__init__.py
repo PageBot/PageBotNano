@@ -21,4 +21,3 @@ if __name__ == "__main__":
   
 from pagebotnano.publications.publication import Publication
 from pagebotnano.publications.book import Book
-from pagebotnano.publications.booklet import Booklet

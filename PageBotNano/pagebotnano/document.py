@@ -127,6 +127,24 @@ class Document:
         return self.h - self.pt - self.pb
     ph = property(_get_ph)
 
+    def _get_size(self):
+        """Answer the (self.w, self.h) tuple.
+
+        >>> from pagebotnano.toolbox.units import p, pt, mm # Don't confuse points (pt) with pading top (self.pt) 
+        >>> doc = Document(w=pt(300), h=mm(150))
+        >>> doc.size
+        (300pt, 150mm)
+        >>> doc.size = p(30, 50) # 1 pica (p) == 12pt
+        >>> doc.size
+        (30p, 50p)
+        >>> pt(doc.size)
+        (360pt, 600pt)
+        """
+        return self.w, self.h
+    def _set_size(self, size):
+        self.w, self.h = size
+    size = property(_get_size, _set_size)
+
     def newPage(self, w=None, h=None, name=None, template=None):
         """Create a new page. If the (w, h) is undefined, then take the current
         size of the document.

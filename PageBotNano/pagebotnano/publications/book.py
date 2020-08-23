@@ -38,16 +38,17 @@ class Book(Publication):
     >>> from pagebotnano.constants import PENGUIN_POCKET
     >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
     >>> from pagebotnano.templates.onecolumn import OneColumnTemplates
+    >>> from pagebotnano.themes import IntoTheWoods
     >>> w, h = PENGUIN_POCKET 
     >>> title = randomTitle()
     >>> author = randomName()
     >>> ts = Typesetter()
     >>> xml = '<xml><title>%s</title><author>%s</author><h1>%s</h1><p>%s</p></xml>' % (title, author, title, (loremipsum() + ' ') * 50)
-    >>> styles = {}
-    >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
-    >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
-    >>> g = ts.typeset(xml, styles)    
-    >>> book = Book(w=w, h=h, templates=OneColumnTemplates, styles=styles, galley=g)
+    >>> theme = IntoTheWoods()
+    >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
+    >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
+    >>> g = ts.typeset(xml, theme)    
+    >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
     >>> book.galley.elements
     [<Marker type=author index=None>, <TextBox name=TextBox w=100pt h=None>]
     >>> book.export('_export/TestBook.pdf')
@@ -66,19 +67,21 @@ class Book(Publication):
         if that is not already defined by the markdown input stream.
 
         >>> from pagebotnano.elements import Rect, Text
-        >>> from pagebotnano.constants import PENGUIN_POCKET
+        >>> from pagebotnano.constants import PENGUIN_POCKET_PLUS
         >>> from pagebotnano.toolbox.loremipsum import loremipsum, randomName, randomTitle
         >>> from pagebotnano.templates.onecolumn import OneColumnTemplates
-        >>> w, h = PENGUIN_POCKET 
+        >>> w, h = PENGUIN_POCKET_PLUS 
         >>> ts = Typesetter()
-        >>> styles = {}
-        >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
-        >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
+        >>> theme = HappyHolidays()
+        >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
+        >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
         >>> markdownPath = '../../MakeItSmall-TheBook.md'
-        >>> g = ts.typesetFile(markdownPath, styles)    
-        >>> book = Book(w=w, h=h, templates=OneColumnTemplates, styles=styles, galley=g)
+        >>> g = ts.typesetFile(markdownPath, theme.styles)    
+        >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
         >>> book.galley.find(cls='Marker')
         <Marker type=chapter index=None>
+        >>> book.doc.size
+        (140mm, 214mm)
         >>> book.export('_export/Book.pdf')
 
         """

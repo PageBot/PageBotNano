@@ -32,6 +32,7 @@ from pagebotnano.toolbox.markdown import parseMarkdownFile, parseMarkdown
 from pagebotnano.elements import Element, TextBox, Image, Marker
 from pagebotnano.toolbox.transformer import path2Extension, path2FileName
 from pagebotnano.constants import DEFAULT_WIDTH
+from pagebotnano.themes import DefaultTheme
 
 class Galley(Element):
     pass
@@ -55,7 +56,7 @@ class Typesetter:
 
         self.verbose = [] # Storage for errors/warnings during processing.
 
-    def typesetFile(self, path, styles=None):
+    def typesetFile(self, path, theme=None):
         """Typeset the content of the file: .md, .txt or any kind of 
         image). Depending on the kind of file, different actions are taken.
         """
@@ -74,37 +75,38 @@ class Typesetter:
         elif extension in ('md', 'txt'):
             xml = parseMarkdownFile(path)
         # Answer the galley for convenience of the caller
-        return self.typeset(xml, styles) 
+        return self.typeset(xml, theme) 
 
-    def typesetMarkdown(self, md, style):
+    def typesetMarkdown(self, md, theme):
         xml = parseMarkdown(md)
         # Answer the galley for convenience of the caller
-        return self.typeset(xml, styles) 
+        return self.typeset(xml, theme) 
 
-    def typesetString(self, s, styles):
+    def typesetString(self, s, theme):
         s = str(s).replace('<', '%lt;').replace('>', '%gt;')
         xml = '<xml>%s</xml>' % s # Convert to valid plain XML string.
         # Answer the galley for convenience of the caller
-        return self.typeset(xml, styles) 
+        return self.typeset(xml, theme) 
 
-    def typeset(self, xml, styles=None):
+    def typeset(self, xml, theme=None):
         """Parse the xml into TextBox/Image elements,using the matching styles.
 
         >>> from pagebotnano.toolbox.markdown import parseMarkdownFile
+        >>> from pagebotnano.themes import SeasoningTheDish
         >>> ts = Typesetter()
         >>> g = ts.typesetFile('../../../resources/test.md')
         >>> ts.verbose[-1]
-        'Node "h1" has no supporting style'
+        'Node "chapter" has no supporting style'
         >>> ts.reset()
         >>> g = ts.typesetFile('../../../resources/images/cookbot1.jpg')
         >>> ts.verbose
-        ['Node "xml" has no supporting style', 'Node "img" has no supporting style']
+        ['Node "xml" has no supporting style']
         >>> ts.reset() # Reset the verbose warnings
         >>> xml = '<xml><h1>Headline</h1><h2>Subhead</h2><p>This is a tagged text</p></xml>'
-        >>> styles = dict()
-        >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=24) # Intentionally not for <h2>
-        >>> styles['p'] = dict(font='Georgia', fontSize=10)
-        >>> g = ts.typeset(xml, styles)
+        >>> theme = SeasoningTheDish()
+        >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=24) # Intentionally not for <h2>
+        >>> theme.styles['p'] = dict(font='Georgia', fontSize=10)
+        >>> g = ts.typeset(xml, theme)
         >>> xml = '<unknownTag/>'
         >>> g = ts.typeset(xml)
         >>> ts.verbose[-1]
@@ -112,16 +114,16 @@ class Typesetter:
         """
         self.xml = xml # Store the latest xml for debugging
         root = ET.fromstring(xml)
-        self.typesetNode(root, self.galley, styles)
+        self.typesetNode(root, self.galley, theme)
         return self.galley # Answer the galley for convenience of the caller
 
-    def typesetNode(self, node, e, styles=None):
+    def typesetNode(self, node, e, theme=None):
         """Recursively typeset the etree `node`, using a reference to element `e`.
         """
+        if theme is None:
+            theme = DefaultTheme()
         # If not dictionary of node-tag styles supplied, then create an empty one.
-        if styles is None:
-            styles = {}
-        style = styles.get(node.tag) # Search the style for this node. Can be None.
+        style = theme.getStyle(node.tag) # Search the style for this node. Can be None.
         if style is not None and 'tag' not in style:
             style['tag'] = node.tag
 
@@ -140,7 +142,7 @@ class Typesetter:
 
         # Typeset all childs node in the current node, by recursive call.
         for child in node:
-            self.typesetNode(child, e, styles)
+            self.typesetNode(child, e, theme)
 
         if hasattr(self, '_'+nodeSupport): # Is this tag supported?
             # Get the typesetter method that knows how to handle the closing
@@ -230,11 +232,12 @@ class Typesetter:
     def node_p(self, node, e, style):
         """Add a new paragraph to the last TextBox in the galley.
         
+        >>> from pagebotnano.themes import FairyTales
+        >>> theme = FairyTales()
         >>> xml = '<xml><p>This is a tagged text</p></xml>'
-        >>> styles = dict()
-        >>> styles['p'] = dict(font='Georgia', fontSize=10)
+        >>> theme.styles['p'] = dict(font='Georgia', fontSize=10)
         >>> ts = Typesetter()
-        >>> g = ts.typeset(xml, styles)
+        >>> g = ts.typeset(xml, theme)
         >>> ts.galley.elements[0].bs.runs[1].s
         'This is a tagged text'
         >>> ts.galley.elements[0].bs.runs[1].style
@@ -256,12 +259,13 @@ class Typesetter:
     def node_h1(self, node, e, style):
         """Add a new "h1" head to the last TextBox in the galley.
         
+        >>> from pagebotnano.themes import FairyTales
+        >>> theme = FairyTales()
         >>> xml = '<xml><h1>Head</h1><p>This is a tagged text</p></xml>'
-        >>> styles = dict()
-        >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=24)
-        >>> styles['p'] = dict(font='Georgia', fontSize=10)
+        >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=24)
+        >>> theme.styles['p'] = dict(font='Georgia', fontSize=10)
         >>> ts = Typesetter()
-        >>> g = ts.typeset(xml, styles)
+        >>> g = ts.typeset(xml, theme)
         >>> ts.galley.elements[0].bs.runs[1].s
         'Head'
         >>> ts.galley.elements[0].bs.runs[1].style

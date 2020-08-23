@@ -17,14 +17,14 @@
 #
 import os # Import standard Python library to create the _export directory
 import sys
-sys.path.insert(0, "..") # So we can import pagebotnano without installing.
+sys.path.insert(0, "../") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.constants import A4, EXPORT_DIR
+from pagebotnano_060.constants import A4, EXPORT_DIR, PADDING
 from pagebotnano_060.elements import Element, Page
 from pagebotnano_060.contexts.drawbot.context import DrawBotContext
-from pagebotnano_060.toolbox import makePadding
 from pagebotnano_060.themes import BaseTheme, DefaultTheme
 from pagebotnano_060.templates.onecolumn import OneColumnTemplates
+from pagebotnano_060.toolbox.transformer import makePadding
 
 class Document:
     # Class names start with a capital. See a class as a factory
@@ -87,15 +87,17 @@ class Document:
             self.w, self.h, len(self.pages))
 
     def _get_padding(self):
-        """Answer a tuple of the 4 padding values of the element
+        """Answer a tuple of the 4 padding values of the element.
+        Order of values:  Padding top, right, bottom, left
 
-        >>> doc = Document(pl=10)
+        >>> from pagebotnano_060.toolbox.units import mm
+        >>> doc = Document(pl=mm(10))
         >>> doc.padding # Other values are default PADDING
-        (30, 30, 30, 10)
+        (30pt, 30pt, 30pt, 10mm)
         """
         return self.pt, self.pr, self.pb, self.pl 
     def _set_padding(self, padding):
-        self.pt, self.pr, self.pb, self.pl = makePadding(padding)
+        self.pt, self.pr, self.pb, self.pl = makePadding(padding, default=PADDING) # Padding top, right, bottom, left
     padding = property(_get_padding, _set_padding)
 
     def _get_pw(self):
@@ -103,7 +105,7 @@ class Document:
 
         >>> doc = Document(w=500, pl=100, pr=50)
         >>> doc.pw
-        350
+        350pt
         """
         return self.w - self.pl - self.pr
     pw = property(_get_pw)
@@ -111,9 +113,13 @@ class Document:
     def _get_ph(self):
         """Answer the usable element space, withing the vertical padding
 
-        >>> doc = Document(h=500, pt=100, pb=50)
+        >>> from pagebotnano_060.toolbox.units import p, pt, mm # Don't confuse points (pt) with pading top (self.pt) 
+        >>> doc = Document(h=500, pt=100, pb=p(10))
         >>> doc.ph
-        350
+        280pt
+        >>> doc.pb = mm(28)
+        >>> doc.ph, mm(doc.ph)
+        (320.63pt, 113.11mm)
         """
         return self.h - self.pt - self.pb
     ph = property(_get_ph)
@@ -124,7 +130,7 @@ class Document:
 
         >>> doc = Document()
         >>> doc.newPage()
-        <Page pn=1 w=595 h=842 elements=0>
+        <Page pn=1 w=595pt h=842pt elements=0>
         """
         # Make a new page and add the page number from the total number of pages.
         # Note that the page number is 1 higher (starting at 1) than its index
@@ -144,7 +150,7 @@ class Document:
         (None, None)
         >>> doc.addPage(page)
         >>> page.w, page.h
-        (595, 842)
+        (595pt, 842pt)
         """
         if page.w is None:
             page.w = self.w
@@ -190,7 +196,7 @@ class Document:
 
         >>> doc = Document()
         >>> doc.newPage()
-        <Page pn=1 w=595 h=842 elements=0>
+        <Page pn=1 w=595pt h=842pt elements=0>
         >>> doc.export('_export/Document-export.pdf')
         """
         if force or not self.hasComposed: # If forced or not done yet, compose the pages.

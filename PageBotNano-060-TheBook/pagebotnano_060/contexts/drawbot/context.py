@@ -19,6 +19,7 @@ sys.path.insert(0, "../../..") # So we can import pagebotnano without installing
 import drawBot
 from pagebotnano_060.babelstring import BabelString
 from pagebotnano_060.toolbox.color import color, Color
+from pagebotnano_060.toolbox.units import upt # Convers units to points.
 
 class DrawBotContext:
     
@@ -26,7 +27,8 @@ class DrawBotContext:
         pass
 
     def newPage(self, w, h):
-        return drawBot.newPage(w, h)
+        ptw, pth = upt(w, h)
+        return drawBot.newPage(ptw, pth)
            
     def newDrawing(self):
         return drawBot.newDrawing()

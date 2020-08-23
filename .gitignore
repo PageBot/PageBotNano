@@ -128,6 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# PageBotNano export folders to ignore
 _local
 _export
 .DS_Store

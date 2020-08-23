@@ -37,7 +37,7 @@ class Page(Element):
         # This method is called when print(page) is executed.
         # It shows the name of the class, which can be different, if the
         # object inherits from Page.
-        return '<%s pn=%d w=%d h=%d elements=%d>' % (self.__class__.__name__, 
+        return '<%s pn=%d w=%s h=%s elements=%d>' % (self.__class__.__name__, 
             self.pn, self.w, self.h, len(self.elements))
 
     def compose(self, doc, page=None, parent=None):
@@ -57,7 +57,7 @@ class Page(Element):
 
         """
         assert doc is not None, ('%s.build: Document needs to be defined.' % self.__class__.__name__)
-        drawBot.newPage(self.w, self.h) # Create a new DrawBot page.
+        doc.context.newPage(self.w, self.h) # Create a new DrawBot page.
         for element in self.elements:
             # Passing on doc and this page in case an element needs more info.
             # Since this bottom-left corner of the page is the origin for position,

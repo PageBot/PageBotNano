@@ -1,4 +1,8 @@
-# Title
+$page$
+
+$chapter$
+
+# Title of this chapter
 
 And *now* [a link](http://www.google.com) to **follow** and [another](http://yahoo.com/).
 
@@ -34,3 +38,11 @@ print(123)
 
 And here is normal text again.
 
+$author$ Author name on rest of the line.
+$footnote1$ Foot not on the rest of the line.
+
+$page$
+
+$chapter$
+
+# Title of a new chapter

@@ -21,16 +21,16 @@ if __name__ == "__main__":
 
 from pagebotnano_010.constants import PADDING
 
-def extensionOf(path):
+def path2Extension(path):
     """Answer the extension of path. Answer None of there is no extension.
 
-    >>> extensionOf('../../images/myImage.jpg')
+    >>> path2Extension('../../images/myImage.jpg')
     'jpg'
-    >>> extensionOf('aFile.PDF') # Answer a lowercase
+    >>> path2Extension('aFile.PDF') # Answer a lowercase
     'pdf'
-    >>> extensionOf('aFile') is None # No extension
+    >>> path2Extension('aFile') is None # No extension
     True
-    >>> extensionOf('../../aFile') is None # No extension on file name
+    >>> path2Extension('../../aFile') is None # No extension on file name
     True
     """
     parts = path.split('/')[-1].split('.')
@@ -38,12 +38,12 @@ def extensionOf(path):
         return parts[-1].lower()
     return None
 
-def fileNameOf(path):
+def path2FileName(path):
     """Answer the file name part of the path.
 
-    >>> fileNameOf('../../aFile.pdf')
+    >>> path2FileName('../../aFile.pdf')
     'aFile.pdf'
-    >>> fileNameOf('../../') is None # No file name
+    >>> path2FileName('../../') is None # No file name
     True
     """
     return path.split('/')[-1] or None

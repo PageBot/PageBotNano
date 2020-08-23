@@ -13,14 +13,22 @@
 #
 #   constants.py
 #
-A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
-A5 = 421, 595
+import sys
+sys.path.insert(0, "../") # So we can import pagebotnano without installing.
+import drawBot
 
-DEFAULT_FONT_SIZE = 12
+from pagebotnano_060.toolbox.units import pt, mm
+
+A4 = pt(595, 842) # Rounded equivalent in points of 210mm x 297mm
+A5 = pt(421, 595)
+
+PENGUIN_POCKET = mm(130, 203)
+
+DEFAULT_FONT_SIZE = pt(12)
 DEFAULT_LEADING = 1.3 # Default multiplication factor to the current font size.
-DEFAULT_WIDTH = 100 # Default width for some of the element types.
-DEFAULT_HEIGHT = 100 # Default width for some of the element types.
-PADDING = 30 # Default padding of pages, template and elements.
+DEFAULT_WIDTH = pt(100) # Default width for some of the element types.
+DEFAULT_HEIGHT = pt(100) # Default width for some of the element types.
+PADDING = pt(30) # Default padding of pages, template and elements.
 
 # Types of text alignment
 LEFT = 'left'

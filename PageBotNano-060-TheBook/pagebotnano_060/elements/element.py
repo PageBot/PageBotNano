@@ -21,9 +21,9 @@ from copy import deepcopy
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.constants import CENTER
+from pagebotnano_060.constants import CENTER, PADDING
 from pagebotnano_060.babelstring import BabelString
-from pagebotnano_060.toolbox import makePadding, fileNameOf
+from pagebotnano_060.toolbox.transformer import path2FileName, makePadding
 from pagebotnano_060.toolbox.color import color
 
 class Element:
@@ -37,7 +37,7 @@ class Element:
     >>> doc = Document(context=context)
     >>> page = doc.newPage()
     >>> page
-    <Page pn=1 w=595 h=842 elements=0>
+    <Page pn=1 w=595pt h=842pt elements=0>
     """
     def __init__(self, x=None, y=None, w=None, h=None, name=None, parent=None,
             template=None, fill=None, stroke=None, strokeWidth=0, 
@@ -74,22 +74,23 @@ class Element:
     def _get_padding(self):
         """Answer a tuple of the 4 padding values of the element
 
+        >>> from pagebotnano_060.toolbox.units import mm, pt
         >>> e = Element() # Other values are default PADDING
         >>> e.padding
-        (30, 30, 30, 30)
+        (30pt, 30pt, 30pt, 30pt)
         >>> e = Element(padding=20)
         >>> e.padding
-        (20, 20, 20, 20)
-        >>> e.padding = 40
+        (20pt, 20pt, 20pt, 20pt)
+        >>> e.padding = mm(40)
         >>> e.padding
-        (40, 40, 40, 40)
-        >>> e.padding = 10, 20, 30, 40
+        (40mm, 40mm, 40mm, 40mm)
+        >>> e.padding = pt(10, 20, 30, 40)
         >>> e.padding 
-        (10, 20, 30, 40)
+        (10pt, 20pt, 30pt, 40pt)
         """
         return self.pt, self.pr, self.pb, self.pl 
     def _set_padding(self, padding):
-        self.pt, self.pr, self.pb, self.pl = makePadding(padding)
+        self.pt, self.pr, self.pb, self.pl = makePadding(padding, default=PADDING)
     padding = property(_get_padding, _set_padding)
 
     def _get_pw(self):
@@ -97,7 +98,7 @@ class Element:
 
         >>> e = Element(w=500, padding=(50, 50, 100, 50))
         >>> e.pw
-        400
+        400pt
         """
         return self.w - self.pl - self.pr
     pw = property(_get_pw)
@@ -107,7 +108,7 @@ class Element:
 
         >>> e = Element(h=500, padding=(50, 50, 100, 50))
         >>> e.ph
-        350
+        350pt
         """
         return self.h - self.pt - self.pb
     ph = property(_get_ph)
@@ -159,7 +160,7 @@ class Element:
         >>> doc = Document()
         >>> page = OneColumnTemplates.oneColumnPage(theme, doc)
         >>> page
-        <Page pn=1 w=595 h=842 elements=2>
+        <Page pn=1 w=595pt h=842pt elements=2>
         """
         if self.template is not None:
             self.template(doc, page, self)
@@ -441,7 +442,7 @@ class Image(Element):
         self.path = path # Path can be None for later filling. 
 
     def __repr__(self):
-        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, fileNameOf(self.path), self.w, self.h)
+        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, path2FileName(self.path), self.w, self.h)
 
     @classmethod
     def imageSize(cls, path, doc):
@@ -535,6 +536,26 @@ class Image(Element):
             doc.context.image(self.path, (ox/sx, oy/sy))
             doc.context.scale(1/sx, 1/sy)
 
+# Marker = Element would have been the same.
+class Marker(Element):
+    """This element does not draw anything. It is used as instructor code
+    when composing pages from a galley. There are several different markers 
+    supported by the Typesetter, such as $page$, $chapter$, etc.
+    """
+    def __init__(self, markerType, index=0, **kwargs):
+        """Call the base element with all standard attributes.
+        """
+        Element.__init__(self, **kwargs)
+        self.markerType = markerType # Name of the tag, for the composer to respond to.
+        self.index = index # Optional index reference of the tag.
+
+    def __repr__(self):
+        return '<%s type=%s index=%s>' % (self.__class__.__name__, self.markerType, self.index)
+
+    def build(self, x, y, doc, page, parent=None):
+        """Ingore any drawing or passing on to children.
+        """
+        pass
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

@@ -28,7 +28,7 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 from pagebotnano_040.babelstring import BabelString
 from pagebotnano_040.toolbox.markdown import parseMarkdownFile, parseMarkdown
 from pagebotnano_040.elements import Element, TextBox, Image, CodeBlock
-from pagebotnano_040.toolbox import extensionOf, fileNameOf
+from pagebotnano_040.toolbox import path2Extension, path2FileName
 from pagebotnano_040.constants import DEFAULT_WIDTH
 
 class Galley(Element):
@@ -60,13 +60,13 @@ class Typesetter:
         image). Depending on the kind of file, different actions are taken.
         """
         assert path is not None or xml is not None
-        extension = extensionOf(path)
+        extension = path2Extension(path)
         if extension in ('jpg', 'png', 'gif'):
             # This is an image, create the html tag link code for it.
             xml = '<xml><img src="%s"/></xml>' % path
         elif extension == 'pdf':
             # This is a PDF file, in html we can only link to it.
-            xml = '<xml><a href="%s">%s</a></xml>' % (path, fileNameOf(path))
+            xml = '<xml><a href="%s">%s</a></xml>' % (path, path2FileName(path))
         elif extension in ('svg', 'html', 'xml'):
             # This is an XML-tagged document. We can directly parse it
             root = ET.fromFile(path)

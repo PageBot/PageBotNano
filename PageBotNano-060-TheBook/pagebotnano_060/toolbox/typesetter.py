@@ -27,15 +27,14 @@ import sys
 if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_020.babelstring import BabelString
-from pagebotnano_020.toolbox.markdown import parseMarkdownFile, parseMarkdown
-from pagebotnano_020.elements import Element, TextBox, Image, CodeBlock
-from pagebotnano_020.toolbox import path2Extension, path2FileName
-from pagebotnano_020.constants import DEFAULT_WIDTH
+from pagebotnano_060.babelstring import BabelString
+from pagebotnano_060.toolbox.markdown import parseMarkdownFile, parseMarkdown
+from pagebotnano_060.elements import Element, TextBox, Image, Marker
+from pagebotnano_060.toolbox.transformer import path2Extension, path2FileName
+from pagebotnano_060.constants import DEFAULT_WIDTH
 
 class Galley(Element):
-    def __repr__(self):
-        return '<%s elements=%d>' % (self.__class__.__name__, len(self.elements))
+    pass
 
 class Typesetter:
     """Typesetter takes one or a series of inputs, converts them to
@@ -43,8 +42,7 @@ class Typesetter:
 
     >>> ts = Typesetter()
     >>> ts.galley # By default a galley has no with or height.
-    <Galley elements=0>
-     
+    <Galley name=Galley w=None h=None>
     """
     def __init__(self, galley=None):
         self.reset(galley)
@@ -92,11 +90,11 @@ class Typesetter:
     def typeset(self, xml, styles=None):
         """Parse the xml into TextBox/Image elements,using the matching styles.
 
-        >>> from pagebotnano_020.toolbox.markdown import parseMarkdownFile
+        >>> from pagebotnano_060.toolbox.markdown import parseMarkdownFile
         >>> ts = Typesetter()
         >>> g = ts.typesetFile('../../../resources/test.md')
         >>> ts.verbose[-1]
-        'Node "p" has no supporting style'
+        'Node "h1" has no supporting style'
         >>> ts.reset()
         >>> g = ts.typesetFile('../../../resources/images/cookbot1.jpg')
         >>> ts.verbose
@@ -157,13 +155,13 @@ class Typesetter:
         >>> ts = Typesetter()
         >>> e = ts.getTextBox()
         >>> e
-        <TextBox name=TextBox w=100 h=None>
+        <TextBox name=TextBox w=100pt h=None>
         >>> e1 = ts.getTextBox() # Gets the existing last TextBox
         >>> e is e1
         True
         >>> e2 = TextBox('', x=0, y=0, w=DEFAULT_WIDTH)
         >>> ts.galley.addElement(e2)
-        <TextBox name=TextBox w=100 h=None>
+        <TextBox name=TextBox w=100pt h=None>
         >>> e2 is ts.getTextBox() # Now finding the new one as last
         True
         """
@@ -171,23 +169,6 @@ class Typesetter:
             e = self.galley
         if not e.elements or not isinstance(e.elements[-1], TextBox):
             e.addElement(TextBox('', x=0, y=0, w=e.w or DEFAULT_WIDTH))
-        return e.elements[-1]
-
-    def getCodeBlock(self, e=None, code=None):
-        """Answer the last Codeblock element if it exists. 
-        Otherwise create it first.
-
-        >>> ts = Typesetter()
-        >>> e = ts.getCodeBlock(code='# Python comment')
-        >>> e
-        <CodeBlock code=# Python comment>
-        """
-        if code is None:
-            code = ''
-        if e is None:
-            e = self.galley
-        if not e.elements or not isinstance(e.elements[-1], CodeBlock):
-            e.addElement(CodeBlock(code, x=0, y=0, w=e.w or DEFAULT_WIDTH))
         return e.elements[-1]
 
     def node_xml(self, node, e, style):
@@ -208,6 +189,42 @@ class Typesetter:
             self.verbose.append('Image "%s" does not exist.' % path)
 
     def _node_img(self, node, e, style):
+        pass
+
+    def node_literature(self, node, e, style):
+        e.addElement(Marker('literature', index=node.attrib.get('index')))
+
+    def _node_literature(self, node, e, style):
+        if node.tail:
+            tb = self.getTextBox(e)
+            tb.bs.append(node.tail, style) # Must be style of the parent.
+
+    def node_footnote(self, node, e, style):
+        e.addElement(Marker('footnote', index=node.attrib.get('index')))
+
+    def _node_footnote(self, node, e, style):
+        if node.tail:
+            tb = self.getTextBox(e)
+            tb.bs.append(node.tail, style) # Must be style of the parent.
+
+    def node_author(self, node, e, style):
+        e.addElement(Marker('author', index=node.attrib.get('index')))
+
+    def _node_author(self, node, e, style):
+        if node.tail:
+            tb = self.getTextBox(e)
+            tb.bs.append(node.tail, style) # Must be style of the parent.
+
+    def node_page(self, node, e, style):
+        e.addElement(Marker('page', index=node.attrib.get('index')))
+
+    def _node_page(self, node, e, style):
+        pass
+
+    def node_chapter(self, node, e, style):
+        e.addElement(Marker('chapter', ref=node.attrib.get('ref')))
+
+    def _node_chapter(self, node, e, style):
         pass
 
     def node_p(self, node, e, style):
@@ -399,8 +416,9 @@ class Typesetter:
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_python(self, node, e, style):
-        tb = self.getCodeBlock(e)
-        tb.code += '\n'+node.text
+        #tb = self.getTextBox(e)
+        #tb.bs.append(node.text, style)
+        pass
 
     def _node_python(self, node, e, style):
         if node.tail:

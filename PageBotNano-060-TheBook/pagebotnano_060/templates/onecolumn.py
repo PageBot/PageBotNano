@@ -26,7 +26,7 @@ from pagebotnano_060.templates import BaseTemplate
 class OneColumnTemplates(BaseTemplate):
 
     @classmethod
-    def _initialize(cls, theme, doc, page, parent):
+    def _initialize(cls, theme, doc, page, parent, styles): # Standard API for all templates
         if page is None:
             page = doc.newPage()
         if parent is None:
@@ -37,8 +37,12 @@ class OneColumnTemplates(BaseTemplate):
         return page
 
     @classmethod
-    def coverPage(cls, theme, doc, page=None, parent=None, **kwargs):
-        page = cls._initialize(theme, doc, page, parent)
+    def pageNumber(cls, theme, doc, page, styles):
+        print('OneColumnTemplates doing pageNumber for', page)
+
+    @classmethod
+    def coverPage(cls, theme, doc, page=None, parent=None, styles=None, **kwargs):
+        page = cls._initialize(theme, doc, page, parent, styles)
         # Fill the cover page with a theme background color
         e = Rect(0, 0, page.w, page.h, fill=theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
@@ -51,13 +55,13 @@ class OneColumnTemplates(BaseTemplate):
         page.addElement(e)
 
     @classmethod
-    def tableOfContentPage(cls, theme, doc, page=None, parent=None, **kwargs):
-        page = _cls.initialize(theme, doc, page, parent)
+    def tableOfContentPage(cls, theme, doc, page=None, parent=None, styles=None, **kwargs):
+        page = _cls.initialize(theme, doc, page, parent, styles)
         return page
 
     @classmethod
     def indexPage(cls, theme, doc, page=None, parent=None, **kwargs):
-        page = cls._initalize(theme, doc, page, parent)
+        page = _cls.initialize(theme, doc, page, parent, styles)
         return page
 
     @classmethod
@@ -65,14 +69,14 @@ class OneColumnTemplates(BaseTemplate):
         """
         >>> from pagebotnano_060.document import Document
         >>> from pagebotnano_060.themes import BackToTheCity
-        >>> template = OneColumnTemplate()
+        >>> template = OneColumnTemplates()
         >>> theme = BackToTheCity()
         >>> doc = Document()
         >>> page = template.oneColumnPage(theme, doc, pageNumbers=NONE)
         >>> page.compose(doc)
         >>> page.find(MAIN)
-        <TextBox name=mainText w=535 h=782>
-        >>> page = doc.newPage(template=oneColumnPage)
+        <TextBox name=mainText w=535pt h=782pt>
+        >>> page = doc.newPage(template=template)
         """
         page = cls._initialize(theme, doc, page, parent)
         # Add text element with the main text column of this page
@@ -102,7 +106,7 @@ class OneColumnTemplates(BaseTemplate):
 
         >>> from pagebotnano_060.document import Document
         >>> from pagebotnano_060.themes import BackToTheCity
-        >>> template = OneColumnTemplate()
+        >>> template = OneColumnTemplates()
         >>> theme = BackToTheCity()
         >>> doc = Document()
         >>> page = template.frenchPage(theme, doc)
@@ -110,7 +114,7 @@ class OneColumnTemplates(BaseTemplate):
         >>> page.find(MAIN)
         <Text name=mainText w=None h=None>
         """
-        page = _initialize(doc, page, parent)
+        page = cls._initialize(theme, doc, page, parent)
         e = Text('', name=MAIN, x=page.pl+page.pw/2, y=page.h*4/5)
         page.addElement(e)
         return page
@@ -122,15 +126,15 @@ class OneColumnTemplates(BaseTemplate):
 
         >>> from pagebotnano_060.document import Document
         >>> from pagebotnano_060.themes import BackToTheCity
-        >>> template = OneColumnTemplate()
+        >>> template = OneColumnTemplates()
         >>> theme = BackToTheCity()
         >>> doc = Document()
         >>> page = template.titlePage(theme, doc)
         >>> page.compose(doc)
         >>> page.find(MAIN)
-        <TextBox name=mainText w=535 h=586.5>
+        <TextBox name=mainText w=535pt h=586.5pt>
         """
-        page = _initialize(doc, page, parent)
+        page = cls._initialize(theme, doc, page, parent)
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb + page.ph*3/4, w=page.pw, h=page.ph*3/4)
         page.addElement(e)
         return page
@@ -148,9 +152,9 @@ class OneColumnTemplates(BaseTemplate):
         >>> page = template.colophonPage(theme, doc) # Creating a new page
         >>> page.compose(doc, page)
         >>> page.find(MAIN)
-        <TextBox name=mainText w=535 h=782>
+        <TextBox name=mainText w=535pt h=782pt>
         """
-        page = _initialize(doc, page, parent)
+        page = cls._initialize(theme, doc, page, parent)
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
         return page

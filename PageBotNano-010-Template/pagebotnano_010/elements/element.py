@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
 from pagebotnano_010.constants import CENTER
 from pagebotnano_010.babelstring import BabelString
-from pagebotnano_010.toolbox import makePadding, fileNameOf
+from pagebotnano_010.toolbox import makePadding, path2FileName
 from pagebotnano_010.toolbox.color import color
 
 class Element:
@@ -391,7 +391,7 @@ class Image(Element):
         self.path = path # Path can be None for later filling. 
 
     def __repr__(self):
-        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, fileNameOf(self.path), self.w, self.h)
+        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, path2FileName(self.path), self.w, self.h)
 
     @classmethod
     def imageSize(cls, path, doc):

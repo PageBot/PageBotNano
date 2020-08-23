@@ -23,7 +23,7 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano.constants import CENTER
 from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox import makePadding, fileNameOf
+from pagebotnano.toolbox import makePadding, path2FileName
 from pagebotnano.toolbox.color import color
 
 class Element:
@@ -448,7 +448,7 @@ class Image(Element):
         self.path = path # Path can be None for later filling. 
 
     def __repr__(self):
-        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, fileNameOf(self.path), self.w, self.h)
+        return '<%s file=%s w=%s h=%s>' % (self.__class__.__name__, path2FileName(self.path), self.w, self.h)
 
     @classmethod
     def imageSize(cls, path, doc):

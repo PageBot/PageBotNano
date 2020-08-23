@@ -49,6 +49,8 @@ class Book(Publication):
     >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, theme)    
     >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
+    >>> book.doc.size
+    (130mm, 203mm)
     >>> book.galley.elements
     [<Marker type=author index=None>, <TextBox name=TextBox w=100pt h=None>]
     >>> book.export('_export/TestBook.pdf')
@@ -79,10 +81,10 @@ class Book(Publication):
         >>> markdownPath = '../../MakeItSmall-TheBook.md'
         >>> g = ts.typesetFile(markdownPath, theme)    
         >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
-        >>> book.galley.find(cls='Marker')
-        <Marker type=chapter index=None>
         >>> book.doc.size
         (140mm, 214mm)
+        >>> book.galley.find(cls='Marker')
+        <Marker type=chapter index=None>
         >>> book.export('_export/Book.pdf')
 
         """
@@ -94,7 +96,7 @@ class Book(Publication):
         if targets is None:
             if page is None:
                 if not self.doc.pages:
-                    pages = self.doc.newPage()
+                    page = self.doc.newPage()
                 else:
                     page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
 

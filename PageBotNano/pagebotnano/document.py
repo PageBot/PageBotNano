@@ -89,6 +89,18 @@ class Document:
         return '<%s w=%s h=%s pages=%d>' % (self.__class__.__name__, 
             self.w, self.h, len(self.pages))
 
+    def __len__(self):
+        """Answer the number of pages in the document.
+        
+        >>> doc = Document()
+        >>> page = doc.newPage()
+        >>> page = doc.newPage()
+        >>> page = doc.newPage()
+        >>> len(doc)
+        3
+        """
+        return len(self.pages)
+
     def __getitem__(self, index):
         """Answer the page of index. Answer None if the page does not exists.
         Note that the page index is in general one lower than the page number,
@@ -194,6 +206,7 @@ class Document:
             page.w = self.w
         if page.h is None:
             page.h = self.h
+        self.page = page
         self.pages.append(page)
 
     def compose(self):

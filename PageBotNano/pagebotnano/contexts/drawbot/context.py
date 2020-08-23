@@ -20,21 +20,30 @@ import drawBot
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.color import color, Color
 from pagebotnano.toolbox.units import upt # Convers units to points.
+from pagebotnano.contexts.basecontext import BaseContext
 
-class DrawBotContext:
+class DrawBotContext(BaseContext):
     
     def newDocument(self, w=None, h=None, doc=None):
         pass
 
     def newPage(self, w, h):
-        ptw, pth = upt(w, h)
-        return drawBot.newPage(ptw, pth)
+        """Create a new page canvas in the context. Convert the (w, h)
+        units to points before passing on.
+
+        >>> from pagebotnano.toolbox.units import pt, mm
+        >>> context = DrawBotContext()
+        >>> page = context.newPage(400, 500)
+        >>> context.newPage(pt(400), mm(200))
+        """
+        print("@@@@@ new page", w, h)
+        drawBot.newPage(upt(w), upt(h))
            
     def newDrawing(self):
-        return drawBot.newDrawing()
+        drawBot.newDrawing()
 
     def saveImage(self, path, multiPage=True):
-        return drawBot.saveImage(path, multipage=multiPage)
+        drawBot.saveImage(path, multipage=multiPage)
 
     def fill(self, c):
         """Set the fill mode of the context. `c` can be None, a number,

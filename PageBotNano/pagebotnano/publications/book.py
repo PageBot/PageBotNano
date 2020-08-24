@@ -29,6 +29,11 @@ from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.typesetter import Typesetter
 from pagebotnano.toolbox.units import pt
 
+class Pack:
+    """Pack of resources, used for composing the page, as passed over to templates.
+    """
+    pass
+
 class Book(Publication):
     """A Book publication takes a volume of text/imges source
     as markdown document, composing book pages and export as
@@ -48,19 +53,19 @@ class Book(Publication):
     >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
     >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, theme)    
-    >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
+    >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme)
     >>> book.doc.size
     (130mm, 203mm)
-    >>> book.galley.elements
-    [<Marker type=author index=None>, <TextBox name=TextBox w=100pt h=None>]
+    >>> g.elements
+    [<TextBox name=TextBox w=100pt h=None>]
     >>> book.export('_export/TestBook.pdf')
     """
     MAX_PAGES = 100
     
-    def __init__(self, w=None, h=None, templates=None, theme=None, galley=None, context=None):
-        Publication.__init__(self, w=w, h=h, templates=templates, theme=theme, galley=galley, context=context)
+    def __init__(self, w=None, h=None, templates=None, theme=None, context=None):
+        Publication.__init__(self, w=w, h=h, templates=templates, theme=theme, context=context)
 
-    def compose(self, page=None, targets=None):
+    def compose(self, galley, page=None):
         """This is the core of a publication, composing the specific content of the document, 
         from tags found in the gally.
         The compose method gets called before building and exporting the self.doc document.
@@ -80,66 +85,65 @@ class Book(Publication):
         >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
         >>> markdownPath = '../../MakeItSmall-TheBook.md'
         >>> g = ts.typesetFile(markdownPath, theme)    
-        >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme, galley=g)
+        >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme)
         >>> book.doc.size
         (140mm, 214mm)
-        >>> book.galley.find(cls='Marker')
-        <Marker type=chapter index=None>
-        >>> book.export('_export/Book.pdf')
+        >>> book.compose(galley)
+        >>> #book.export('_export/Book.pdf')
 
         """
-        # For all the elements that are collected in the galley, assume that
-        # the TextBoxes are chapters, creating a new page for them.
-        # If the TextBox does not fit on the page, keep adding new pages 
-        # until all of the BabelString overfill is processed.
+        # For all the elements that are collected in the galley, do process them.
+        # If TextBoxes don't fit on the page, keep adding new pages from the
+        # current template until all of the BabelString overfill is processed.
 
-        if targets is None:
-            if page is None:
-                if not self.doc.pages:
-                    page = self.doc.newPage()
-                else:
-                    page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
+        # First build the targets dictionary, that contains resources for any
+        # markdown code blocks to execute their code, while processing
+        # the elements on a galley. 
 
-            # Transfer a whole packages of current resources to the stream parsing,
-            # so that information is accessable from the galley code block processing.
-            targets = dict(composer=self, doc=self.doc, page=page, theme=self.theme,
-                styles=self.theme.styles, templates=self.templates)
+        if page is None:
+            if self.doc.page: # If there is a selected page, then take it.
+                page = self.doc.page
+            elif self.doc.pages: # Else, if there are pages, take the first one
+                page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
+            else:
+                page = self.doc.newPage() # No existing pages, create one
+        
+        pack = Pack()
+        pack.composer = self
+        pack.doc = self.doc
+        pack.page = page
+        pack.box = page.find('main')
+        pack.theme = self.doc.theme
+        pack.styles = self.doc.theme.styles
+        pack.templates = self.templates
+        pack.errors = []
+        pack.verbose = []
 
-            if page is not None:
-                targets['box'] = page.select('main')
+        for e in galley.elements:
 
-        elif page is not None:
-            targets['page'] = page
+            if isinstance(e, Marker):
+                try:
+                    print(e.markerType, pack.templates)
+                    print(getattr(self.doc.templates, e.markerType)(self.doc))
+                except AttributeError:
+                    print('%s.compose: No template call for "%s"' % (self.__class__.__name__, e.markerType))
+                #if e.markerType == 'page': # $page$ in markdown file
+                #    page = self.doc.newPage()
+                #    verbose.append('%s.compose: Marker new page' % composerName)
 
-        if 'errors' not in targets:
-            targets['errors'] = []
-        errors = targets['errors']
-
-        if 'verbose' not in targets:
-            targets['verbose'] = []
-        verbose = targets['verbose']
-
-        composerName = self.__class__.__name__
-
-        for e in self.galley.elements:
-
-            if isinstance(e, Marker): # Marker can select a new page, chapter, footnote, etc.
-                if e.markerType == 'page': # $page$ in markdown file
-                    page = self.doc.newPage()
-                    verbose.append('%s.compose: Marker new page' % composerName)
-
-            elif targets.get('box') is not None and targets.get('box').isText and targets.get('box').bs is not None and e.isText:
+            elif pack.box is not None and pack.box.isText and pack.box.bs is not None and e.isText:
                 # If new content and last content are both text boxes, then merge the string.
-                targets.get('box').bs += e.bs
+                pack.box.bs += e.bs
 
-            elif targets.get('box') is not None:
+            elif pack.box is not None:
                 # Otherwise just paste the galley-element onto the target box.
                 #e.parent = targets.get('box')
                 pass
             else:
-                errors.append('%s.compose: No valid box or image selected "%s - %s"' % (composerName, page, e))
+                pack.errors.append('%s.compose: No valid box or image selected "%s - %s"' % (
+                    self.__class__.__name__, page, e))
 
-        return targets
+        return pack
         """
         for ge in self.galley.elements:
             print('Galley Element', ge.__class__.__name__)

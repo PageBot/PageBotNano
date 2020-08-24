@@ -41,23 +41,21 @@ class Publication:
     >>> page.addElement(e)
     >>> pub.export('_export/Publication.pdf')
     """
-    def __init__(self, w=None, h=None, templates=None, theme=None, galley=None, context=None):
+    def __init__(self, w=None, h=None, templates=None, theme=None, context=None):
         self.doc = Document(w=w, h=h, context=context)
-        self.galley = galley
         self.templates = templates
         self.theme = theme
 
-    def compose(self):
+    def compose(self, galley):
         """Composing the publication allows inheriting class
         to create pages, fill them with elements and add content.
         """
-        pass
+        raise NotImplementedError
 
     def export(self, path):
         """Export the publication as document, by passing the path
         on to self.document
         """
-        self.compose() # Allow inheriting classes to compose all pages.
         self.doc.build() # Make sure to build the document
         self.doc.export(path)
 

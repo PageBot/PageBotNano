@@ -73,7 +73,7 @@ def parseMarkdown(txt):
     txt = re.sub('\\[\\^([^\\]]*)\\]', '<footnote ref="\\1"/>', txt, flags=re.MULTILINE)
     # ==cover== --> <cover>...</cover> # XML-based content tags
     # ==tableOfContent== --> <tableOfContent>...</tableOfContent> # XML-based content tags
-    txt = re.sub('\\=\\=([a-zA-Z]*)\\=\\=([^#].*)$', '<\\1>\\2</\\1>', txt, flags=re.MULTILINE)
+    txt = re.sub('\\=\\=([a-zA-Z]*)\\=\\=([^#].*)$', '<marker type="\\1">\\2</marker>', txt, flags=re.MULTILINE)
     # ### Header --> <h3>Header</h3>
     txt = re.sub('^#{6}\\ ([^#].*)$', '<h6>\\1</h6>', txt, flags=re.MULTILINE)
     txt = re.sub('^#{5}\\ ([^#].*)$', '<h5>\\1</h5>', txt, flags=re.MULTILINE)

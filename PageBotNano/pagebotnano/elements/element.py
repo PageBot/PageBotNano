@@ -547,16 +547,33 @@ class Marker(Element):
     """This element does not draw anything. It is used as instructor code
     when composing pages from a galley. There are several different markers 
     supported by the Typesetter, such as $page$, $chapter$, etc.
+
+    >>> m = Marker('page')
+    >>> m
+    <Marker type=page>
+    >>> m = Marker('footnote', ref='abcd1990')
+    >>> m
+    <Marker type=footnote ref=abcd1990>
+    >>> m = Marker('footnote', id='abcd1990')
+    >>> m
+    <Marker type=footnote id=abcd1990>
     """
-    def __init__(self, markerType, index=0, **kwargs):
+    def __init__(self, markerType, ref=None, id=None, **kwargs):
         """Call the base element with all standard attributes.
         """
         Element.__init__(self, **kwargs)
         self.markerType = markerType # Name of the tag, for the composer to respond to.
-        self.index = index # Optional index reference of the tag.
+        self.ref = ref
+        self.id = id
 
     def __repr__(self):
-        return '<%s type=%s index=%s>' % (self.__class__.__name__, self.markerType, self.index)
+        s = '<%s type=%s' % (self.__class__.__name__, self.markerType)
+        if self.ref is not None:
+            s += ' ref=%s' % self.ref
+        if self.id is not None:
+            s += ' id=%s' % self.id
+        s += '>'
+        return s
 
     def build(self, x, y, doc, page, parent=None):
         """Ingore any drawing or passing on to children.

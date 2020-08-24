@@ -36,7 +36,6 @@ class DrawBotContext(BaseContext):
         >>> page = context.newPage(400, 500)
         >>> context.newPage(pt(400), mm(200))
         """
-        print("@@@@@ new page", w, h)
         drawBot.newPage(upt(w), upt(h))
            
     def newDrawing(self):

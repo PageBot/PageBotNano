@@ -210,8 +210,8 @@ class Document:
         self.pages.append(page)
 
     def compose(self):
-        """Compose the document, by looking through the pages, and the recursively
-        tell every page to compose itself (and its comtained elements).
+        """Compose the document, by looking through the pages, and then recursively
+        tell every page to compose itself (and its contained elements).
 
         >>> doc = Document()
         >>> page = doc.newPage()
@@ -220,7 +220,7 @@ class Document:
         >>> doc.compose()
         """
         for page in self.pages:
-            page.compose(doc=self, page=page) # Passing self as document, in case the page needs more info
+            page.compose(doc=self) # Passing self as document, in case the page needs more info
         self.hasComposed = True # Flag that we did this, in case called separate from self.export
 
     def build(self):

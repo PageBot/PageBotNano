@@ -92,14 +92,14 @@ class OneColumnTemplates(BaseTemplates):
         """
         >>> from pagebotnano.document import Document
         >>> from pagebotnano.themes import BackToTheCity
-        >>> template = OneColumnTemplates()
+        >>> templates = OneColumnTemplates()
         >>> theme = BackToTheCity()
-        >>> doc = Document(theme=theme)
-        >>> page = template.page(doc)
+        >>> doc = Document(theme=theme, templates=templates)
+        >>> page = templates.page(doc)
         >>> page.compose(doc)
         >>> page.find(MAIN)
         <TextBox name=mainText w=535pt h=782pt>
-        >>> page = doc.newPage(template=template)
+        >>> page = doc.newPage()
         """
         page = cls._initialize(doc)
         # Add text element with the main text column of this page
@@ -146,6 +146,22 @@ class OneColumnTemplates(BaseTemplates):
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
         return page
+
+    @classmethod
+    def footnote(cls, doc):
+        print('=== footnote')
+
+    @classmethod
+    def literature(cls, doc):
+        print('=== literature')
+
+    @classmethod
+    def footnote(cls, doc):
+        print('=== footnote')
+
+    @classmethod
+    def chapter(cls, doc):
+        print('=== chapter')
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

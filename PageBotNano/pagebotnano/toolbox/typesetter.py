@@ -36,7 +36,7 @@ from pagebotnano.themes import DefaultTheme
 
 class Galley(Element):
     pass
-
+    
 class Typesetter:
     """Typesetter takes one or a series of inputs, converts them to
     BabelString and elements, and adds thoses to the supplied galley.
@@ -107,6 +107,8 @@ class Typesetter:
         >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=24) # Intentionally not for <h2>
         >>> theme.styles['p'] = dict(font='Georgia', fontSize=10)
         >>> g = ts.typeset(xml, theme)
+        >>> g.elements
+        [<TextBox name=TextBox w=100pt h=None>]
         >>> xml = '<unknownTag/>'
         >>> g = ts.typeset(xml)
         >>> ts.verbose[-1]
@@ -194,7 +196,8 @@ class Typesetter:
         pass
 
     def node_literature(self, node, e, style):
-        e.addElement(Marker('literature', index=node.attrib.get('index')))
+        e.addElement(Marker('literature', ref=node.attrib.get('ref'),
+            id=node.attrib.get('id')))
 
     def _node_literature(self, node, e, style):
         if node.tail:
@@ -202,31 +205,20 @@ class Typesetter:
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_footnote(self, node, e, style):
-        e.addElement(Marker('footnote', index=node.attrib.get('index')))
+        e.addElement(Marker('footnote', ref=node.attrib.get('ref'),
+            id=node.attrib.get('id')))
 
     def _node_footnote(self, node, e, style):
         if node.tail:
             tb = self.getTextBox(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
-    def node_author(self, node, e, style):
-        e.addElement(Marker('author', index=node.attrib.get('index')))
+    def node_marker(self, node, e, style):
+        markerType = node.attrib.get('type')
+        if markerType:
+            e.addElement(Marker(markerType))
 
-    def _node_author(self, node, e, style):
-        if node.tail:
-            tb = self.getTextBox(e)
-            tb.bs.append(node.tail, style) # Must be style of the parent.
-
-    def node_page(self, node, e, style):
-        e.addElement(Marker('page', index=node.attrib.get('index')))
-
-    def _node_page(self, node, e, style):
-        pass
-
-    def node_chapter(self, node, e, style):
-        e.addElement(Marker('chapter', index=node.attrib.get('ref')))
-
-    def _node_chapter(self, node, e, style):
+    def node_marker(self, node, e, style):
         pass
 
     def node_p(self, node, e, style):

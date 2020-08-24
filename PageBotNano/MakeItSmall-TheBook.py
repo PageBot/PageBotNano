@@ -13,6 +13,11 @@
 #
 #   MakeItSmall-TheBook.py
 #
+#	This script shows the relative simple process of creating a book.
+#   All difficult stuff is hidden in classes like the context, the theme,
+#   the templates and the typesetter. 
+#   The content markdown file also directs the selection of template pages.
+#
 import sys
 sys.path.insert(0, "../") # So we can import pagebotnano without installing.
 
@@ -20,11 +25,37 @@ from pagebotnano.toolbox.units import pt, mm
 from pagebotnano.constants import PENGUIN_POCKET
 from pagebotnano.publications.book import Book
 from pagebotnano.contexts.drawbot.context import DrawBotContext
+from pagebotnano.themes import SeasoningTheDish
+from pagebotnano.toolbox.typesetter import Typesetter
+from pagebotnano.templates.onecolumn import OneColumnTemplates
+
+W, H = PENGUIN_POCKET
 
 context = DrawBotContext()
 
-W, H = PENGUIN_POCKET
-book = Book(w=W, h=H, context=context)
-#page = doc.newPage()
+# Make a theme. This includes all color and typographic styles.
+# Details of the theme can be changed in a later stage.
+theme = SeasoningTheDish()
+
+# Use the template class to generate pages and context,
+# based on a selection indicated by markers in the markdown file.
+# Those have a format like ==cover== and ==page==
+templates = OneColumnTemplates
+
+# Create a publication, that includes the document and pages
+# to be filled.
+book = Book(w=W, h=H, theme=theme, templates=templates, context=context)
+
+# Typeset the markdown file into a “galley”, a rolled up stack of
+# all elements in the file, divided by markers and XML tags.
+# Part of the elements are to be places on the pages (such as TextBox
+# and Image) and part are just instructions for the composer.
+ts = Typesetter()
+galley = ts.typesetFile('MakeItSmall-TheBook.md')
+print(galley.elements)
+
+# Now let the publication compose itself, using the galley as a
+# list of content and composing instructions.
+book.compose(galley)
 
 #doc.export('_export/060_TheBook.pdf')

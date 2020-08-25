@@ -8,13 +8,8 @@
 #   www.pagebot.io
 #   Licensed under MIT conditions
 #
-import sys
+import os
 import drawBot
-
-if __name__ == "__main__":
-    sys.path.insert(0, "..") # So we can import pagebotnano003 without installing.
-
-from pagebotnano_000 import export
 
 W = H = 600
 M = 50
@@ -38,5 +33,11 @@ for n in range(200):
     path.lineTo((x+TW/2, y+TH))
     path.closePath()
     drawBot.drawPath(path)
+
+# Check is the _export/ folder exists, otherwise create it.
+# We want to save exported files there, to avoid that those files get 
+# committed to Github everytime a new one is exported.
+if not os.path.exists('_export'):
+    os.path.mkdir('_export/')
 # Export as png file in created _export folder (that does not sync in Github)
-export('_export/0016-ManyTriangles.png')
+drawBot.saveImage('_export/0016-ManyTriangles.png')

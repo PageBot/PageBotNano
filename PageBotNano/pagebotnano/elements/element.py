@@ -41,7 +41,7 @@ class Element:
     """
     def __init__(self, x=None, y=None, w=None, h=None, name=None, parent=None,
             template=None, fill=None, stroke=None, strokeWidth=0, 
-            padding=None, margin=None):
+            padding=None, margin=None, flow=None, nextElement=None):
         self.x = x or 0 # (x, y) position of the element from bottom left of parent.
         self.y = y or 0
         self.w = w # Width and height of the element bounding box
@@ -56,6 +56,8 @@ class Element:
         # Optional name, e.g. for template or element finding. Defaults to class name.
         self.name = name or self.__class__.__name__ 
         self.template = template # Optional template function for this element.
+        self.flow = flow # Name of Flow, intended to fill self
+        self.next = None # Name of next element for the current flow in this element.
 
         # If a parent is defined, then add self to the parent children.
         if parent is not None:
@@ -423,6 +425,29 @@ class TextBox(Text):
         # FormattedString. Store that in self.overflow.
         self.overflow = doc.context.textBox(self.bs, (ox, oy, self.w, self.h or page.h)) 
 
+class Flow(TextBox):
+    """The Flow textbox is typically placed on a Galley, after parsing a markdown file.
+    It has no dimensions or positions and it cannot be places on a page or drawn.
+    Instead, it is the source for templates composing pages. During the composition 
+    phase, active Flows instances become stored in the Document.flows dictionary,
+    with their identifier as key.
+    """
+    def __init__(self, bs='', id=0, **kwargs):
+        """Call the super class element with all standard attributes.
+        Different from the Text class, now the width `w` is a required attribute.
+        """
+        Text.__init__(self, bs, **kwargs)
+        self.id = id # Flow identifier, binding it to elements in templates.
+
+    def __repr__(self):
+        return '<%s id=%s>' % (self.__class__.__name__, self.id)
+
+    def getOverflow(self, bs=None, w=None, h=None, doc=None):
+        raise NotImplementedError
+
+    def drawContent(self, ox, oy, doc, page, parent):
+        raise NotImplementedError
+
 class Image(Element):
     """This element draws an image on a defined place. 
 
@@ -579,6 +604,10 @@ class Marker(Element):
         """Ingore any drawing or passing on to children.
         """
         pass
+
+class TemplateMarker(Marker):
+    """TemplateMarker are used to indicate template calls in a markdown stream."""
+    pass
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

@@ -109,24 +109,25 @@ class Book(Publication):
                 page = self.doc.newPage() # No existing pages, create one
         
         pack = Pack()
-        pack.composer = self
+        pack.publication = self
         pack.doc = self.doc
+        pack.galley = galley
         pack.page = page
         pack.box = page.find('main')
         pack.theme = self.doc.theme
         pack.styles = self.doc.theme.styles
-        pack.templates = self.templates
+        pack.templates = self.doc.templates
         pack.errors = []
         pack.verbose = []
 
         for e in galley.elements:
 
             if isinstance(e, Marker):
-                try:
-                    print(e.markerType, pack.templates)
-                    print(getattr(self.doc.templates, e.markerType)(self.doc))
-                except AttributeError:
-                    print('%s.compose: No template call for "%s"' % (self.__class__.__name__, e.markerType))
+                print('++++', e.markerType, pack.templates)
+                #try:
+                print('====', getattr(self.doc.templates, e.markerType)(self.doc))
+                #except AttributeError:
+                #    print('%s.compose: No template call for "%s"' % (self.__class__.__name__, e.markerType))
                 #if e.markerType == 'page': # $page$ in markdown file
                 #    page = self.doc.newPage()
                 #    verbose.append('%s.compose: Marker new page' % composerName)

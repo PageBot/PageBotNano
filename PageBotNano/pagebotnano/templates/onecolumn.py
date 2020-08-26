@@ -44,7 +44,7 @@ class OneColumnTemplates(BaseTemplates):
     def cover(cls, doc):
         page = cls._initialize(doc)
         # Fill the cover page with a theme background color
-        e = Rect(0, 0, page.w, page.h, fill=theme.getColor(1, 4)) # Dark cover color
+        e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
 
         # Add title and author, centered on top-half of the cover.
@@ -58,7 +58,7 @@ class OneColumnTemplates(BaseTemplates):
     def frenchTitle(cls, doc):
         page = cls._initialize(doc)
         # Fill the cover page with a theme background color
-        e = Rect(0, 0, page.w, page.h, fill=theme.getColor(1, 4)) # Dark cover color
+        e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
 
         # Add title and author, centered on top-half of the cover.
@@ -72,7 +72,7 @@ class OneColumnTemplates(BaseTemplates):
     def title(cls, doc, page=None):
         page = cls._initialize(doc)
         # Fill the cover page with a theme background color
-        e = Rect(0, 0, page.w, page.h, fill=theme.getColor(1, 4)) # Dark cover color
+        e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
 
         # Add title and author, centered on top-half of the cover.
@@ -84,7 +84,7 @@ class OneColumnTemplates(BaseTemplates):
 
     @classmethod
     def tableOfContent(cls, doc):
-        page = _cls.initialize(theme, doc, page, parent, styles)
+        page = cls._initialize(doc)
         return page
 
     @classmethod
@@ -123,8 +123,19 @@ class OneColumnTemplates(BaseTemplates):
         return page
 
     @classmethod
+    def chapter(cls, doc):
+        """If this template is called, a new chapter starts.
+        Create a new page, select is as doc.page, create a new text box and make select it
+        as doc.box.
+        """
+        page = doc.newPage()
+        e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
+        page.addElement(e)
+        return page
+
+    @classmethod
     def index(cls, doc):
-        page = _cls.initialize(doc)
+        page = cls._initialize(doc)
         return page
 
     @classmethod
@@ -158,10 +169,6 @@ class OneColumnTemplates(BaseTemplates):
     @classmethod
     def footnote(cls, doc):
         print('=== footnote')
-
-    @classmethod
-    def chapter(cls, doc):
-        print('=== chapter')
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

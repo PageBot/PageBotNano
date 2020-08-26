@@ -33,7 +33,7 @@ W, H = PENGUIN_POCKET
 
 context = DrawBotContext()
 
-# Make a theme. This includes all color and typographic styles.
+# Choose and create a theme. This includes all color and typographic styles.
 # Details of the theme can be changed in a later stage.
 theme = SeasoningTheDish()
 
@@ -52,7 +52,11 @@ book = Book(w=W, h=H, theme=theme, templates=templates, context=context)
 # and Image) and part are just instructions for the composer.
 ts = Typesetter()
 galley = ts.typesetFile('MakeItSmall-TheBook.md')
+print('XML ' + '-'*50)
+print(ts.xml)
+print('XML ' + '-'*50)
 print(galley.elements)
+print('XML ' + '-'*50)
 
 # Now let the publication compose itself, using the galley as a
 # list of content and composing instructions.

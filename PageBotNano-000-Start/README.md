@@ -6,6 +6,10 @@ PageBotNano is a top-down evolving, lightweight training version of PageBot. It 
 
 ## In this version
 
+It is assumed that PageBotNano runs inside DrawBotApp, so the **drawBot** library can be imported without any installation.
+
+Running PageBotNano from Sublime (or another platform that supports execution of Python scripts), then the drawBot lib should be installed first. Download from [](https://github.com/typemytype/drawbot) and install according to the instructions of the **setup.py** of that repository.
+
 This version of PageBotNano doesn’t use any classes. It contains a set of starter exercises with standard Python patterns, in combination with the process of extracting parameters from existing graphic design and typography.
 
 This first PageBotNano-000-Start is just using the standard DrawBot functions as documented on the https://www.drawbot.com site.

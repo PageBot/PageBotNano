@@ -34,13 +34,13 @@ def parseMarkdown(txt):
     """
     >>> xml = 'Initial text\\n==cover== Some remark until end of line\\n'
     >>> parseMarkdown(xml)
-    '<xml><p>Initial text\\n</p><cover> Some remark until end of line</cover>\\n</xml>'
+    '<xml><p>Initial text\\n</p><template type="cover"/>\\n</xml>'
     >>> xml = '## H2\\n==page== Some remark until end of line\\n'
     >>> parseMarkdown(xml)
-    '<xml><h2>H2</h2>\\n<page> Some remark until end of line</page>\\n</xml>'
+    '<xml><h2>H2</h2>\\n<template type="page"/>\\n</xml>'
     >>> xml = '## H2\\n==tableOfContent== Some remark until end of line\\n'
     >>> parseMarkdown(xml)
-    '<xml><h2>H2</h2>\\n<tableOfContent> Some remark until end of line</tableOfContent>\\n</xml>'
+    '<xml><h2>H2</h2>\\n<template type="tableOfContent"/>\\n</xml>'
     >>> xml = '## H2\\nText with[^12] a footnote reference.\\n'
     >>> parseMarkdown(xml)
     '<xml><h2>H2</h2>\\n<p>Text with<footnote ref="12"/> a footnote reference.\\n</p></xml>'
@@ -71,9 +71,20 @@ def parseMarkdown(txt):
     txt = re.sub('\\[\\^lit([^\\]]*)\\]', '<literature ref="\\1"/>', txt, flags=re.MULTILINE)
     # [^1] --> <footnote ref="1"/> # XML-based content tags
     txt = re.sub('\\[\\^([^\\]]*)\\]', '<footnote ref="\\1"/>', txt, flags=re.MULTILINE)
-    # ==cover== --> <cover>...</cover> # XML-based content tags
-    # ==tableOfContent== --> <tableOfContent>...</tableOfContent> # XML-based content tags
-    txt = re.sub('\\=\\=([a-zA-Z]*)\\=\\=([^#].*)$', '<marker type="\\1">\\2</marker>', txt, flags=re.MULTILINE)
+    # ==flow main== --> <flow id="main"/> # Select the flow with this identifier
+    # ==flow side== --> <flow id="side"/> # Select the flow with this identifier
+    txt = re.sub('\\=\\=flow\\ ([a-zA-Z0-9]*)\\=\\=.*$', '<flow id="\\1"/>', txt, flags=re.MULTILINE)
+    # ==flow== --> <flow id="main"/> # Reset to the main flow
+    txt = re.sub('\\=\\=flow\\=\\=.*$', '<flow id="main"/>', txt, flags=re.MULTILINE)
+    # ==cover== --> <template type="cover"/> # XML-based page selector tags
+    # ==frenchTitle== --> <template type="frenchTitle"/> 
+    # ==title== --> <template type="title"/> 
+    # ==tableOfContent== --> <template type="tableOfContent"/> 
+    # ==chapter== --> <template type="chapter"/> 
+    # ==page== --> <template type="page"/> 
+    # ==index== --> <template type="index"/> 
+    # ==colophon== --> <template type="colophon"/> 
+    txt = re.sub('\\=\\=([a-zA-Z0-9]*)\\=\\=([^#].*)$', '<template type="\\1"/>', txt, flags=re.MULTILINE)
     # ### Header --> <h3>Header</h3>
     txt = re.sub('^#{6}\\ ([^#].*)$', '<h6>\\1</h6>', txt, flags=re.MULTILINE)
     txt = re.sub('^#{5}\\ ([^#].*)$', '<h5>\\1</h5>', txt, flags=re.MULTILINE)

@@ -57,6 +57,8 @@ class Document:
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
         self.page = None # Currently selected page
+        self.flows = {} # Running flow identifiers (int), matching with flow number of elements.
+        self.flow = None # Currently selected flow
 
         # The TemplateSet dictionary contains a set of functions that
         # compose the pages and containing elements for a particular

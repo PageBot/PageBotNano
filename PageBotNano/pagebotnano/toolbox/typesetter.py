@@ -29,14 +29,14 @@ if __name__ == "__main__":
 
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.markdown import parseMarkdownFile, parseMarkdown
-from pagebotnano.elements import Element, TextBox, Image, Marker
+from pagebotnano.elements import Element, Image, Marker, TemplateMarker, Flow
 from pagebotnano.toolbox.transformer import path2Extension, path2FileName
 from pagebotnano.constants import DEFAULT_WIDTH
 from pagebotnano.themes import DefaultTheme
 
 class Galley(Element):
     pass
-    
+
 class Typesetter:
     """Typesetter takes one or a series of inputs, converts them to
     BabelString and elements, and adds thoses to the supplied galley.
@@ -89,7 +89,7 @@ class Typesetter:
         return self.typeset(xml, theme) 
 
     def typeset(self, xml, theme=None):
-        """Parse the xml into TextBox/Image elements,using the matching styles.
+        """Parse the xml into Flow/Image elements,using the matching styles.
 
         >>> from pagebotnano.toolbox.markdown import parseMarkdownFile
         >>> from pagebotnano.themes import SeasoningTheDish
@@ -108,7 +108,7 @@ class Typesetter:
         >>> theme.styles['p'] = dict(font='Georgia', fontSize=10)
         >>> g = ts.typeset(xml, theme)
         >>> g.elements
-        [<TextBox name=TextBox w=100pt h=None>]
+        [<Flow id=0>]
         >>> xml = '<unknownTag/>'
         >>> g = ts.typeset(xml)
         >>> ts.verbose[-1]
@@ -152,27 +152,33 @@ class Typesetter:
             # and the style if it existed.
             getattr(self, '_'+nodeSupport)(node, e, style)
 
-    def getTextBox(self, e=None):
-        """Answer the last TextBox element if it exists. 
-        Otherwise create it first.
+    def newFlow(self, e=None):
+        """Create a new flow in the galley and answer it)
 
         >>> ts = Typesetter()
-        >>> e = ts.getTextBox()
-        >>> e
-        <TextBox name=TextBox w=100pt h=None>
-        >>> e1 = ts.getTextBox() # Gets the existing last TextBox
-        >>> e is e1
-        True
-        >>> e2 = TextBox('', x=0, y=0, w=DEFAULT_WIDTH)
-        >>> ts.galley.addElement(e2)
-        <TextBox name=TextBox w=100pt h=None>
-        >>> e2 is ts.getTextBox() # Now finding the new one as last
+        >>> e = ts.newFlow()
+        >>> e is ts.getFlow()
         True
         """
         if e is None:
             e = self.galley
-        if not e.elements or not isinstance(e.elements[-1], TextBox):
-            e.addElement(TextBox('', x=0, y=0, w=e.w or DEFAULT_WIDTH))
+        flow = Flow()
+        e.addElement(flow)
+        return flow
+
+    def getFlow(self, e=None):
+        """Answer the last Flow element if it exists. 
+        Otherwise create a new one first.
+
+        >>> ts = Typesetter()
+        >>> e = ts.getFlow()
+        >>> e
+        <Flow id=0>
+        """
+        if e is None:
+            e = self.galley
+        if not e.elements or not isinstance(e.elements[-1], Flow):
+            return self.newFlow(e)
         return e.elements[-1]
 
     def node_xml(self, node, e, style):
@@ -201,7 +207,7 @@ class Typesetter:
 
     def _node_literature(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_footnote(self, node, e, style):
@@ -210,19 +216,25 @@ class Typesetter:
 
     def _node_footnote(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
-    def node_marker(self, node, e, style):
-        markerType = node.attrib.get('type')
-        if markerType:
-            e.addElement(Marker(markerType))
+    def node_flow(self, node, e, style):
+        e.addElement(Flow(id=node.attrib.get('id') or 0))
 
-    def node_marker(self, node, e, style):
+    def _node_flow(self, node, e, style):
+        pass
+
+    def node_template(self, node, e, style):
+        templateType = node.attrib.get('type')
+        if templateType:
+            e.addElement(TemplateMarker(templateType))
+
+    def _node_template(self, node, e, style):
         pass
 
     def node_p(self, node, e, style):
-        """Add a new paragraph to the last TextBox in the galley.
+        """Add a new paragraph to the last TextFlow in the galley.
         
         >>> from pagebotnano.themes import FairyTales
         >>> theme = FairyTales()
@@ -237,7 +249,7 @@ class Typesetter:
         >>> ts.galley.elements[-1].bs.html # Reconstruct the html from the runs.
         '<p>This is a tagged text</p>'
         """
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_p(self, node, e, style):
@@ -245,11 +257,11 @@ class Typesetter:
         Always add a return (which will be removed on reconstruction of the bs.html)
         """
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_h1(self, node, e, style):
-        """Add a new "h1" head to the last TextBox in the galley.
+        """Add a new "h1" head to the last Flow in the galley.
         
         >>> from pagebotnano.themes import FairyTales
         >>> theme = FairyTales()
@@ -265,7 +277,7 @@ class Typesetter:
         >>> ts.galley.elements[-1].bs.html # Reconstruct the html from the runs.
         '<h1>Head</h1><p>This is a tagged text</p>'
         """
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_h1(self, node, e, style):
@@ -273,156 +285,156 @@ class Typesetter:
         Always add a return (which will be removed on reconstruction of the bs.html)
         """
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_h2(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_h2(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_h3(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_h3(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_h4(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_h4(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_h5(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_h5(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_h6(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_h6(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_em(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_em(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_a(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_a(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_b(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_b(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_ul(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_ul(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_ol(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_ol(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_li(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_li(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_strong(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_strong(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_i(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_i(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_hr(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_hr(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_code(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_code(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_python(self, node, e, style):
-        #tb = self.getTextBox(e)
+        #tb = self.getFlow(e)
         #tb.bs.append(node.text, style)
         pass
 
     def _node_python(self, node, e, style):
         if node.tail:
-            tb = self.getTextBox(e)
+            tb = self.getFlow(e)
             tb.bs.append(node.tail, style) # Must be style of the parent.
 
     def node_br(self, node, e, style):
-        tb = self.getTextBox(e)
+        tb = self.getFlow(e)
         tb.bs.append(node.text, style)
 
     def _node_br(self, node, e, styles):

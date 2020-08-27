@@ -24,27 +24,55 @@ from pagebotnano.babelstring import BabelString
 from pagebotnano.templates import BaseTemplates
 
 class OneColumnTemplates(BaseTemplates):
-
+    """
+    Provide a set of class methods that construct pages, using the 
+    resources available in the case container:
+    case.publication = The Publication instance, e.g. Book
+    case.doc = The current document, containing all pages 
+    case.page = Optional current page to start flows.
+    case.galley = Galley with content input to compose
+    case.theme = Theme for colors and style
+    case.styles = Main set of styles for this publication
+    case.templates = This class OneColumnTemplates
+    case.errors = List with exported error strings.
+    case.verbose = List with exported verbose strings.
+    """
     @classmethod
-    def _initialize(cls, doc): # Standard API for all templates
-        if doc.page is None:
-            page = doc.newPage()
+    def _initialize(cls, case): # Standard API for all templates
+        if case.page is None:
+            page = case.doc.newPage()
         else:
-            page = doc.page
-        page.w = doc.w
-        page.h = doc.h
-        page.padding = doc.padding
+            page = case.page
+        page.w = case.doc.w
+        page.h = case.doc.h
+        page.padding = case.doc.padding
         return page
 
     @classmethod
-    def pageNumber(cls, doc):
+    def pageNumber(cls, case):
         print('OneColumnTemplates doing pageNumber for', page)
 
     @classmethod
-    def cover(cls, doc):
-        page = cls._initialize(doc)
+    def cover(cls, case):
+        page = cls._initialize(case)
+        print(case.template)
+        print(case.elements[0].bs)
         # Fill the cover page with a theme background color
-        e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
+        e = Rect(0, 0, page.w, page.h, fill=case.theme.getColor(1, 4)) # Dark cover color
+        page.addElement(e) 
+
+        # Add title and author, centered on top-half of the cover.
+        e = TextBox(case.elements[0].bs, name='Title', x=page.pl/2, y=page.h/2, w=page.pw, h=page.ph/2)
+        page.addElement(e)
+
+        e = Image(x=page.pl, y=page.pb, w=page.pw)
+        page.addElement(e)
+
+    @classmethod
+    def frenchTitle(cls, case):
+        page = cls._initialize(case)
+        # Fill the cover page with a theme background color
+        e = Rect(0, 0, page.w, page.h, fill=case.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
 
         # Add title and author, centered on top-half of the cover.
@@ -55,10 +83,10 @@ class OneColumnTemplates(BaseTemplates):
         page.addElement(e)
 
     @classmethod
-    def frenchTitle(cls, doc):
-        page = cls._initialize(doc)
+    def title(cls, case, page=None):
+        page = cls._initialize(case)
         # Fill the cover page with a theme background color
-        e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
+        e = Rect(0, 0, page.w, page.h, fill=case.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
 
         # Add title and author, centered on top-half of the cover.
@@ -69,26 +97,12 @@ class OneColumnTemplates(BaseTemplates):
         page.addElement(e)
 
     @classmethod
-    def title(cls, doc, page=None):
-        page = cls._initialize(doc)
-        # Fill the cover page with a theme background color
-        e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
-        page.addElement(e) 
-
-        # Add title and author, centered on top-half of the cover.
-        e = TextBox('', name='Title', x=page.pl/2, y=page.h/2, w=page.pw, h=page.ph/2)
-        page.addElement(e)
-
-        e = Image(x=page.pl, y=page.pb, w=page.pw)
-        page.addElement(e)
-
-    @classmethod
-    def tableOfContent(cls, doc):
-        page = cls._initialize(doc)
+    def tableOfContent(cls, case):
+        page = cls._initialize(case)
         return page
 
     @classmethod
-    def page(cls, doc):
+    def page(cls, case):
         """
         >>> from pagebotnano.document import Document
         >>> from pagebotnano.themes import BackToTheCity
@@ -101,14 +115,14 @@ class OneColumnTemplates(BaseTemplates):
         <TextBox name=mainText w=535pt h=782pt>
         >>> page = doc.newPage()
         """
-        page = cls._initialize(doc)
+        page = cls._initialize(case)
         # Add text element with the main text column of this page
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
 
-        leftPageNumberStyle = doc.theme.getStyle('leftPageNumber')
-        centerPageNumberStyle = doc.theme.getStyle('centerPageNumber')
-        rightPageNumberStyle = doc.theme.getStyle('rightPageNumber')
+        leftPageNumberStyle = case.theme.getStyle('leftPageNumber')
+        centerPageNumberStyle = case.theme.getStyle('centerPageNumber')
+        rightPageNumberStyle = case.theme.getStyle('rightPageNumber')
 
         if leftPageNumberStyle is not None and page.pn % 2 == 0: # Even page number?:
             bs = BabelString(str(page.pn), style)
@@ -123,23 +137,23 @@ class OneColumnTemplates(BaseTemplates):
         return page
 
     @classmethod
-    def chapter(cls, doc):
+    def chapter(cls, case):
         """If this template is called, a new chapter starts.
         Create a new page, select is as doc.page, create a new text box and make select it
-        as doc.box.
+        as case.flow.
         """
-        page = doc.newPage()
+        page = case.newPage()
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
         return page
 
     @classmethod
-    def index(cls, doc):
-        page = cls._initialize(doc)
+    def index(cls, case):
+        page = cls._initialize(case)
         return page
 
     @classmethod
-    def colophon(cls, doc):
+    def colophon(cls, case):
         """Compose the template page with the position of the ColophonPage.
         Empty page, with only the title of the book centere on the page width.
 
@@ -153,22 +167,18 @@ class OneColumnTemplates(BaseTemplates):
         >>> page.find(MAIN)
         <TextBox name=mainText w=535pt h=782pt>
         """
-        page = cls._initialize(doc)
+        page = cls._initialize(case)
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
         return page
 
     @classmethod
-    def footnote(cls, doc):
+    def footnote(cls, case):
         print('=== footnote')
 
     @classmethod
-    def literature(cls, doc):
+    def literature(cls, case):
         print('=== literature')
-
-    @classmethod
-    def footnote(cls, doc):
-        print('=== footnote')
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

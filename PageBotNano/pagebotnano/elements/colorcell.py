@@ -43,7 +43,7 @@ SPOT = 'spot' # Show approximated closest spot color recipe
 CMYK = 'cmyk' # Show CMYK color recipce
 NAME = 'name' # Show approximated name
 RAL = 'ral' # Show approximated closest RAL recipe.
-THEME = 'theme' # Show theme position, if defined.
+THEME = 'theme' # (x=shade, y=base) Show theme position, if defined.
 COLOR_LABELS = (HEX, RGB, NAME, CMYK, SPOT, RAL, THEME)
 
 class ColorCell(Element):
@@ -128,11 +128,7 @@ class ColorCell(Element):
                 recipes.append(recipe)
             elif label == THEME:
                 if self.themePosition:
-                    base, shade = self.themePosition
-                    recipe = 'Theme[%d][%d]' % self.c.spot
-                    if not self.c.isSpot: # In case abbreviation
-                        recipe = '(%s)' % recipe # then add parenthesis
-                    recipes.append(recipe)
+                    recipes.append('Theme %d %d' % self.themePosition) # shade, base
 
         return '\n'.join(recipes)
 

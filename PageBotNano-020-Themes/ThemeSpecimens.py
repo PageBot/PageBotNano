@@ -21,7 +21,7 @@ from pagebotnano_020.themes import AllThemes, BackToTheCity
 from pagebotnano_020.constants import *
 from pagebotnano_020.elements import Rect, Text
 from pagebotnano_020.elements.colorcell import (ColorCell, OVERLAY, SPOTSAMPLE, 
-    COLOR_LABELS, HEX, NAME, RGB, SPOT, CMYK)
+    COLOR_LABELS, HEX, NAME, RGB, SPOT, CMYK, THEME)
 from pagebotnano_020.babelstring import BabelString
 from pagebotnano_020.toolbox import pt
 from pagebotnano_020.toolbox.color import color
@@ -66,7 +66,8 @@ def makeColorSpecimen(layoutData):
                     # The ColorCell element takes care of showing the color as rectangle
                     # and the lines of various recipes on top.
                     e = ColorCell(c, x=page.pl+shade*cw, y=page.pb+base*ch, w=cw, h=ch, 
-                        layout=layout, labels=labels, style=labelStyle, pb=labelLeading)
+                        themePosition=(shade, base), layout=layout, labels=labels, 
+                        style=labelStyle, pb=labelLeading)
                     page.addElement(e)
                     
             # Add background rectangle on top with theme name and mood. getColor(shade, base)
@@ -98,8 +99,8 @@ def makeColorSpecimen(layoutData):
 
 layoutDatas = (
     # Page size, filename, layout, labelColor, labels
-    ((W, H), TITLE_SIZE, OVERLAY, OVERLAY, None, (HEX, NAME, RGB, SPOT, CMYK, ), 'pdf'),
-    ((W, H), TITLE_SIZE, SPOTSAMPLE+'1', SPOTSAMPLE, color(0), (HEX, NAME, SPOT), 'pdf'),
+    ((W, H), TITLE_SIZE, OVERLAY, OVERLAY, None, (HEX, NAME, RGB, SPOT, CMYK, THEME), 'pdf'),
+    ((W, H), TITLE_SIZE, SPOTSAMPLE+'1', SPOTSAMPLE, color(0), (HEX, NAME, SPOT, THEME), 'pdf'),
     ((A5[1], A5[0]), TITLE_SIZE, SPOTSAMPLE+'-A5', SPOTSAMPLE, color(0), (HEX,), 'pdf'),
     ((A5[1], A5[0]*2/3), TITLE_SIZE, OVERLAY+'-A5ish', SPOTSAMPLE, color(0), (HEX,), 'pdf'),
     ((2160, 2160), TITLE_SIZE*3.6, OVERLAY+'-Instagram', SPOTSAMPLE, color(0), (HEX,), 'jpg'),

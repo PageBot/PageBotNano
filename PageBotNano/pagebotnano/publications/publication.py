@@ -22,6 +22,11 @@ if __name__ == "__main__":
 from pagebotnano.document import Document
 from pagebotnano.constants import CENTER
 
+class Case:
+    """Case of resources, used while composing pages, as passed over to templates.
+    """
+    pass
+
 class Publication:
     """The Publication base class is a wrapper around a document.
     Inheriting publication classes implement specific knowledge
@@ -45,6 +50,21 @@ class Publication:
         self.doc = Document(w=w, h=h, context=context)
         self.templates = templates
         self.theme = theme
+
+    def newCase(self, galley=None, page=None):
+        case = Case()
+        case.publication = self 
+        case.doc = self.doc 
+        case.page = page # Optional current page to start flows.
+        case.galley = galley
+        case.theme = self.doc.theme
+        case.styles = self.doc.theme.styles
+        case.templates = self.doc.templates
+        case.template = None
+        case.elements = [] # Selected galley elements for the current template
+        case.errors = []
+        case.verbose = []
+        return case
 
     def compose(self, galley):
         """Composing the publication allows inheriting class

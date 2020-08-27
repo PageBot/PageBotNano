@@ -43,7 +43,61 @@ class BaseTheme:
     def getStyle(self, name):
         return self.styles.get(name)
 
-    def getColor(self, shade, base):
+    # Optional conversion of color base names to matrix row index number
+    NAME2BASE = dict(
+        main=5,
+        accent=4,
+        alt1=3,
+        alt2=2,
+        support1=1,
+        support2=0,
+    )
+    # Optional conversion of color shade names to matrix col index number
+    # Note that we cannot use names as "darkest" and "lightest" since
+    # those depend if the theme is "dark" or "light"
+    # Instead we call them "background" and "foreground" and other layer names.
+    NAME2SHADE = dict(
+        back=0,
+        background=1,
+        middle=4,
+        foreground=7, hover=7,
+        front=8, text=8,
+    )
+    def getColor(self, shade, base=None):
+        """Answer the color, at position (shade=x, base=y).
+        If base is None, then try to split shade into two values.
+
+        >>> from pagebotnano_020.themes import BackToTheCity
+        >>> theme = BackToTheCity()
+        >>> theme.getColor(0, 0).hex # Color index at matrix left-bottom
+        'DED8D5'
+        >>> theme.getColor(4, -1).hex # Color index from left-top
+        'EDA04F'
+        >>> theme.getColor(-2, -2).hex # Color index from right-top
+        '4C4A46'
+        >>> theme.getColor('back main').hex
+        'FBECDC'
+        >>> theme.getColor('front support2').hex
+        '120C09'
+        >>> theme.getColor('hover', 'support1').hex
+        '2B1C08'
+        >>> theme.getColor('text', -3).hex
+        '2A2521'
+        """
+        if base is None:
+            if isinstance(shade, (list, tuple)):
+                try:
+                    shade, base = shade
+                except IndexError: 
+                    shade = 4 # Take middle shade color on error
+                    base = 0 # 
+            elif isinstance(shade, str):
+                shade, base = shade.split(' ')
+        if base in self.NAME2BASE:
+            base = self.NAME2BASE.get(base, base) # Translate name to number if defined.
+        if shade in self.NAME2SHADE:
+            shade = self.NAME2SHADE.get(shade, shade) # Translate name to number if defined.
+        # Clip to size of matrix
         return self.colors[base][shade]
 
     #              Darkest --------- self --------- Lightest 
@@ -55,13 +109,14 @@ class BaseTheme:
         base --> darker --> dark --> darkest (--> black)
 
         self.colors[base][shade] In matrix is that self.colors[y][x]
+        (Note the reverse order of (x, y))
 
         >>> # Sample below, see also ColorSpeciment.py
-        >>> from pagebotnano.document import Document
-        >>> from pagebotnano.themes import AllThemes, BackToTheCity
-        >>> from pagebotnano.constants import *
-        >>> from pagebotnano.elements import Rect, Text
-        >>> from pagebotnano.babelstring import BabelString
+        >>> from pagebotnano_020.document import Document
+        >>> from pagebotnano_020.themes import AllThemes, BackToTheCity
+        >>> from pagebotnano_020.constants import *
+        >>> from pagebotnano_020.elements import Rect, Text
+        >>> from pagebotnano_020.babelstring import BabelString
         >>> theme = BackToTheCity()
         >>> len(theme.colors)
         6
@@ -140,7 +195,7 @@ class BaseTheme:
         """Answer the shade of base color that words best as text foreground
         on the `shade` color.
 
-        >>> from pagebotnano.themes import BackToTheCity
+        >>> from pagebotnano_020.themes import BackToTheCity
         >>> theme = BackToTheCity()
         >>> theme.textColor(3, 0).name
         'black'

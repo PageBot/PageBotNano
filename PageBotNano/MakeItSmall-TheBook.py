@@ -29,6 +29,9 @@ from pagebotnano.themes import SeasoningTheDish
 from pagebotnano.toolbox.typesetter import Typesetter
 from pagebotnano.templates.onecolumn import OneColumnTemplates
 
+MARKDOWN_PATH = 'MakeItSmall-TheBook.md'
+MARKDOWN_PATH = 'Test.md'
+
 W, H = PENGUIN_POCKET
 
 context = DrawBotContext()
@@ -51,15 +54,16 @@ book = Book(w=W, h=H, theme=theme, templates=templates, context=context)
 # Part of the elements are to be places on the pages (such as TextBox
 # and Image) and part are just instructions for the composer.
 ts = Typesetter()
-galley = ts.typesetFile('MakeItSmall-TheBook.md')
+galley = ts.typesetFile(MARKDOWN_PATH)
+"""
 print('XML ' + '-'*50)
 print(ts.xml)
 print('XML ' + '-'*50)
 print(galley.elements)
 print('XML ' + '-'*50)
-
+"""
 # Now let the publication compose itself, using the galley as a
 # list of content and composing instructions.
 book.compose(galley)
 
-#doc.export('_export/060_TheBook.pdf')
+book.export('_export/TheBook.pdf')

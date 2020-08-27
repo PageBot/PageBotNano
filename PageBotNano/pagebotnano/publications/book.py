@@ -24,15 +24,10 @@ if __name__ == "__main__":
 from pagebotnano.constants import CENTER, LEFT, RIGHT, EN
 from pagebotnano.publications.publication import Publication
 from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, TextBox, Image, Marker
+from pagebotnano.elements import Rect, Text, TextBox, Image, Marker, TemplateMarker
 from pagebotnano.babelstring import BabelString
 from pagebotnano.toolbox.typesetter import Typesetter
 from pagebotnano.toolbox.units import pt
-
-class Pack:
-    """Pack of resources, used for composing the page, as passed over to templates.
-    """
-    pass
 
 class Book(Publication):
     """A Book publication takes a volume of text/imges source
@@ -57,8 +52,7 @@ class Book(Publication):
     >>> book.doc.size
     (130mm, 203mm)
     >>> g.elements
-    [<TextBox name=TextBox w=100pt h=None>]
-    >>> book.export('_export/TestBook.pdf')
+    [<Flow id=0>]
     """
     MAX_PAGES = 100
     
@@ -88,7 +82,6 @@ class Book(Publication):
         >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme)
         >>> book.doc.size
         (140mm, 214mm)
-        >>> book.compose(galley)
         >>> #book.export('_export/Book.pdf')
 
         """
@@ -96,83 +89,55 @@ class Book(Publication):
         # If TextBoxes don't fit on the page, keep adding new pages from the
         # current template until all of the BabelString overfill is processed.
 
-        # First build the targets dictionary, that contains resources for any
-        # markdown code blocks to execute their code, while processing
-        # the elements on a galley. 
+        # The Case contain all information for templates to compose their pages. 
+        # Therefor the API to that case information is standardized and documented.
+        #
+        # case.publication = The Publication instance, e.g. Book
+        # case.doc = The current document, containing all pages 
+        # case.page = Optional current page to start flows.
+        # case.galley = Galley with content input to compose
+        # case.theme = Theme for colors and style
+        # case.styles = Main set of styles for this publication
+        # case.templates = This class OneColumnTemplates
+        # case.template = Current selected template
+        # case.elements = Selected galley elements for the current template
+        # case.errors = List with exported error strings.
+        # case.verbose = List with exported verbose strings.
 
-        if page is None:
-            if self.doc.page: # If there is a selected page, then take it.
-                page = self.doc.page
-            elif self.doc.pages: # Else, if there are pages, take the first one
-                page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
-            else:
-                page = self.doc.newPage() # No existing pages, create one
-        
-        pack = Pack()
-        pack.publication = self
-        pack.doc = self.doc
-        pack.galley = galley
-        pack.page = page
-        pack.box = page.find('main')
-        pack.theme = self.doc.theme
-        pack.styles = self.doc.theme.styles
-        pack.templates = self.doc.templates
-        pack.errors = []
-        pack.verbose = []
+        if page is None and self.doc.pages: # Else, if there are pages, take the first one
+            page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
+
+        case = self.newCase(galley, page) # Make a new container with all resources for template composing.
 
         for e in galley.elements:
 
-            if isinstance(e, Marker):
-                print('++++', e.markerType, pack.templates)
-                #try:
-                print('====', getattr(self.doc.templates, e.markerType)(self.doc))
-                #except AttributeError:
-                #    print('%s.compose: No template call for "%s"' % (self.__class__.__name__, e.markerType))
-                #if e.markerType == 'page': # $page$ in markdown file
-                #    page = self.doc.newPage()
-                #    verbose.append('%s.compose: Marker new page' % composerName)
-
-            elif pack.box is not None and pack.box.isText and pack.box.bs is not None and e.isText:
-                # If new content and last content are both text boxes, then merge the string.
-                pack.box.bs += e.bs
-
-            elif pack.box is not None:
-                # Otherwise just paste the galley-element onto the target box.
-                #e.parent = targets.get('box')
-                pass
+            if isinstance(e, TemplateMarker):
+                # This is the marker for a new template. If there is a running template
+                # then call it with the current set of scooped galley case.elements to be 
+                # processed by the current template.
+                if case.template is not None:
+                    self.processTemplate(case)
+                
+                # Now we handled the running template, we can start with a clean template `e`.
+                # Reset running flows and elements, as they all should have been processed here.
+                case.template = e
+                case.elements = []
             else:
-                pack.errors.append('%s.compose: No valid box or image selected "%s - %s"' % (
-                    self.__class__.__name__, page, e))
+                # In case there are galley elements, before a template is selected,
+                # then set the default template (to make sure a page is created).
+                if not case.template:
+                    case.template = case.template.page # Default template, it must be there.
+                case.elements.append(e) # To be processed by the current template.
 
-        return pack
-        """
-        for ge in self.galley.elements:
-            print('Galley Element', ge.__class__.__name__)
-            continue
-            if isinstance(ge, TextBox):
+        # Handle the last open template, at the end of the galley
+        if case.template is not None:
+            self.processTemplate(case)
 
-                bs = ge.bs # Get the BabelString from the galley box.
-
-                for n in range(self.MAX_PAGES):
-                    page = self.doc.newPage()
-
-                    # Add text element with page number
-                    self.templates.pageNumber(self.theme, self.doc, page, self.styles)
-
-                    
-                    # Add text element with the main text column of this page
-                    e = TextBox(bs, x=pad, y=pad, w=page.w-2*pad, h=page.h-2*pad)
-                    page.addElement(e)
-
-                    # If there is overflow on this page, continue looping creating
-                    # as many pages as needed to fill all the text in self.content.
-                    # Otherwise break the loop, as we are done placing content.
-                    bs = e.getOverflow(bs, doc=self.doc)
-                    # Test on this “incomplete” BabelString, as it only has a cached FS
-                    if not bs.fs:
-                        break
-                    
-        """
+    def processTemplate(self, case):
+        try:
+            getattr(case.doc.templates, case.template.markerType)(case)
+        except AttributeError:
+            print('%s.compose: No template call for "%s"' % (self.__class__.__name__, case.template.markerType))
 
     def XXX(self):
 

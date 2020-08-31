@@ -14,35 +14,8 @@
 #   This source makes it possible to import other sources
 #   from this directory/folder
 #
-class BaseTemplates:
-    """Defines the mininum set of page generating/composing functions that a
-    template should implement. Otherwise raise an error.
-    """
-    @classmethod
-    def cover(cls, case):
-        raise NotImplementedError
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-    @classmethod
-    def frenchTitle(cls, case):
-        raise NotImplementedError
-
-    @classmethod
-    def title(cls, case):
-        raise NotImplementedError
-
-    @classmethod
-    def tableOfContent(cls, case):
-        raise NotImplementedError
-
-    @classmethod
-    def page(cls, case):
-        raise NotImplementedError
-
-    @classmethod
-    def index(cls, case):
-        raise NotImplementedError
-
-    @classmethod
-    def colophon(cls, case):
-        raise NotImplementedError
-
+from pagebotnano.templates.base import BaseTemplates
+from pagebotnano.templates.onecolumn import OneColumnTemplates

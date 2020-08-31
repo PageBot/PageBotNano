@@ -23,9 +23,27 @@ from pagebotnano.constants import A4, EXPORT_DIR, PADDING
 from pagebotnano.elements import Element, Page
 from pagebotnano.contexts.drawbot.context import DrawBotContext
 from pagebotnano.themes import BaseTheme, DefaultTheme
-from pagebotnano.templates.onecolumn import OneColumnTemplates
+from pagebotnano.templates import BaseTemplates, OneColumnTemplates
 from pagebotnano.toolbox.units import units
 from pagebotnano.toolbox.transformer import makePadding
+
+class ComposerData:
+    """Collection of running resources, used while composing pages, as passed over to templates.
+    """
+    def __init__(self, page=None, galley=None, template=None):
+        self.page = page
+        self.galley = galley
+        self.template = template  # Current running template name
+        self.elements = [] # Selected galley elements for the current template
+        self.errors = []
+        self.verbose = []
+
+    def _get_template(self):
+        return self._template
+    def _set_template(self, template):
+        assert template is None or isinstance(template, str), ('%s:template: should be None or string "%s"' % (self.__class__.__name__, template))
+        self._template = template
+    template = property(_get_template, _set_template)
 
 class Document:
     # Class names start with a capital. See a class as a factory
@@ -54,6 +72,9 @@ class Document:
         self.w = units(w)
         self.h = units(h)
         self.padding = units(pt), units(pr), units(pb), units(pl) # Initialize the default padding
+
+        self.cd = ComposerData() # Storage of composer data, while a session runs on this document.
+
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
 
@@ -62,6 +83,7 @@ class Document:
         # type of publications.
         if templates is None:
             templates = OneColumnTemplates()
+        assert isinstance(templates, BaseTemplates)
         self.templates = templates
 
         # The theme contains (or can produce) all stylistic parameters
@@ -200,12 +222,16 @@ class Document:
         >>> doc.addPage(page)
         >>> page.w, page.h
         (595pt, 842pt)
+        >>> page is doc.cd.page
+        True
         """
         if page.w is None:
             page.w = self.w
         if page.h is None:
             page.h = self.h
-        self.page = page
+        if page.padding is None:
+            page.padding = self.padding
+        self.cd.page = page # Set current page in the ComposerData
         self.pages.append(page)
 
     def compose(self):
@@ -231,9 +257,8 @@ class Document:
         # Clear all previous drawing in the context canvas.
         self.context.newDrawing()
 
-        # Tell each page to build itself in context, including their child elements.
+        # Tell each page to build and draw itself in context, including their child elements.
         for page in self.pages:
-            self.context.newPage(w=page.w, h=page.h)
             page.build(doc=self) # Passing self as document, in case the page needs more info.
         self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 

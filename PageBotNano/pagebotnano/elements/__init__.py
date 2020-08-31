@@ -23,4 +23,4 @@ from pagebotnano.elements.element import (Element, Text, TextBox, Rect, Image,
 	Marker, TemplateMarker, Flow)
 from pagebotnano.elements.page import Page
 from pagebotnano.elements.codeblock import CodeBlock
-from pagebotnano.elements.colorcell import ColorCell
+from pagebotnano.elements.colorcell import ColorCell, ColorMatrix

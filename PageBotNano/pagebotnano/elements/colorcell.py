@@ -146,25 +146,36 @@ class ColorCell(Element):
 
         """
         label = self._getLabel()
-        bs = BabelString(label, self.style)
-        tw, th = bs.textSize
 
         if self.layout == SPOTSAMPLE:
             # Mark abbreviated color recipes by parenthesis.
             # They are not an exact match, but closest known value for this color.
 
+            bs = BabelString(label, self.style)
+            tw, th = bs.textSize
+
             # Used padding-bottom (self.pb) also as gutter between color rectangle and labels
             e = Rect(x=self.pl, y=th+self.pb, w=self.pw, h=self.ph-th-self.pb, fill=self.c)
             self.addElement(e)
 
-            e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0) + self.pb, w=self.w, h=self.h)
+            e = Text(bs, x=self.w/2, y=th-self.style.get('fontSize') + self.pb, w=self.w, h=self.h)
             self.addElement(e)
 
-        else: # Default layout is OVERLAY
+        else: 
+            # Default layout is OVERLAY. Check the text color to be enough contrast with the background.
+            # Otherwise flip between black and white.
+            style = copy(self.style) # Copy as we are going to alter it
+            if self.c.gray < 0.33: # Dark color?
+                style['fill'] = color(1) # White text
+            else:
+                style['fill'] = color(0)
+            bs = BabelString(label, style)
+            tw, th = bs.textSize
+
             e = Rect(x=self.pl, y=self.pb, w=self.pw, h=self.ph, fill=self.c)
             self.addElement(e)
 
-            e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0) + self.pb, w=self.w, h=self.h)
+            e = Text(bs, x=self.w/2, y=th-self.style.get('fontSize')*2/3 + self.pb, w=self.w, h=self.h)
             self.addElement(e)
 
 
@@ -187,7 +198,13 @@ class ColorMatrix(Element):
     >>> cm = ColorMatrix(theme, x=page.pl, y=page.pn, w=page.pw, h=page.ph, 
     ...     labelStyle=labelStyle, labels=labels, layout=OVERLAY, cellPadding=cellPadding)
     >>> page.addElement(cm)
-
+    >>> page = doc.newPage()
+    >>> page.w, page.h = page.h, page.w # Flip from landscape to portrait
+    >>> cm = ColorMatrix(theme, x=page.pl, y=page.pn, w=page.pw, h=page.ph, 
+    ...     labelStyle=labelStyle, labels=(HEX,), layout=SPOTSAMPLE, cellPadding=cellPadding)
+    >>> page.addElement(cm)
+    >>> len(doc)
+    3
     >>> doc.export('_export/ColorMatrix.pdf')
 
     """

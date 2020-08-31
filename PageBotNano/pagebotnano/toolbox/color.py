@@ -448,6 +448,7 @@ class Color:
         self._spot = None
         self._ral = None
         self._tint = None
+        self._gray = None
         self._name = None
         self.overPrint = overPrint # Used by FlatBuilder
 
@@ -868,6 +869,25 @@ class Color:
         self.r = self.g = self.b = self._spot = None
 
     cmyk = property(_get_cmyk, _set_cmyk)
+
+    def _get_gray(self):
+        """Rough method by just averadging the self.rgb
+
+        >>> c = Color(0.5)
+        >>> c.gray
+        0.5
+        >>> c = color(0.9, 0, 0)
+        >>> c.gray
+        0.3
+        >>> c.lighter().gray
+        0.65
+        """
+        r, g, b = self.rgb # In case the base color is not RGB
+        return (r + g + b)/3
+    def _set_gray(self, gray):
+        self.r = self.g = self.b = gray
+    
+    gray = property(_get_gray, _set_gray)
 
     def _get_spot(self):
         """Sets and gets the spot value of the color. If self is not in spot

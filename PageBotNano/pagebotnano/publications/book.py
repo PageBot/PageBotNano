@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
 from pagebotnano.constants import CENTER, LEFT, RIGHT, EN
 from pagebotnano.publications.publication import Publication
+from pagebotnano.templates import BaseTemplates
 from pagebotnano.document import Document
 from pagebotnano.elements import Rect, Text, TextBox, Image, Marker, TemplateMarker
 from pagebotnano.babelstring import BabelString
@@ -89,25 +90,31 @@ class Book(Publication):
         # If TextBoxes don't fit on the page, keep adding new pages from the
         # current template until all of the BabelString overfill is processed.
 
-        # The Case contain all information for templates to compose their pages. 
-        # Therefor the API to that case information is standardized and documented.
-        #
-        # case.publication = The Publication instance, e.g. Book
-        # case.doc = The current document, containing all pages 
-        # case.page = Optional current page to start flows.
-        # case.galley = Galley with content input to compose
-        # case.theme = Theme for colors and style
-        # case.styles = Main set of styles for this publication
-        # case.templates = This class OneColumnTemplates
-        # case.template = Current selected template
-        # case.elements = Selected galley elements for the current template
-        # case.errors = List with exported error strings.
-        # case.verbose = List with exported verbose strings.
+        doc = self.doc
+        cd = doc.cd # Contains current running composer data
 
+        # The ComposerData instance contains running information for 
+        # templates to compose their pages. 
+        #
+        # cd.page = Optional current page to start flows.
+        # cd.page.pn = Optional current page number
+        # cd.galley = Galley with content input to compose
+        # cd.template = Current running template function
+        # cd.elements = Selected galley elements for the current template
+        # cd.errors = List or error messages during template/page composition
+        # cd.verbose = List of verbose text lines during template/page composition
+        #
+        # Other info accessable by templates
+        # doc.theme = Theme for colors and style
+        # doc.theme.styles = Main set of styles for this publication
+        # doc.templates = This class OneColumnTemplates
+        #
         if page is None and self.doc.pages: # Else, if there are pages, take the first one
             page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
 
-        case = self.newCase(galley, page) # Make a new container with all resources for template composing.
+        # Fill running doc composer data
+        cd.galley = galley
+        cd.page = page
 
         for e in galley.elements:
 
@@ -115,29 +122,31 @@ class Book(Publication):
                 # This is the marker for a new template. If there is a running template
                 # then call it with the current set of scooped galley case.elements to be 
                 # processed by the current template.
-                if case.template is not None:
-                    self.processTemplate(case)
+                if cd.template is not None:
+                    self.processTemplate(doc)
                 
                 # Now we handled the running template, we can start with a clean template `e`.
                 # Reset running flows and elements, as they all should have been processed here.
-                case.template = e
-                case.elements = []
+                cd.template = e.markerType # Name of the template to call
+                cd.elements = []
             else:
                 # In case there are galley elements, before a template is selected,
                 # then set the default template (to make sure a page is created).
-                if not case.template:
-                    case.template = case.template.page # Default template, it must be there.
-                case.elements.append(e) # To be processed by the current template.
+                if cd.template is None:
+                    cd.template = doc.templates.page # Default template, page() always must be there.
+                cd.elements.append(e) # To be processed by the current template.
 
         # Handle the last open template, at the end of the galley
-        if case.template is not None:
-            self.processTemplate(case)
+        if cd.template is not None:
+            self.processTemplate(doc)
 
-    def processTemplate(self, case):
+    def processTemplate(self, doc):
         try:
-            getattr(case.doc.templates, case.template.markerType)(case)
+            cd = doc.cd
+            template = cd.template # Name of the template to call
+            getattr(doc.templates, template)(doc)
         except AttributeError:
-            print('%s.compose: No template call for "%s"' % (self.__class__.__name__, case.template.markerType))
+            print('%s.compose: No template call for "%s"' % (self.__class__.__name__, template.markerType))
 
     def XXX(self):
 

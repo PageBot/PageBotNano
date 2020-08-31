@@ -30,7 +30,7 @@ from pagebotnano.toolbox.typesetter import Typesetter
 from pagebotnano.templates.onecolumn import OneColumnTemplates
 
 MARKDOWN_PATH = 'MakeItSmall-TheBook.md'
-MARKDOWN_PATH = 'Test.md'
+#MARKDOWN_PATH = 'Test.md'
 
 W, H = PENGUIN_POCKET
 
@@ -43,7 +43,7 @@ theme = SeasoningTheDish()
 # Use the template class to generate pages and context,
 # based on a selection indicated by markers in the markdown file.
 # Those have a format like ==cover== and ==page==
-templates = OneColumnTemplates
+templates = OneColumnTemplates()
 
 # Create a publication, that includes the document and pages
 # to be filled.

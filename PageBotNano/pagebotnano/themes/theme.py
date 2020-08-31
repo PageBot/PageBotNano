@@ -27,6 +27,7 @@ from pagebotnano.constants import (EN, CENTER, LEFT, RIGHT,
 
 class BaseTheme:
     def __init__(self, mood=LIGHT, name=None, fonts=None, styles=None):
+        self.mood = mood
         self.colors = self.makeColorMatrix(mood)
         # Defines the relation between typographic functions and font names.
         if fonts is None:

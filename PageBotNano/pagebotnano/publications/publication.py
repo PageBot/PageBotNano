@@ -77,7 +77,10 @@ class Publication:
         on to self.document
         """
         self.doc.build() # Make sure to build the document
-        self.doc.export(path)
+        if self.doc.pages:
+            self.doc.export(path)
+        else:
+            print('%s.export: Cannot export, doc does not contain any pages.' % self.__class__.__name__)
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

@@ -42,10 +42,9 @@ class Page(Element):
         return '<%s pn=%d w=%s h=%s elements=%d>' % (self.__class__.__name__, 
             self.pn, self.w, self.h, len(self.elements))
 
-    def compose(self, doc, page=None, parent=None):
-        if page is None:
-            page = self
-        Element.compose(self, doc, page, parent)
+    def compose(self, doc, parent=None):
+        doc.cd.page = self
+        Element.compose(self, doc, parent=self)
 
     def addElement(self, e):
         """Add the element to the list of child elements.
@@ -60,13 +59,15 @@ class Page(Element):
         """
         assert doc is not None, ('%s.build: Document needs to be defined.' % self.__class__.__name__)
         drawBot.newPage(upt(self.w), upt(self.h)) # Create a new DrawBot page. Convert size to points.
-        for element in self.elements:
+        for e in self.elements:
+            doc.cd.page = self # Set the running rending parameters
+            doc.cd.parent = self
             # Passing on doc and this page in case an element needs more info.
             # Since this bottom-left corner of the page is the origin for position,
             # set it to default (0, 0).
             # In case a page is used on a spread or for display on another page,
             # (x, y) can have another value.
-            element.build(x=x, y=y, doc=doc, page=self, parent=self) 
+            e.build(x=x, y=y, doc=doc) 
 
     # Rough example of implementing HTML/CSS generator in this architecture
     #def build_html(self):

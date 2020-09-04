@@ -40,15 +40,17 @@ SPOTSAMPLE = 'SpotSample' # As standard spot color layout: color rectangle on to
 COLOR_LAYOUTS = (None, OVERLAY, SPOTSAMPLE)
 
 # Options for showing recipe labels
-HEX = 'hex' # Show CSS hex color recipe
+HEX = 'hex' # Show CSS hex color recipe #FF0000
+HEX_LINES = 'hexLines' # Showing in multiline condensed colum
 RGB = 'rgb' # Show RGB color recipe
 SPOT = 'spot' # Show approximated closest spot color recipe
 CMYK = 'cmyk' # Show CMYK color recipce
-CMYK_SHORT = 'cmykShort' # Show abbreviated CMYK color recipce
+CMYK_SHORT = 'cmykShort' # Show approximated CMYK color recipce
 NAME = 'name' # Show approximated name
 RAL = 'ral' # Show approximated closest RAL recipe.
 THEME = 'theme' # (x=shade, y=base) Show theme position, if defined.
-COLOR_LABELS = (HEX, RGB, NAME, CMYK, CMYK_SHORT, SPOT, RAL, THEME)
+THEME_SHORT = 'themeShort' # (x=shade, y=base) Show theme position, if defined.
+COLOR_LABELS = (HEX, HEX_LINES, RGB, NAME, CMYK, CMYK_SHORT, SPOT, RAL, THEME)
 
 class ColorCell(Element):
     """The ColorCell offers various options to display the recipe of a color.
@@ -100,75 +102,85 @@ class ColorCell(Element):
         for label in self.labels:
             if label == HEX:
                 recipe = '#%s' % self.c.hex
-                if not (self.c.isRgb or self.c.isRgba): # In case abbreviation
+                if not (self.c.isRgb or self.c.isRgba): # In case approximation
+                    recipe = '(%s)' % recipe # then add parenthesis.
+                recipes.append(recipe)
+            elif label == HEX_LINES:
+                hex = self.c.hex
+                recipe = 'R:%s\nG:%s\nB:%s' % (hex[:2], hex[2:4], hex[4:])
+                if not (self.c.isRgb or self.c.isRgba): # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis.
                 recipes.append(recipe)
             elif label == NAME:
                 recipe = self.c.name.capitalize()
-                if not self.c.isName: # In case abbreviation
+                if not self.c.isName: # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == SPOT: # Can be name or number
                 recipe = 'Spot %s' % str(self.c.spot).capitalize() 
-                if not self.c.isSpot: # In case abbreviation
+                if not self.c.isSpot: # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == RGB:
                 r, g, b = self.c.rgb 
                 recipe = 'rgb %d %d %d' % (r*255, g*255, b*255)
-                if not self.c.isRgb: # In case abbreviation
+                if not self.c.isRgb: # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == CMYK:
                 Cmyk, cMyk, cmYk, cmyK = self.c.cmyk 
                 recipe = 'cmyk %d %d %d %d' % (Cmyk*100, cMyk*100, cmYk*100, cmyK*100)
-                if not self.c.isCmyk: # In case abbreviation
+                if not self.c.isCmyk: # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == CMYK_SHORT:
                 Cmyk, cMyk, cmYk, cmyK = self.c.cmyk 
                 recipe = 'c%dm%dy%dk%d' % (Cmyk*100, cMyk*100, cmYk*100, cmyK*100)
-                if not self.c.isCmyk: # In case abbreviation
+                if not self.c.isCmyk: # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == RAL:
                 recipe = 'Ral %s' % self.c.ral
-                if not self.c.isRal: # In case abbreviation
+                if not self.c.isRal: # In case approximation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
             elif label == THEME:
                 if self.themePosition:
                     recipes.append('Theme %d %d' % self.themePosition) # shade, base (x, y)
+            elif label == THEME_SHORT:
+                if self.themePosition:
+                    recipes.append('%d,%d' % self.themePosition) # shade, base (x, y)
         return '\n'.join(recipes)
 
-    def compose(self, doc, page, parent=None):
+    def compose(self, doc, parent=None):
         """Compose the cell as background color, with recipes text block on top.
 
         """
         label = self._getLabel()
 
         if self.layout == SPOTSAMPLE:
-            # Mark abbreviated color recipes by parenthesis.
+            # Mark approximated color recipes by parenthesis.
             # They are not an exact match, but closest known value for this color.
 
             bs = BabelString(label, self.style)
             tw, th = bs.textSize
 
             # Used padding-bottom (self.pb) also as gutter between color rectangle and labels
-            e = Rect(x=self.pl, y=th+self.pb, w=self.pw, h=self.ph-th-self.pb, fill=self.c)
+            e = Rect(x=self.pl, y=th+self.pb, w=self.pw, h=self.h-th-self.pb, fill=self.c)
             self.addElement(e)
 
             e = Text(bs, x=self.w/2, y=th-self.style.get('fontSize') + self.pb, w=self.w, h=self.h)
             self.addElement(e)
 
-        else: 
-            # Default layout is OVERLAY. Check the text color to be enough contrast with the background.
+        else: # Default layout is OVERLAY. 
+            # Check the text color to be enough contrast with the background.
             # Otherwise flip between black and white.
             style = copy(self.style) # Copy as we are going to alter it
             if self.c.gray < 0.33: # Dark color?
-                style['fill'] = color(1) # White text
+                labelText = color(1) # White label text
             else:
-                style['fill'] = color(0)
+                labelText = color(0) # Black label text
+            style['fill'] = labelText
             bs = BabelString(label, style)
             tw, th = bs.textSize
 
@@ -224,7 +236,7 @@ class ColorMatrix(Element):
         self.captionStyle = captionStyle
         self.cellPadding = cellPadding or (0, 0, 0, 0)
 
-    def compose(self, doc, page, parent=None):
+    def compose(self, doc, parent=None):
         """Compose the self.elements with ColorCell instances, as now we 
         know the actual size of self.
         Draw the cells of the theme in the given element size.
@@ -249,9 +261,6 @@ class ColorMatrix(Element):
             self.captionStyle = dict(font=fontName, fontSize=fontSize, 
                 fill=textFill, lineHeight=self.LEADING) 
 
-        #e = Rect(x=self.pl, y=self.pb, w=self.pw, h=self.ph, fill=backgroundFill)
-        #self.addElement(e)
-
         cols = len(self.theme.colors[0])
         rows = len(self.theme.colors)
         cw = self.pw/cols # Column width
@@ -259,7 +268,7 @@ class ColorMatrix(Element):
         for shade in range(cols):
             for base in range(rows):
                 # Get the color from the theme color matrix and add as rectangle
-                # This is the extened example, instead of using the ColorCell element.
+                # This is the extended example, instead of using the ColorCell element.
                 c = self.theme.colors[base][shade]
                 # If textColor not defined, then get it from the theme, based on the
                 # darkness of the current color.
@@ -272,7 +281,7 @@ class ColorMatrix(Element):
                     style=self.labelStyle, padding=self.cellPadding)
                 e.pb = self.labelStyle['lineHeight']
                 self.addElement(e)
-                e.compose(doc, page, parent=self) # Do recursive compose.
+                e.compose(doc, parent=self) # Do recursive compose.
 
         if self.titleStyle:        
             # Add background rectangle on top with theme name and mood. getColor(shade, base)

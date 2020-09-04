@@ -45,6 +45,12 @@ class ComposerData:
         self._template = template
     template = property(_get_template, _set_template)
 
+    def _get_pn(self):
+        if self.page is not None:
+            return self.page.pn
+        return None
+    pn = property(_get_pn)
+
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
@@ -73,7 +79,7 @@ class Document:
         self.h = units(h)
         self.padding = units(pt), units(pr), units(pb), units(pl) # Initialize the default padding
 
-        self.cd = ComposerData() # Storage of composer data, while a session runs on this document.
+        self.cd = ComposerData() # Storage of composer data, while a session runs with this document.
 
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)

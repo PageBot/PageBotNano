@@ -49,7 +49,8 @@ class Book(Publication):
     >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
     >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, theme)    
-    >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme)
+    >>> templates = OneColumnTemplates()
+    >>> book = Book(w=w, h=h, templates=templates, theme=theme)
     >>> book.doc.size
     (130mm, 203mm)
     >>> g.elements
@@ -60,13 +61,16 @@ class Book(Publication):
     def __init__(self, w=None, h=None, templates=None, theme=None, context=None):
         Publication.__init__(self, w=w, h=h, templates=templates, theme=theme, context=context)
 
-    def compose(self, galley, page=None):
+    def compose(self, galley):
         """This is the core of a publication, composing the specific content of the document, 
         from tags found in the gally.
         The compose method gets called before building and exporting the self.doc document.
         The templates class is supposed to know how to query for tags to be places on various types of pages. 
         Self (the Publications Book) is supposed to know which templates to call for certain page,
         if that is not already defined by the markdown input stream.
+
+        self.doc.cd.page contains the optional current page to start the composing. Otherwise take first.
+        self.doc.cd.galley contains the running galley
 
         >>> from pagebotnano.elements import Rect, Text
         >>> from pagebotnano.themes import HappyHolidays
@@ -79,25 +83,26 @@ class Book(Publication):
         >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
         >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
         >>> markdownPath = '../../MakeItSmall-TheBook.md'
-        >>> g = ts.typesetFile(markdownPath, theme)    
-        >>> book = Book(w=w, h=h, templates=OneColumnTemplates, theme=theme)
+        >>> g = ts.typesetFile(markdownPath, theme)  
+        >>> templates = OneColumnTemplates()  
+        >>> book = Book(w=w, h=h, templates=templates, theme=theme)
         >>> book.doc.size
         (140mm, 214mm)
-        >>> #book.export('_export/Book.pdf')
+        >>> page = templates.colorMatrix(book.doc)
+        >>> book.export('_export/ColorMatrixBook.pdf')
 
         """
         # For all the elements that are collected in the galley, do process them.
         # If TextBoxes don't fit on the page, keep adding new pages from the
         # current template until all of the BabelString overfill is processed.
 
-        doc = self.doc
-        cd = doc.cd # Contains current running composer data
+        cd = self.doc.cd # Contains current running composer data
 
         # The ComposerData instance contains running information for 
         # templates to compose their pages. 
         #
         # cd.page = Optional current page to start flows.
-        # cd.page.pn = Optional current page number
+        # cd.pn = Optional current page number (if cd.page is defined, otherwise None)
         # cd.galley = Galley with content input to compose
         # cd.template = Current running template function
         # cd.elements = Selected galley elements for the current template
@@ -109,12 +114,8 @@ class Book(Publication):
         # doc.theme.styles = Main set of styles for this publication
         # doc.templates = This class OneColumnTemplates
         #
-        if page is None and self.doc.pages: # Else, if there are pages, take the first one
-            page = self.doc.pages[0] # Select the first page of the document, unless defined otherwise.
-
         # Fill running doc composer data
         cd.galley = galley
-        cd.page = page
 
         for e in galley.elements:
 
@@ -123,7 +124,7 @@ class Book(Publication):
                 # then call it with the current set of scooped galley case.elements to be 
                 # processed by the current template.
                 if cd.template is not None:
-                    self.processTemplate(doc)
+                    self.processTemplate(self.doc)
                 
                 # Now we handled the running template, we can start with a clean template `e`.
                 # Reset running flows and elements, as they all should have been processed here.
@@ -138,7 +139,7 @@ class Book(Publication):
 
         # Handle the last open template, at the end of the galley
         if cd.template is not None:
-            self.processTemplate(doc)
+            self.processTemplate(self.doc)
 
     def processTemplate(self, doc):
         try:

@@ -58,7 +58,7 @@ class ColorCell(Element):
         e = Rect(x=0, y=0, w=self.w, h=self.h, fill=self.c)
         self.addElement(e)
 
-        # Mark abbreviated color recipes by parenthesis.
+        # Mark approximated color recipes by parenthesis.
         # They are not an exact match, but closest known value for this color.
         Cmyk, cMyk, cmYk, cmyK = self.c.cmyk 
         s = '#%s\n(%s)\n(cmyk %d %d %d %d)\n(Spot %s)\n(RAL %s)' % \

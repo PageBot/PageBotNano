@@ -23,7 +23,7 @@ from pagebotnano.elements import Text, TextBox, Rect, Image
 from pagebotnano.babelstring import BabelString
 from pagebotnano.templates import BaseTemplates
 from pagebotnano.elements.colorcell import (ColorMatrix, SPOTSAMPLE,
-    HEX, RAL, CMYK_SHORT, THEME)
+    HEX_LINES, THEME_SHORT)
 
 class OneColumnTemplates(BaseTemplates):
     """
@@ -43,11 +43,10 @@ class OneColumnTemplates(BaseTemplates):
     doc.theme.styles = Main set of styles for this publication
     doc.templates = This class OneColumnTemplates
     """
-    def _initialize(self, doc): # Standard API for all templates
-        if doc.cd.page is None:
+    def _initialize(self, doc, makeNewPage=False): # Standard API for all templates
+        page = doc.cd.page
+        if makeNewPage or page is None:
             page = doc.newPage()
-        else:
-            page = doc.cd.page
         page.w = doc.w
         page.h = doc.h
         page.padding = doc.padding
@@ -57,7 +56,7 @@ class OneColumnTemplates(BaseTemplates):
         print('OneColumnTemplates doing pageNumber for', doc.cd.page)
 
     def cover(self, doc):
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         # Fill the cover page with a theme background color
         e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
@@ -75,7 +74,7 @@ class OneColumnTemplates(BaseTemplates):
         return page
 
     def frenchTitle(self, doc):
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         # Fill the cover page with a theme background color
         e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
@@ -89,7 +88,7 @@ class OneColumnTemplates(BaseTemplates):
         return page
 
     def title(self, doc):
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         # Fill the cover page with a theme background color
         e = Rect(0, 0, page.w, page.h, fill=doc.theme.getColor(1, 4)) # Dark cover color
         page.addElement(e) 
@@ -103,10 +102,9 @@ class OneColumnTemplates(BaseTemplates):
         return page
 
     def tableOfContent(self, doc):
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         return page
 
-    @classmethod
     def page(self, doc):
         """
         >>> from pagebotnano.document import Document
@@ -119,8 +117,7 @@ class OneColumnTemplates(BaseTemplates):
         >>> page = templates.cover(doc) # The "page" template always must be there.
         >>> page.compose(doc)
         """
-        print('sdfsffsfsd', self._initialize)
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         # Add text element with the main text column of this page
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
@@ -146,13 +143,13 @@ class OneColumnTemplates(BaseTemplates):
         Create a new page, select is as doc.page, create a new text box and make select it
         as case.flow.
         """
-        page = doc.newPage()
+        page = self._initialize(doc, True)
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
         return page
 
     def index(self, doc):
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         return page
 
     def colophon(self, doc):
@@ -167,34 +164,32 @@ class OneColumnTemplates(BaseTemplates):
         >>> page = templates.colophon(doc) # Creating a new page
         >>> page.compose(doc)
         """
-        page = self._initialize(doc)
+        page = self._initialize(doc, True)
         e = TextBox('', name=MAIN, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
         page.addElement(e)
         return page
 
-    @classmethod
     def footnote(self, doc):
+        page = self._initalize(doc) # Take current doc.cd.page if defined.
         print('=== footnote')
 
-    @classmethod
     def literature(self, doc):
+        page = self._initalize(doc) # Take current doc.cd.page if defined.
         print('=== literature')
 
     # Special template to show data on debugging.
 
-    @classmethod
     def colorMatrix(self, doc):
         """If this template is called, a new chapter starts.
         Create a new page, select is as doc.page, create a new text box and make select it
         as case.flow.
         """
-        page = doc.newPage()
-        page.padding = 20
+        page = self._initialize(doc, True)
         cellPadding = (0, 3, 0, 3)
         layout = SPOTSAMPLE
-        labels = (HEX, RAL, CMYK_SHORT, THEME)
+        labels = [HEX_LINES, THEME_SHORT] #HEX, RAL, CMYK_SHORT, THEME)
         labelStyle = labelStyle=dict(fontSize=8, font='Verdana', lineHeight=10, align=CENTER)
-        cm = ColorMatrix(doc.theme, x=page.pl, y=page.pn, w=page.pw, h=page.ph, 
+        cm = ColorMatrix(doc.theme, x=page.pl, y=page.pb, w=page.pw, h=page.ph, 
              labelStyle=labelStyle, labels=labels, layout=layout, cellPadding=cellPadding)
         page.addElement(cm)
         return page

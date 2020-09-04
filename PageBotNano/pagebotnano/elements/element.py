@@ -67,6 +67,10 @@ class Element:
         # by implementing the self.initialize method.
         self.initialize()
 
+    def _get_eId(self):
+        return id(self)
+    eId = property(_get_eId)
+
     def initialize(self):
         """Allow elements, pages and templates to initialize themselves
         by implementing this method in inheriting classes.
@@ -154,7 +158,7 @@ class Element:
                 return found
         return None
 
-    def compose(self, doc, page, parent=None):
+    def compose(self, doc, parent=None):
         """Compose the layout of an element. Default behavior is to pass it on
         to the children. To be redefined by inheriting Element to make their own
         layout composition.
@@ -165,19 +169,20 @@ class Element:
         >>> theme = SeasoningTheDish()
         >>> theme.styles['leftPageNumber'] = theme.styles['p']
         >>> theme.styles['rightPageNumber'] = theme.styles['p']
+        >>> templates = OneColumnTemplates()
         >>> doc = Document(theme=theme)
-        >>> page = OneColumnTemplates.page(doc)
+        >>> page = templates.page(doc)
         >>> page 
         <Page pn=1 w=595pt h=842pt elements=3>
         """
         if self.template is not None:
-            self.template(doc, page, self)
+            self.template(doc, parent=self)
         # Now broadcast the compose call to all child elements.
         # Note that these may just have been created by the template.
         for e in self.elements:
-            e.compose(doc, page, self)
+            e.compose(doc, parent=self)
 
-    def build(self, x, y, doc, page, parent=None):
+    def build(self, x, y, doc, parent=None):
         """Build the content of the element, including background color,
         stroked frame and content of the inheriting classes.
 
@@ -201,28 +206,28 @@ class Element:
         # Disadvantage of this method is that fill objects with a stroke get
         # drawn double in InDesign. Bit allows to use the stroke outlines as
         # clipping frame if other content is added to between the two layers.
-        self.drawBackground(ox, oy, doc, page, parent)
+        self.drawBackground(ox, oy, doc, parent)
 
         # Then let inheriting subclasses draw any content (if they have it)
-        self.drawContent(ox, oy, doc, page, parent)
+        self.drawContent(ox, oy, doc, parent)
 
         # Then recursively pass the build instruction on to all child elements.
         # Use the position of self as origin for the relative position of the children.
-        for element in self.elements:
-            element.build(ox, oy, doc, page, parent=self)
+        for e in self.elements:
+            e.build(ox, oy, doc, parent=self)
 
         # Do building of the element foreground here. 
         # Let inheriting subclasses handle what must appear on the background.
         # Draw the stroke of the element, in case a color and tickness was defined. 
-        self.drawForeground(ox, oy, doc, page, parent)
+        self.drawForeground(ox, oy, doc, parent)
 
-    def drawContent(self, ox, oy, doc, page, parent):
+    def drawContent(self, ox, oy, doc, parent):
         """Default behavior is to do nothing, as the Element (and e.h. Rect)
         don’t have content to draw, besides the background and frame.
         """
         pass
 
-    def drawBackground(self, ox, oy, doc, page, parent):
+    def drawBackground(self, ox, oy, doc, parent):
         """Draw the background of the element. Default is to just draw the 
         rectangle with the fill color, if it is defined. This method should be 
         redefined by inheriting subclasses that need different foreground drawing.
@@ -233,7 +238,7 @@ class Element:
             if self.w is not None and self.h is not None:
                 doc.context.rect(ox, oy, self.w, self.h)
 
-    def drawForeground(self, ox, oy, doc, page, parent):
+    def drawForeground(self, ox, oy, doc, parent):
         """Draw the foreground of the element. Default is to just draw the 
         rectangle with the fill color, if it is defined. This method should be 
         redefined by inheriting subclasses that need different foreground drawing.
@@ -270,7 +275,7 @@ class Oval(Element):
     >>> e = Oval(parent=page, x=padding, y=padding, w=page.w-2*padding, h=page.h-2*padding, fill=color(1, 0.2, 1))
     >>> doc.export('_export/Rect.pdf') # Build and export.
     """
-    def drawBackground(self, ox, oy, doc, page, parent):
+    def drawBackground(self, ox, oy, doc, parent):
         """Draw the background of the element. Default is to just draw the 
         oval with the fill color, if it is defined. This method should be 
         redefined by inheriting subclasses that need different foreground drawing.
@@ -281,7 +286,7 @@ class Oval(Element):
             if self.w is not None and self.h is not None:
                 doc.context.oval(ox, oy, self.w, self.h)
 
-    def drawForeground(self, ox, oy, doc, page, parent):
+    def drawForeground(self, ox, oy, doc, parent):
         """Draw the foreground of the element. Default is to just draw the 
         rectangle with the fill color, if it is defined. This method should be 
         redefined by inheriting subclasses that need different foreground drawing.
@@ -291,6 +296,39 @@ class Oval(Element):
             doc.context.stroke(self.stroke, self.strokeWidth)
             if self.w is not None and self.h is not None:
                 doc.context.oval(ox, oy, self.w, self.h)
+
+# Rect = Element would have been the same.
+class Line(Element):
+    """This element draws a simple rectangle. This is identical to the default 
+    behavior of the base Element class, so nothing needs to be defined here.
+        
+    >>> from pagebotnano.document import Document
+    >>> from pagebotnano.contexts.drawbot.context import DrawBotContext
+    >>> context = DrawBotContext()
+    >>> doc = Document(context=context)
+    >>> page = doc.newPage()
+    >>> page.padding = 100
+    >>> c = color(1, 0, 0)
+    >>> e = Line(x=page.pl, y=page.pb, w=page.pw, h=page.ph, strokeWidth=50, stroke=c)
+    >>> page.addElement(e)
+    >>> e = Line(x=page.pl, y=page.h-page.pt, w=page.pw, h=-page.ph, strokeWidth=50, stroke=c)
+    >>> page.addElement(e)
+    >>> doc.export('_export/Line.pdf') # Build and export.
+    """
+    def drawContent(self, ox, oy, doc, parent):
+        """We just need to define drawing of the content. The rest of behavior
+        for the Line element (including drawing on the background and the frame) 
+        is handled by the base Element class.
+        """
+        doc.context.stroke(self.stroke)
+        doc.context.strokeWidth(self.strokeWidth or 1)
+        doc.context.line((ox, oy), (ox+(self.w or 0), oy+(self.h or 0)))
+
+    def drawBackground(self, ox, oy, doc, parent):
+        pass
+
+    def drawForeground(self, ox, oy, doc, parent):
+        pass
 
 class Text(Element):
     """This element draws a FormattedString on a defined place. Not text wrapping
@@ -319,7 +357,7 @@ class Text(Element):
             bs = BabelString(bs)
         self.bs = bs # Store the BabelString in self.
 
-    def drawContent(self, ox, oy, doc, page, parent):
+    def drawContent(self, ox, oy, doc, parent):
         """We just need to define drawing of the content. The rest of behavior
         for the Text element (including drawing on the background and the frame) 
         is handled by the base Element class.
@@ -398,7 +436,7 @@ class TextBox(Text):
         # Height of the box is undefined, measure it from the defined column width.
         return doc.context.textBox(bs, (10000000, 0, w, h))
 
-    def drawContent(self, ox, oy, doc, page, parent):
+    def drawContent(self, ox, oy, doc, parent):
         """We just need to define drawing of the foreground. The rest of behavior
         for the Text element (including drawing on the background) is handled
         by the base Element class.
@@ -445,7 +483,7 @@ class Flow(TextBox):
     def getOverflow(self, bs=None, w=None, h=None, doc=None):
         raise NotImplementedError
 
-    def drawContent(self, ox, oy, doc, page, parent):
+    def drawContent(self, ox, oy, doc, parent):
         raise NotImplementedError
 
 class Image(Element):
@@ -541,7 +579,7 @@ class Image(Element):
             sx = sy = 1 
         return sx, sy
 
-    def drawContent(self, ox, oy, doc, page, parent):
+    def drawContent(self, ox, oy, doc, parent):
         """We just need to define drawing of the image. The rest of behavior
         for the Image element (including drawing on the background and the frame) 
         is handled by the base Element class.

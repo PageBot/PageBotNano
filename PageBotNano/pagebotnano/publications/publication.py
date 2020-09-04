@@ -44,21 +44,18 @@ class Publication:
     def __init__(self, w=None, h=None, templates=None, theme=None, context=None):
         self.doc = Document(w=w, h=h, templates=templates, theme=theme, context=context)
 
-    def compose(self, galley):
+    def compose(self, galley, page=None):
         """Composing the publication allows inheriting class
         to create pages, fill them with elements and add content.
         """
         raise NotImplementedError
 
-    def export(self, path):
+    def export(self, path, force=False, multiPage=True):
         """Export the publication as document, by passing the path
-        on to self.document
+        on to self.document. Force composing and builder if `force`
+        is True, even if the `self.doc` as already built and composed.
         """
-        self.doc.build() # Make sure to build the document
-        if self.doc.pages:
-            self.doc.export(path)
-        else:
-            print('%s.export: Cannot export, doc does not contain any pages.' % self.__class__.__name__)
+        self.doc.export(path, force=force, multiPage=multiPage)
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

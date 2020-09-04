@@ -140,7 +140,7 @@ class ColorCell(Element):
         tw, th = bs.textSize
 
         if self.layout == SPOTSAMPLE:
-            # Mark abbreviated color recipes by parenthesis.
+            # Mark approximated color recipes by parenthesis.
             # They are not an exact match, but closest known value for this color.
 
             # Used padding-bottom (self.pb) also as gutter between color rectangle and labels

@@ -51,8 +51,10 @@ book = Book(w=W, h=H, theme=theme, templates=templates, context=context)
 
 # Typeset the markdown file into a “galley”, a rolled up stack of
 # all elements in the file, divided by markers and XML tags.
-# Part of the elements are to be places on the pages (such as TextBox
-# and Image) and part are just instructions for the composer.
+# Part of the elements is to be placed on the pages as elements,
+# (such as TextBox and Image) and part is just instructions for the composer
+# as non-displaying Marker elements.
+#
 ts = Typesetter()
 galley = ts.typesetFile(MARKDOWN_PATH)
 """

@@ -17,8 +17,6 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.elements.element import Element, Text, TextBox, Rect, Image, Line
-from pagebotnano.elements.page import Page
-from pagebotnano.elements.codeblock import CodeBlock
-from pagebotnano.elements.colorcell import ColorCell
-from pagebotnano.elements.typespecimen import GlyphView, Stacked
+from pagebotnano_030.elements.element import Element, Text, TextBox, Rect, Image, Line
+from pagebotnano_030.elements.page import Page
+from pagebotnano_030.elements.typespecimen import GlyphView, Stacked

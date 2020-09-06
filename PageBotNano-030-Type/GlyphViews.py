@@ -16,9 +16,14 @@
 #   This ThemeColors.py shows samples of all standard theme colors,
 #   with their closest spot color, CMYK, RGB, CSS hex-color and CSS name.
 #
-from pagebotnano.constants import A4
-from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, GlyphView
+import sys # Import access to some deep Python functions
+
+if __name__ == "__main__":
+    sys.path.insert(0, "..") # So we can import pagebotnano003 without installing.
+
+from pagebotnano_030.constants import A4
+from pagebotnano_030.document import Document
+from pagebotnano_030.elements import Rect, Text, GlyphView
 
 W, H = A4
 FONT = 'Georgia'
@@ -47,4 +52,4 @@ e5 = GlyphView('Hhj', font=FONT+'-Italic', x=page.pl+w+GUTTER, y=page.pb+e3.h, w
 page.addElement(e5)
 
 doc.export('_export/GlyphViews.pdf')
-print('Done')
+print('Done 030')

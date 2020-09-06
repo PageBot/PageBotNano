@@ -79,4 +79,4 @@ book = Book(w=w, h=h, title=title, author=author, galley=galley,
 
 book.export('_export/MyManual.pdf')
 
-print('Done')
+print('Done 010')

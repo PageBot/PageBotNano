@@ -17,12 +17,12 @@
 #   with their closest spot color, CMYK, RGB, CSS hex-color and CSS name.
 #
 from random import shuffle
-from pagebotnano.constants import (A4, LEFT, RIGHT, SPORTS, BIRDS, TOOLS,
+from pagebotnano_030.constants import (A4, LEFT, RIGHT, SPORTS, BIRDS, TOOLS,
     CITIES, FRUITS, COFFEES)
-from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, Stacked
-from pagebotnano.toolbox.color import Color
-from pagebotnano.babelstring import BabelString
+from pagebotnano_030.document import Document
+from pagebotnano_030.elements import Rect, Text, Stacked
+from pagebotnano_030.toolbox.color import Color
+from pagebotnano_030.babelstring import BabelString
 
 S = 4 # Scaling for Instagram
 W, H = 1000*S, 1000*S
@@ -83,5 +83,5 @@ for words1, title1, words2, title2, fontName1, fontName2, capsOnly in SETS:
 
     doc.export('_export/Stacked-%s-%s.jpg' % (title1, title2), multipage=True) # Instagram 
 
-print('Done')
+print('Done 030')
 

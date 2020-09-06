@@ -111,4 +111,4 @@ typeSpecimen.build()
 typeSpecimen.export('_export/MyTypeSpecimen.pdf')
 typeSpecimen.export('_export/MyTypeSpecimen.png')
 
-print('Done')
+print('Done 010')

@@ -1,0 +1,971 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+# -----------------------------------------------------------------------------
+#
+#   P A G E B O T  N A N O
+#
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
+#
+#   Supporting DrawBot, www.drawbot.com
+# -----------------------------------------------------------------------------
+#
+#   transformer.py
+#
+#   Implements a range of common transforms.
+#
+import json
+import re
+import math
+import datetime
+from time import time
+from random import randint
+import string
+import subprocess
+
+import sys
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
+import drawBot
+
+WHITESPACE = ' \t\r\n'
+ROMAN_NUMERAL_VALUES = {'M': 1000, 'D': 500, 'C': 100, 'L': 50, 'X': 10, 'V': 5, 'I': 1}
+
+# Same as in constants, defined a second time, because of import sequence.
+# Arbitrary large size that is not system dependent, such as sys.maxsize is.
+XXXL = 2**32
+
+# Generic number transforms
+
+def asNumber(v):
+    """Answers v converted to a float or int. Answer 0 if the conversion raised
+    an error.
+
+    >>> asNumber(1234)
+    1234
+    >>> asNumber(1234.2)
+    1234.2
+    >>> asNumber('1234.2')
+    1234.2
+    >>> asNumber('1234.2a')
+    0
+    >>> asNumber('1234')
+    1234
+    >>> asNumber('1234a')
+    0
+    """
+    return asNumberOrNone(v) or 0
+
+def asNumberOrNone(v):
+    """
+
+    >>> asNumberOrNone('1234.5')
+    1234.5
+    >>> asNumberOrNone('1234.0')
+    1234
+    >>> asNumberOrNone('1234')
+    1234
+    >>> asNumberOrNone('1234ab') is None
+    True
+
+    """
+    try:
+        iValue = asIntOrNone(v)
+        fValue = asFloatOrNone(v)
+        if iValue == fValue:
+            return iValue
+        return fValue
+    except (ValueError, TypeError):
+        pass
+    return None
+
+def asFloatOrNone(value):
+    """Answers a float if it can be converted. Answer None otherwise.
+
+    >>> asFloatOrNone(123)
+    123.0
+    >>> asFloatOrNone('123')
+    123.0
+    >>> asFloatOrNone('123a') is None
+    True
+    """
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return None
+
+def asIntOrNone(v):
+    """Answers v converted to int. Answer None if the conversion raised an
+    error.
+
+    >>> asIntOrNone(1234)
+    1234
+    >>> asIntOrNone('1234')
+    1234
+    >>> asIntOrNone('1234.2')
+    1234
+    >>> asIntOrNone('1234a') is None
+    True
+    """
+    return asIntOrDefault(v)
+
+def asIntOrDefault(v, default=None):
+    """Answers v converted to int. Answer None if the conversion raised an
+    error.
+
+    >>> asIntOrNone(1234)
+    1234
+    >>> asIntOrNone('1234')
+    1234
+    >>> asIntOrNone('1234.2')
+    1234
+    >>> asIntOrNone('1234a') is None
+    True
+    """
+    try:
+        return int(round(float(v)))
+    except (ValueError, TypeError):
+        return default
+
+def asInt(value, default=None):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default or 0
+
+def isInt(value):
+    return asIntOrNone(value) is not None
+
+def asIntOrValue(value):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return value
+
+def asRoundedInt(value, default=None):
+    value = asIntOrNone(value)
+    if value is None:
+        value = default
+    try:
+        return int(round(value))
+    except (ValueError, TypeError):
+        return int(round(default or 0))
+
+def asFloat(value, default=None):
+    value = asFloatOrNone(value)
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+def asIntOrFloat(value):
+    """Answers value converted to int if same value, otherwise answer float.
+
+    >>> asIntOrFloat(100.00)
+    100
+    >>> asIntOrFloat(100)
+    100
+    >>> asIntOrFloat(100.12)
+    100.12
+    """
+    if value ==  math.inf:
+        value = XXXL
+    iValue = int(value)
+    if iValue == value:
+        return iValue
+    return value
+
+def asFormatted(value, default=None, hasFormat=None):
+    """Answers the formatted string of value. Use the format string if defined.
+    Otherwise answer the cleanest representation, eating all 0 and /. from the
+    right side.
+
+    >>> asFormatted(100)
+    '100'
+    >>> asFormatted(100.00)
+    '100'
+    >>> asFormatted(100.100000) # Eats trailing zero, until non-zero decimal
+    '100.1'
+    >>> asFormatted(100.12789) # Round to 2 digits
+    '100.13'
+    >>> asFormatted(100.99) # Round to 2 digits, then eats zeros
+    '100.99'
+    >>> asFormatted(100.999) # Round to 2 digits, then eats zeros
+    '101'
+    >>> asFormatted(100.100002345) # Round to 2 digits, then eats zeros
+    '100.1'
+    >>> asFormatted(100.000001) # Eats the decimal point, not the integer zeros
+    '100'
+    >>> asFormatted(None, 100.00) # Use formatted default
+    '100'
+    >>> asFormatted(200/3) # Default rounds to 2 digits.
+    '66.67'
+    >>> asFormatted(200/3, hasFormat='%0.10f') # Overwrite behavior by supplied format string
+    '66.6666666667'
+    """
+    if value is None:
+        value = default
+    if hasFormat is None:
+        iNumber = asNumber(value)
+
+        if isinstance(iNumber, int): # Check on rounded by 0.00
+            return '%d' % iNumber
+        value = '%0.2f' % value # Round to 2 digits
+
+        # Then remove any trailing zeros (there there is a decimal point)
+        while value and '.' in value and value.endswith('0'):
+            value = value[:-1]
+        if value and value.endswith('.'):
+            value = value[:-1] # Eat remaining period on the right.
+
+        return value or '0' # Answer value. If all eaten, then just answer 0
+
+    return hasFormat % value # Otherwise show as float with 2 digits.
+
+def value2Tuple4(v):
+    """Answers a tuple of 4 values. Can be used for colors and rectangles.
+
+    >>> value2Tuple4(123)
+    (123, 123, 123, 123)
+    >>> value2Tuple4((2,3))
+    (2, 3, 2, 3)
+    >>> value2Tuple4((2,3,4,5))
+    (2, 3, 4, 5)
+    """
+    if not isinstance(v, (list, tuple)):
+        v = [v]
+    if len(v) == 1:
+        return v[0], v[0], v[0], v[0]
+    if len(v) == 2:
+        return v[0], v[1], v[0], v[1]
+    if len(v) == 4:
+        return v
+    raise ValueError
+
+def asId(v, default=0):
+    """The *asId* method transforms the *value* attribute either to an instance
+    of @ int@ or to @None@, so it can be used as *id* field in a @Record@
+    instance. If the value cannot be converted, then the optional *default*
+    (default value is @0 @) is answered.
+
+    >>> asId(123) == 123
+    True
+    >>> asId('abcd', 'ABCD')
+    'ABCD'
+    """
+    try:
+        v = int(v)
+        if v <= 0:
+            return default
+        return v
+    except (ValueError, TypeError):
+        return default
+
+def asBool(value, default=None):
+    if value is None:
+        return default
+    return bool(value)
+
+def asTuple(value):
+    if isinstance(value, list):
+        value = tuple(value)
+    elif not isinstance(value, tuple):
+        value = (value,)
+    return value
+
+def asSet(value):
+    if isinstance(value, (list, tuple)):
+        value = set(value)
+    if not isinstance(value, set):
+        value = set((value,))
+    return value
+
+def interpolate(a, b, v, doRound=False):
+    """Answers the interpolated value of factor v between a and b. If doRound
+    is True (default is False), then round the result before answering it."""
+    i = a + (b-a) * v
+    if doRound:
+        i = int(round(i))
+    return i
+
+# S T R I N G
+
+def commaString2List(s):
+    return stringList2StrippedList(s.split(','))
+
+def stringList2StrippedList(strings):
+    l = []
+    for string in strings:
+        l.append(string.strip())
+    return l
+
+def filterValue2Int(s):
+    """Filter all numeric characters from the string and answer the resulting
+    integer.  Answer 0 if no digits are found. If s is already a number, then
+    answer it as rounded int."""
+    if isinstance(s, (int, float)):
+        return int(round(s))
+    digits = '0'
+    for c in s:
+        if c in '0123456789':
+            digits += c
+    return asInt(digits)
+
+# B O O L E A N
+
+def bool2Int(value):
+    if value:
+        return 1
+    return 0
+
+def int2Bool(value):
+    return bool(value)
+
+def index2PointId(self, index):
+    return '*Pid%d' % index
+
+def none2Empty(value):
+    """Answers an empty string if value is None, otherwise pass it through To
+    make sure that 0 empty objects show as result."""
+    if value is None:
+        return ''
+    return value
+
+def asDict(value, isRoot=True):
+    """Answers the value as dict as root. If the value itself is not a dict,
+    answer it as dict(value=value). For lower levels than root, answer the
+    plain value if is it a string or a number. Basic classed don't get
+    translated when not called as root.
+
+    All other objects are called by value.asDict() If the object cannot handle
+    that method, then convert it to string."""
+    d = {}
+    if isinstance(value, dict):
+        for key, v in value.items():
+            d[key] = asDict(v, False)
+    elif isinstance(value, (int, float, str)):
+        if isRoot:
+            d = dict(value=value)
+        else:
+            d = value # On lower levels than root, just copy the value, instead of making dict.
+    elif isinstance(value, (list, tuple)):
+        l = []
+        if isRoot:
+            d = dict(value=l) # Always answer a dict as root
+        else:
+            d = l # Otherwise answer the plain value.
+        for v in value:
+            l.append(asDict(v, False))
+    elif hasattr(value, 'asDict'):
+        d = value.asDict()
+    else:
+        d = dict(value=str(value))
+    return d
+
+# ---------------------------------------------------------------------------------------------------------
+#    F I X E D
+
+def value2Fixed(value):
+    if isinstance(value, str):
+        if value.endswith('u'):
+            value = float2Fixed(asFloat(value[:-1]))
+        else:
+            value = asIntOrNone(value)
+    return value
+
+def float2Fixed(value):
+    """The float2Fixed method translates a float into a 1/64 pixel
+    unit-value."""
+    return int(round(value * 64))
+
+def fixed2Float(value):
+    """The fixed2Float method translates a fixed 1/64 pixel-unit value to
+    float."""
+    return float(value) / 64
+
+# ---------------------------------------------------------------------------------------------------------
+#    S T R I N G
+
+def asString(value, default=None):
+    if value is None:
+        value = default
+    return u'%s' % value
+
+def asStringOrEmpty(s):
+    if s is None:
+        return ''
+    return asString(s)
+
+def asRoundedOrZeroString(s):
+    return '%d' % round(asFloat(s) or 0)
+
+def shrink(s):
+    return (s or '').strip().replace(' ', '').replace('\t', '')
+
+def removeWhiteSpace(s):
+    """Vacuum s by removing all white space."""
+    for c in WHITESPACE:
+        s = s.replace(c, '')
+    return s
+
+def strippedString(s):
+    return (s or '').strip()
+
+def list2SpacedString(l):
+    return list2String(l, ' ')
+
+def list2StringList(l):
+    strings = []
+    for element in l:
+        if not isinstance(element, str):
+            element = '%s' % element
+        strings.append(element)
+    return strings
+
+def list2CommaString(l):
+    return list2String(l, ',')
+
+def value2IdCommaString(value):
+    """Transform a list with numbers into a comma separated string. This can be
+    used to convert a list of record ids into a SQL compatible list of ids,
+    without integers showing up as @1234L@."""
+    t = []
+    if not isinstance(value, (set, list, tuple)):
+        value = str(value).split(',')
+    for item in value:
+        if isInt(item):
+            t.append('%s' % item)
+    return ', '.join(t)
+
+def idCommaString2IdSet(s):
+    """Transform a string with comma separated items into a set of id integers."""
+    t = set()
+    if s is not None:
+        for value in s.split(','):
+            value = asInt(value)
+            if value is not None:
+                t.add(value)
+    return t
+
+def commaString2IntegerList(s):
+    l = []
+    for word in commaString2List(s):
+        number = asInt(word)
+        if number is not None:
+            l.append(number)
+    return l
+
+def list2String(l, separator=''):
+    return separator.join([asString(ll) for ll in l])
+
+PLAINWORDS = re.compile('([a-z0-9_\<\>]*)')
+
+def string2PlainWords(s):
+    return PLAINWORDS.findall(s.lower())
+
+def string2WordsKey(s):
+    words = string2PlainWords(s)
+    return words2WordsKey(words)
+
+def words2WordsKey(words):
+    k = []
+    words.sort()
+    for word in words:
+        if word:
+            k.append(word)
+    return '_'.join(k)
+
+# ---------------------------------------------------------------------------------------------------------
+#    S T Y L E
+
+def obj2StyleId(s):
+    """Make sure s is styleId format, other recursively transform into string
+    with space separators.  Parts can be CSS-like #id and .class identifiers.
+
+    Note that this may change in the future if more compatibility with CSS is
+    necessary."""
+    styleId = []
+    if isinstance(s, (list, tuple)):
+        for sPart in s:
+            styleId.append(obj2StyleId(sPart))
+        return ' '.join(styleId)
+
+    if not isinstance(s, str):
+        s = u'%s' % s
+    for sPart in s.split(' '):
+        if sPart:
+            styleId.append(sPart)
+    return ' '.join(styleId)
+
+def obj2StyleIds(s):
+    return obj2StyleId(s).split(' ')
+
+# ---------------------------------------------------------------------------------------------------------
+#    P A T H
+
+def module2Path(module):
+    return '/'.join((module.__file__).split('/')[:-1])
+
+def path2ParentPath(path):
+    """
+    >>> path2ParentPath('/xxx/yyy/zzz/')
+    '/xxx/yyy/zzz'
+    >>> path2ParentPath('/xxx/yyy/zzz')
+    '/xxx/yyy'
+    >>> path2ParentPath('/xxx/yyy/zzz.gif')
+    '/xxx/yyy'
+    """
+    return '/'.join(path.split('/')[:-1])
+
+def path2Url(path):
+    """Convert the path to a valid url, by removing spaces, other inconvenient
+    characers and set all to lowercase.
+
+    >>> path2Url('a/b/d/e/f/g hhh.html')
+    'a/b/d/e/f/g_hhh.html'
+    >>> path2Url('a/b b/f/g hhh.html')
+    'a/b_b/f/g_hhh.html'
+    >>> path2Url('a/b & b/f/g hhh.html')
+    'a/b_and_b/f/g_hhh.html'
+    """
+    replacing = ((' ','_'), ('&','and'), ('?', '_')) # TODO: Make better conversion here
+    if path is not None:
+        path = path.lower()
+        for s1, s2 in replacing:
+            path = path.replace(s1, s2)
+        return path
+    return None
+
+def path2FlatUrl(path):
+    """Convert the path to a valid url, by removing spaces and all lowercase.
+
+    >>> path2FlatUrl('a/b/d/e/f/g hhh.html')
+    'a-b-d-e-f-g_hhh.html'
+    """
+    if path is not None:
+        return path2Url(path).replace('/', '-')
+    return None
+
+def path2ScriptId(path):
+    """Answers the scriptId, derived from the __file__ of the main source."""
+    return path.split('/src/')[-1]
+
+def path2FormatPath(path, hasFormat=None):
+    """Answers the path where the extension is changed to format If format is
+    None, then the extension is removed."""
+    if path is not None:
+        path = '.'.join(path.split('.')[:-1])
+        if hasFormat is not None:
+            path += '.' + hasFormat
+        return path
+    return None
+
+def path2Name(path, default=None):
+    """Answers the file name part of the path.
+
+    >>> path2Name('/xxx/yyy/zzz/Agency_FB-Compressed.ufo')
+    'Agency_FB-Compressed.ufo'
+    >>> path2Name('a/b/c')
+    'c'
+    >>> path2Name('a/b/c/')
+    'Untitled'
+    >>> path2Name('')
+    'Untitled'
+    >>> path2Name(None) is None
+    True
+    """
+    if not default:
+        default = 'Untitled'
+    if path is None:
+        return None
+    if not path: # In case of an empty string or False, answer default.
+        return default
+    name = path.split('/')[-1]
+    if not name: # In case path ended with a slash
+        return default
+    return name
+
+def path2Dir(path):
+    """Answers the file name part of the path.
+
+    >>> path2Dir('/xxx/yyy/zzz/Agency_FB-Compressed.ufo')
+    '/xxx/yyy/zzz'
+    >>> path2Dir('a/b/c.html')
+    'a/b'
+    >>> path2Dir('/a/b/d')
+    '/a/b'
+    >>> path2Dir('/a/b/c/')
+    '/a/b/c'
+    >>> path2Dir('') is None
+    True
+    >>> path2Dir(None) is None
+    True
+    """
+    if not path:
+        return None
+    return '/'.join(path.split('/')[:-1])
+
+def path2Extension(path):
+    """Answers the file extension of path.
+
+    >>> path2Extension('/xxx/yyy/zzz/Agency_FB-Compressed.ufo')
+    'ufo'
+    >>> path2Extension('/xxx/yyy/zzz/Agency_FB-Compressed.TTF')
+    'ttf'
+    """
+    return path.split('.')[-1].lower()
+
+def path2ScaledImagePath(path, w=None, h=None, index=None, extension=None, scaledPath=None):
+    """Answer the path where scaled images go to, also altering their name. If
+    extension is different from the path extension, then replace it. If w, h,
+    index or extension are set, then add them to the output name. If basePath
+    is None, then used the default ./scaled/ instead.
+
+    >>> path2ScaledImagePath('images/myImage.jpg')
+    'scaled/myImage.jpg'
+    >>> path2ScaledImagePath('images/myImage.jpg', 100, 200)
+    'scaled/myImage-w100-h200.jpg'
+    >>> path2ScaledImagePath('images/myImage.jpg', 100, 200, 12, 'png')
+    'scaled/myImage-w100-h200-i12.png'
+    >>> path2ScaledImagePath('images/myImage.jpg', 100, 200, 12, 'jpg', scaledPath='anotherPath')
+    'anotherPath/myImage-w100-h200-i12.jpg'
+    """
+    if scaledPath is None:
+        scaledPath = 'scaled/'
+    elif not scaledPath.endswith('/'):
+        scaledPath += '/'
+    if extension is None:
+        extension = path2Extension(path)
+    fileName = '.'.join(path2Name(path).split('.')[:-1])
+    params = []
+    if w:
+        params.append('w%s' % w)
+    if h:
+        params.append('h%s' % h)
+    if index is not None:
+        params.append('i%s' % index)
+    params = '-'.join(params)
+    if params:
+        params = '-' + params
+    return scaledPath + fileName + params + '.' + extension
+
+def path2FontName(path, extensions=None):
+    """
+    Take that file part of the path, and get the chunk until the first
+    period to remove the extension, version numbers, etc.
+    If the extension is not in extensions (default id ('ttf', 'otf'))
+    then answer None
+
+    >>> path2FontName('/xxx/yyy/zzz/Agency_FB-Compressed.otf')
+    'Agency_FB-Compressed'
+    >>> path2FontName('/xxx/yyy/zzz/Agency_FB-Compressed.version01.ufo') is None
+    True
+    >>> path2FontName('/xxx/yyy/zzz/Agency_FB-Compressed.version01.ufo', ['ufo'])
+    'Agency_FB-Compressed'
+    >>> path2FontName('#xxx/yyy/zzz/Agency_FB-Bold.0001646411.ttf')
+    'Agency_FB-Bold'
+    """
+    if extensions is None:
+        extensions = ('ttf', 'otf', 'ttc')
+    if path2Extension(path) in extensions:
+        name = path2Name(path)
+        if name is not None:
+            return name.split('.')[0]
+    return None
+
+familyNameParts = re.compile('([A-Za-z]*)')
+
+def path2FamilyName(path):
+    """Answers the first A-Za-z part of the file name.
+
+    >>> path2FamilyName('/xxx/yyy/zzz/Agency_FB-Compressed.ufo')
+    'Agency'
+    >>> path2FamilyName('/xxx/yyy/zzz/Agency##@$$% _FB.TTF')
+    'Agency'
+    """
+    return familyNameParts.findall(path2Name(path))[0]
+
+path2GlyphIdName = path2FontName
+
+def path2HintPath(path):
+    return path2FormatPath(path, 'autohint.ttf')
+
+def path2FontId(path):
+    """Answers the font ID for the font associated with this path. If the path
+    does not exist, or if the font name is invalid, then answer None."""
+    if path is not None:
+        name = path2Name(path)
+        return name
+    return None
+
+def path2FileName(path):
+    if path is not None:
+        fileName = path.split('/')[-1]
+        parts = fileName.split('.')
+        if len(parts) > 1:
+            return parts[-2]
+    return path
+    
+# ---------------------------------------------------------------------------------------------------------
+#    F O N T
+
+def font2Name(font):
+    name = None
+
+    if font is not None:
+        name = path2Name(font2Path(font))
+
+        if name is None and font.info: # The font may not have been saved yet, then there is no filename.
+            if (font.info.styleMapFamilyName or font.info.familyName):
+                name = (font.info.styleMapFamilyName or font.info.familyName)
+                if name and font.info.styleName:
+                    name += '-' + font.info.styleName
+    if name is None:
+        name = 'Untitled'
+    return name
+
+def font2FileName(font):
+    """Answers the font file name. In case of a new unsaved font, answers
+    *"Untitled"*."""
+    return (font.path or 'Untitled').split('/')[-1]
+
+def font2Naked(font):
+    if font is not None and hasattr(font, 'naked'):
+        font = font.naked()
+    return font
+
+def font2Path(font):
+    if font2Naked(font) is None:
+        return None
+    return font.path
+
+def font2ID(font):
+    """Answers the unique record/adapter ID of the font/style. This can be the
+    unique database record id or the unique file path. For now we just answer
+    the file path."""
+    return font2Path(font)
+
+def font2FamilyID(font):
+    """Answers the unique record/adapter ID of the family of *font*. This can be
+    the unique database record id of the font parent or the unique directory
+    path of the font. For now we just answer the the location of the family
+    plist file.
+
+    Special situation is if the font is not saved yet. In that case it does not
+    have a path."""
+    fontPath = font2Path(font)
+    if fontPath is not None:
+        return path2ParentPath(fontPath) + '/' + font2FamilyName(font) + '.plist'
+    return None
+
+def font2FamilyName(font):
+    return fontName2FamilyName(font2Name(font))
+
+def font2StyleName(font):
+    return fontName2StyleName(font2Name(font))
+
+def fontName2FamilyName(name):
+    """For now take the chunk up till "-" in the filename and ignore the family
+    name as set in the font.info Also make sure that the extension is removed,
+    if the font has no "-" it isn't name. Relay-Medium_Italic.ufo becomes
+    Relay. ThisFont.ufo becomes ThisFont."""
+    return name.split('.')[0].split('-')[0]
+
+def fontName2StyleName(name):
+    return '-'.join(name.split('.')[0].split('-')[1:])
+
+def font2UfoQueryName(font):
+    key = 'com.typenetwork.ufoqueryname'
+    name = font.lib.get(key)
+    if name is None:
+        name = font.lib[key] = font2Name(font)
+    return name
+
+def family2UfoQueryName(font):
+    key = 'com.typenetwork.ufoqueryfamilyname'
+    name = font.lib.get(key)
+    if name is None:
+        name = font.lib[key] = font2FamilyName(font)
+    return name
+
+# ---------------------------------------------------------------------------------------------------------
+#    G E N E R A T O R
+
+def uniqueID(obj=None):
+    """Answers unique identifier as hex string, based on time and id(obj) if
+    defined.
+
+    >>> id = int('0x' + uniqueID(), base=16)
+    >>> isinstance(id, int)
+    True
+    """
+    if obj is not None:
+        return '%X%X' % (int(time()) * 100, id(obj))
+    return '%x' % (int(time()) * 100000 + randint(0, 100000))
+
+# ---------------------------------------------------------------------------------------------------------
+#   T I M E
+
+def seconds2Date(seconds, year=1904):
+    """Answers TTF seconds converted to a datetime instance.
+
+    >>> seconds2Date(20, year=2018)
+    datetime.datetime(2018, 1, 1, 0, 0, 20)
+    >>> seconds2Date(200000, year=2018)
+    datetime.datetime(2018, 1, 3, 7, 33, 20)
+    """
+    return datetime.datetime(year, 1, 1, 0, 0, 0) + datetime.timedelta(seconds=seconds)
+
+def date2Seconds(dt):
+    """Answers the datetime converted to TTF seconds.
+
+    >>> dt = seconds2Date(20, year=2018)
+    >>> date2Seconds(dt)
+    20
+    """
+    return int((dt - datetime.datetime(dt.year, 1, 1, 0, 0, 0)).total_seconds())
+
+# ---------------------------------------------------------------------------------------------------------
+#    J S O N
+#
+#    Note that Status now has its own json conversion.
+
+def json2Dict(src):
+    return json.loads(src)
+
+def dict2Json(d):
+    return json.dumps(d, indent=4)
+
+def json2List(src):
+    try:
+        return json.loads(src)
+    except TypeError:
+        return None
+
+def list2Json(d):
+    return json.dumps(d, indent=4)
+
+def asNormalizedJSON(value):
+    """Answer the value as normalized object, where all values are converted into
+    base objects, dict, list and string.
+
+    >>> src = dict(aa='bb', cc=[1,2,3,4], dd=dict(ee=123, ff='ABC'), gg={3,4,5,5,6,6,7,7})
+    >>> result = asNormalizedJSON(src)
+    >>> sorted(result.keys())
+    ['aa', 'cc', 'dd', 'gg']
+    >>> sorted(result['gg'])
+    [3, 4, 5, 6, 7]
+    """
+    if value is None:
+        result = 'None'
+    elif isinstance(value, (set, list, tuple)):
+        result = []
+        for v in value:
+            result.append(asNormalizedJSON(v))
+    elif isinstance(value, (float, int, str)):
+            result = value
+    elif isinstance(value, dict):
+            result = {}
+            for name, v in value.items():
+                result[name] = asNormalizedJSON(v)
+    else:
+        result = value.asNormalizedJSON()
+    return result
+
+# ---------------------------------------------------------------------------------------------------------
+#    R O M A N  N U M E R A L S
+
+def arabic2RomanNumerals(arabic):
+    """Return the roman numeral representing n. Should work for n in (1, 4999).
+    Borrowed from Nick Montfort.
+
+    >>> arabic2RomanNumerals(5)
+    'V'
+    >>> arabic2RomanNumerals(15)
+    'XV'
+    >>> arabic2RomanNumerals(100)
+    'C'
+    >>> arabic2RomanNumerals(234)
+    'CCXXXIV'
+    >>> arabic2RomanNumerals(2018)
+    'MMXVIII'
+    """
+    numerals = [(value, numeral) for numeral, value in ROMAN_NUMERAL_VALUES.items()]
+    numerals.sort()
+    numerals.reverse()
+    smaller = {1000: (100, 'C'), 500: (100, 'C'),
+               100: (10, 'X'), 50: (10, 'X'), 10: (1, 'I'),
+               5: (1, 'I')}
+    roman = ''
+    for (value, numeral) in numerals:
+        roman += (arabic // value) * numeral
+        arabic -= (arabic // value) * value
+        if value in smaller and arabic >= value - smaller[value][0]:
+            roman += smaller[value][1] + numeral
+            arabic -= (value - smaller[value][0])
+    return roman
+
+# ---------------------------------------------------------------------------------------------------------
+#    U N I C O D E
+
+def dec2hex(n, uni=1):
+    """Convert decimal number to hex string with 4 digits, and more digits if
+    the number is larger.
+
+    >>> dec2hex(12)
+    '000C'
+    >>> dec2hex(100)
+    '0064'
+    >>> dec2hex(65535)
+    'FFFF'
+    >>> dec2hex(100000)
+    '186A0'
+    """
+    hexadec = "%X" % n
+
+    if uni == 1:
+        while len(hexadec) <= 3:
+            hexadec = '0' + str(hexadec)
+    return hexadec
+
+def hex2dec(s):
+    """ Convert hex string to decimal number. Answer None if conversion raises
+    an error.
+
+    >>> hex2dec('0064')
+    100
+    >>> hex2dec('FFFF')
+    65535
+    >>> hex2dec(dec2hex(32))
+    32
+    >>> hex2dec('FFZ') is None
+    True
+    """
+    try:
+        return int(s, 16)
+    except ValueError:
+        pass
+    return None
+
+def hex2char(hexadec):
+    """Answers the unicode char that matcher the hex value. Answer None if
+    conversion fails.
+
+    >>> hex(ord('A'))
+    '0x41'
+    >>> hex2dec('41')
+    65
+    >>> hex2char('41')
+    'A'
+    >>> hex2char('FFZ') is None
+    True
+    """
+    v = hex2dec(hexadec)
+    if v is not None:
+        return chr(v)
+    return None
+
+if __name__ == "__main__":
+    import doctest
+    import sys
+    sys.exit(doctest.testmod()[0])

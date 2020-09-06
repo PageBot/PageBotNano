@@ -27,6 +27,10 @@ RIGHT = 'right'
 JUSTIFIED = 'justified'
 NONE = 'none' # Used e.g. for a template having page number on a page.
 
+FONT_ITALIC_MATCHES = {
+    'Italic': ('Italic', 'Ita', 'It'),
+}
+
 EXPORT_DIR = '_export/' # Name of the directory that does not commit in Github
 
 # Set of names used for predictable elements on a page.

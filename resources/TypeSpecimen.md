@@ -82,10 +82,6 @@ For example, the pages of this article, as well as several others in this magazi
 
 ![h=800](../resources/images/Berthold-Grid.pdf)
 
-![h=800](../resources/images/NordSpecimen.pdf)
-![h=800](../resources/images/max-specimen.pdf)
-![h=800](../resources/images/Specimen.pdf)
-
 ~~~ 
 page = page.next # 1
 

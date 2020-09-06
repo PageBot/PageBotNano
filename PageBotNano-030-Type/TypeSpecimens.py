@@ -16,9 +16,9 @@
 #   This ThemeColors.py shows samples of all standard theme colors,
 #   with their closest spot color, CMYK, RGB, CSS hex-color and CSS name.
 #
-from pagebotnano.constants import A4
-from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, GlyphView
+from pagebotnano_030.constants import A4
+from pagebotnano_030.document import Document
+from pagebotnano_030.elements import Rect, Text, GlyphView
 
 W, H = A4
 FONT = 'Georgia'

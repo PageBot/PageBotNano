@@ -22,10 +22,10 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 from random import shuffle, choice
 import drawBot
 
-from pagebotnano.elements import Element, Rect, Line, Text
-from pagebotnano.babelstring import BabelString
-from pagebotnano.toolbox.color import noColor, Color
-from pagebotnano.constants import CENTER, LEFT
+from pagebotnano_030.elements import Element, Rect, Line, Text
+from pagebotnano_030.babelstring import BabelString
+from pagebotnano_030.toolbox.color import noColor, Color
+from pagebotnano_030.constants import CENTER, LEFT
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10

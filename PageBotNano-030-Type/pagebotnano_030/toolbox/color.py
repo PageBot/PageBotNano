@@ -18,9 +18,11 @@
 #
 from copy import copy
 import sys
-sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebot.constants import CSS_COLOR_NAMES, SPOT_RGB, RAL_NAMERGB, NAME_RALRGB
+if __name__ == "__main__":
+    sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+from pagebotnano_030.constants import CSS_COLOR_NAMES, SPOT_RGB, RAL_NAMERGB, NAME_RALRGB
 
 def value01(v):
     """Round float to 0 or 1 int if equal.
@@ -798,7 +800,7 @@ class Color:
             return spot2Rgb(self._spot)
         if self._ral is not None:
             return ral2NameRgb(self._ral)[1]
-        return 0, 0, 0 #Answer black if all fails.
+        return None, None, None #Answer black if all fails.
 
     def _set_rgb(self, rgb):
         self.r, self.g, self.b = rgb
@@ -1262,5 +1264,4 @@ def ralColor(ral):
 
 if __name__ == "__main__":
     import doctest
-    import sys
-    sys.exit(doctest.testmod()[0])
+    doctest.testmod()[0]

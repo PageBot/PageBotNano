@@ -32,12 +32,10 @@ title = randomTitle()
 author = randomName()
 contextPath = '../resources/TypeSpecimen.md'
 coverImagePath = choice([
-    #'../resources/images/NordSpecimen-bg.pdf',
-    '../resources/images/NordSpecimen.pdf',
-    '../resources/images/max-specimen.pdf',
-    '../resources/images/Specimen.pdf',
-    #'../resources/images/PageBotSchema2.pdf',
-    #'../resources/images/cookbot2.jpg',
+    '../resources/images/Berthold-Grid.pdf',
+    '../resources/images/cookbot1.jpg',
+    '../resources/images/cookbot10.jpg',
+    '../resources/images/cookbot2.jpg',
 ])
 coverColor = (random()*0.1,random()*0.1, random()*0.5)
 

@@ -45,4 +45,4 @@ booklet = Booklet(w=w, h=h, theme=theme, galley=galley,
 
 booklet.export('_export/MyBooklet.pdf')
 """
-print('Done')
+print('Done 010')

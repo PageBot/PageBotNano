@@ -12,27 +12,11 @@
 # -----------------------------------------------------------------------------
 #
 import sys
-sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+sys.path.insert(0, "../..") # So we can import pagebotnano_030 without installing.
 
-from pagebotnano.themes.backtothecity import BackToTheCity
-from pagebotnano.themes.businessasusual import BusinessAsUsual
-from pagebotnano.themes.fairytales import FairyTales
-from pagebotnano.themes.freshandshiny import FreshAndShiny
-from pagebotnano.themes.happyholidays import HappyHolidays
-from pagebotnano.themes.intothewoods import IntoTheWoods
-from pagebotnano.themes.seasoningthedish import SeasoningTheDish
-from pagebotnano.themes.somethingintheair import SomethingInTheAir
-from pagebotnano.themes.wordlywise import WordlyWise
+from pagebotnano_030.themes.backtothecity import BackToTheCity
 
 AllThemes = (
     BackToTheCity,
-    BusinessAsUsual,
-    FairyTales,
-    FreshAndShiny,
-    HappyHolidays,
-    IntoTheWoods,
-    SeasoningTheDish,
-    SomethingInTheAir,
-    WordlyWise,
 )
-DefaultTheme = HappyHolidays
+DefaultTheme = BackToTheCity

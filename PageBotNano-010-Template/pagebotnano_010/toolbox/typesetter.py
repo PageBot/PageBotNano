@@ -95,7 +95,7 @@ class Typesetter:
         >>> ts = Typesetter()
         >>> g = ts.typesetFile('../../../resources/test.md')
         >>> ts.verbose[-1]
-        'Node "p" has no supporting style'
+        'Node "h1" has no supporting style'
         >>> ts.reset()
         >>> g = ts.typesetFile('../../../resources/images/cookbot1.jpg')
         >>> ts.verbose

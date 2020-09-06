@@ -48,3 +48,4 @@ print(typeSpecimen)
 # without any functions. That will change in later versions.
 # We know the code worked, though, because running it in DrawBot raised no error.
 
+print('Done 001')

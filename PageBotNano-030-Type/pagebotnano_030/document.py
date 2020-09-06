@@ -19,12 +19,12 @@ import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import A4, EXPORT_DIR
-from pagebotnano.elements import Element, Page
-from pagebotnano.contexts.drawbotcontext import DrawBotContext
-from pagebotnano.toolbox import makePadding
-from pagebotnano.themes import DefaultTheme
-from pagebotnano.templates.onecolumn import OneColumnTemplates
+from pagebotnano_030.constants import A4, EXPORT_DIR
+from pagebotnano_030.elements import Element, Page
+from pagebotnano_030.contexts.drawbotcontext import DrawBotContext
+from pagebotnano_030.toolbox import makePadding
+from pagebotnano_030.themes import DefaultTheme
+from pagebotnano_030.templates.onecolumn import OneColumnTemplates
 
 class Document:
     # Class names start with a capital. See a class as a factory

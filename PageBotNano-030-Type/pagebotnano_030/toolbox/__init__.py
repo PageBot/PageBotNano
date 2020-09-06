@@ -17,7 +17,7 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano.constants import PADDING
+from pagebotnano_030.constants import PADDING
 
 def path2Extension(path):
     """Answer the extension of path. Answer None of there is no extension.

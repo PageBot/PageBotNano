@@ -64,3 +64,4 @@ print(typeSpecimen)
 typeSpecimen.export('_export/MyTypeSpecimen.pdf')
 typeSpecimen.export('_export/MyTypeSpecimen.png', multipage=True)
 
+print('Done 003')

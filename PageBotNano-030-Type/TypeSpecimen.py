@@ -11,14 +11,11 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   ThemeSpecimens.py
+#   TypeSpecimen.py
 #
-#   This ThemeColors.py shows samples of all standard theme colors,
-#   with their closest spot color, CMYK, RGB, CSS hex-color and CSS name.
-#
-from pagebotnano.constants import A4
-from pagebotnano.document import Document
-from pagebotnano.elements import Rect, Text, GlyphView
+from pagebotnano_030.constants import A4
+from pagebotnano_030.document import Document
+from pagebotnano_030.elements import Rect, Text, GlyphView
 
 W, H = A4
 FONT = 'Georgia'
@@ -47,4 +44,4 @@ e5 = GlyphView('Hhj', font=FONT+'-Italic', x=page.pl+w+GUTTER, y=page.pb+e3.h, w
 page.addElement(e5)
 
 doc.export('_export/GlyphViews.pdf')
-print('Done')
+print('Done 030')

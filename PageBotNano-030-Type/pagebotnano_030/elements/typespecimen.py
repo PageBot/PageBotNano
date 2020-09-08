@@ -26,6 +26,7 @@ from pagebotnano_030.elements import Element, Rect, Line, Text
 from pagebotnano_030.babelstring import BabelString
 from pagebotnano_030.toolbox.color import noColor, Color
 from pagebotnano_030.constants import CENTER, LEFT
+from pagebotnano_030.fonttoolbox.objects.font import Font
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10
@@ -34,7 +35,7 @@ LEADING = 13
 class GlyphView(Element):
     """The GlyphView show single glyphs with metrics lines.
 
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_030.document import Document
     >>> doc = Document(w=200, h=200)
     >>> page = doc.newPage()
     >>> pad = 10
@@ -45,6 +46,8 @@ class GlyphView(Element):
     """
     def __init__(self, glyphName, font, lineColor=None, lineWidth=None, **kwargs):
         Element.__init__(self, **kwargs)
+        if isinstance(font, Font):
+            font = font.path
         self.font = font
         self.glyphName = glyphName
         self.lineColor = lineColor or (0, 0, 1) # Color of metrics lines
@@ -100,7 +103,7 @@ class GlyphView(Element):
 class Waterfall(Element):
     """The GlyphView show single glyphs with metrics lines.
 
-    >>> from pagebotnano.document import Document
+    >>> from pagebotnano_030.document import Document
     >>> pad = 30
     >>> doc = Document(w=400, h=800)
     >>> page = doc.newPage()
@@ -168,8 +171,8 @@ class Stacked(Element):
     """The GlyphView show single glyphs with metrics lines.
 
     >>> from random import shuffle
-    >>> from pagebotnano.document import Document
-    >>> from pagebotnano.constants import SPORTS
+    >>> from pagebotnano_030.document import Document
+    >>> from pagebotnano_030.constants import SPORTS
     >>> pad = 30
     >>> words = list(SPORTS)
     >>> shuffle(words)
@@ -184,10 +187,12 @@ class Stacked(Element):
     """
     WORDS = ('The', 'Quick Brown', 'Fox', 'Jumps', 'Over', 'The Lazy', 'Dog')
 
-    def __init__(self, words, font=None, fontChoice=None, leading=None, w=None, h=None, 
+    def __init__(self, words=None, font=None, fontChoice=None, leading=None, w=None, h=None, 
         theme=None, capsOnly=False, gh=None, **kwargs):
         Element.__init__(self, **kwargs)
-        self.words = list(words or self.WORDS)
+        if words is None:
+            woefd = self.WORDS
+        self.words = list(words)
         self.fontChoice = fontChoice # If defined, choose randomly
         self.font = font or 'Georgia' # otherwise use this one.
         self.leading = leading or 1 # Leading * fontSize factor

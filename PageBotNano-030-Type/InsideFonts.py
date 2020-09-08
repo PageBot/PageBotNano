@@ -16,11 +16,25 @@
 import os
 from pagebotnano_030.constants import A4
 from pagebotnano_030.document import Document
-from pagebotnano_030.elements import Rect, Text, GlyphView
-from pagebotnano_030.fonttoolbox.objects.font import font
+from pagebotnano_030.elements import Rect, Text, GlyphView, Stacked
+from pagebotnano_030.fonttoolbox.objects.font import Font
 
-FONT_PATH = '../../resources/fonts/typetr/PageBot-Bold.ttf'
-print(os.path.exists(FONT_PATH))
+fontPath = '../resources/fonts/typetr/PageBot-Bold.ttf'
+f = Font(fontPath)
+
+padding = 40
+w, h = A4
+
+doc = Document(w=w, h=h)
+page = doc.newPage()
+page.padding = padding
+gv = GlyphView('g', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
+page.addElement(gv)
+
+page = doc.newPage()
+st = Stacked(font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
+page.addElement(st)
+page.padding = padding
 
 doc.export('_export/GlyphViews.pdf')
 print('Done 030')

@@ -62,11 +62,9 @@ class Font:
         supported, in case the caller wants to use a different
 
         >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
-        >>> f = Font(path)
-        >>> f
+        >>> Font(path)
         <Font PageBot-Bold>
-        >>> f = Font()
-        >>> f
+        >>> Font()
         <Font Untitled Untitled>
         """
 
@@ -209,6 +207,10 @@ class Font:
             return 1
         return 0
 
+    def getItalicAngle(self):
+        return self.info.italicAngle
+    italicAngle = property(getItalicAngle)
+
     def keys(self):
         """Answers the glyph names of the font.
 
@@ -230,11 +232,12 @@ class Font:
         >>> f = Font(path)
         >>> f.cmap[65]
         'A'
+        >>> f.cmap.keys()[70:90]
+
         """
         if 'cmap' in self.ttFont:
             return self.ttFont['cmap'].getBestCmap()
         return {}
-
     cmap = property(_get_cmap)
 
     def __contains__(self, glyphName):
@@ -453,44 +456,75 @@ class Font:
         self.ttFont.save(path or self.path)
 
     def getAscender(self): # DrawBot compatible
-        """Answer the ascender value in em-units from [hhea] table, as use by browser.
+        """Answer the ascender value in em-units from [hhea] table, as used by browsers.
 
         >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
         >>> f = Font(path)
         >>> f.getAscender()
         898
+        >>> f.ascender # Also available as property
+        898
         """
         return self.info.ascender # From self.ttFont['hhea'] table
-
     ascender = property(getAscender)
 
     def getDescender(self): # DrawBot compatible
-        return self.info.descender # From self.ttFont['hhea'] table
+        """Answer the descender value in em-units from [hhea] table, as used by browsers.
 
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f.getDescender()
+        -302
+        >>> f.descender # Also available as property
+        -302
+        """
+        return self.info.descender # From self.ttFont['hhea'] table
     descender = property(getDescender)
 
     def getUpem(self): # DrawBot compatible
-        return self.info.unitsPerEm
+        """Answer the self.info.unitsPerEm value in em-units from [hhea] table, as used by browsers.
 
-    upem = property(getUpem)
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f.getUpem()
+        1000
+        >>> f.unitsPerEm
+        1000
+        >>> f.upem
+        1000
+        """
+        return self.info.unitsPerEm
+    upem = unitsPerEm = property(getUpem)
 
     def getXHeight(self):
+        """Answer the self.info.xHeight value in em-units from [OS/2] table, as used by browsers.
+
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f.getXHeight()
+        474
+        >>> f.xHeight # Also available as property
+        474
+        """
         table = self.ttFont['OS/2']
         return getattr(table, 'sxHeight', None)
-
     xHeight = property(getXHeight)
 
     def getCapHeight(self):
+        """Answer the self.info.capHeight value in em-units from [OS/2] table, as used by browsers.
+
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f.getCapHeight()
+        658
+        >>> f.capHeight # Also available as property
+        658
+        """
         table = self.ttFont['OS/2']
         return getattr(table, 'sCapHeight', None)
 
     capHeight = property(getCapHeight)
 
-    def getItalicAngle(self):
-        table = self.ttFont['post']
-        return getattr(table, 'italicAngle', None)
-
-    italicAngle = property(getItalicAngle)
 
 if __name__ == '__main__':
     import doctest

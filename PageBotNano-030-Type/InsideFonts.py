@@ -13,35 +13,14 @@
 #
 #   InsideFonts.py
 #
+import os
 from pagebotnano_030.constants import A4
 from pagebotnano_030.document import Document
 from pagebotnano_030.elements import Rect, Text, GlyphView
+from pagebotnano_030.fonttoolbox.objects.font import font
 
-W, H = A4
-FONT = 'Georgia'
-GUTTER = 12
-
-doc = Document(w=W, h=H)
-page = doc.newPage()
-page.padding = 40
-
-w = page.pw
-e1 = GlyphView('A', font=FONT, x=page.pl, y=page.h-page.pt-w, w=w, h=w, fill=0.95)
-page.addElement(e1)
-
-w = (page.pw-GUTTER)/2
-e2 = GlyphView('Hbj', font=FONT+'-Bold', x=page.pl, y=page.pb, w=w, h=page.pb*3, fill=0.95)
-page.addElement(e2)
-
-e3 = GlyphView('Hhj', font=FONT, x=page.pl+w+GUTTER, y=page.pb, w=w, h=page.pb*3, fill=0.95)
-page.addElement(e3)
-
-w = (page.pw-GUTTER)/2
-e4 = GlyphView('Hbj', font=FONT+'-BoldItalic', x=page.pl, y=page.pb+e3.h, w=w, h=page.pb*3, fill=0.95)
-page.addElement(e4)
-
-e5 = GlyphView('Hhj', font=FONT+'-Italic', x=page.pl+w+GUTTER, y=page.pb+e3.h, w=w, h=page.pb*3, fill=0.95)
-page.addElement(e5)
+FONT_PATH = '../../resources/fonts/typetr/PageBot-Bold.ttf'
+print(os.path.exists(FONT_PATH))
 
 doc.export('_export/GlyphViews.pdf')
 print('Done 030')

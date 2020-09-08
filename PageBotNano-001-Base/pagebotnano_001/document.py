@@ -16,13 +16,15 @@
 #   This source contains the class that stores information about a generic document.
 #
 class Document:
-    """Class names start with a capital letter.
+    """This is called a docstring
+    Class names start with a capital letter.
     Think of classes as factories for making objects (in this case, document objects) 
     whose names start with a lowercase letter.
     In this version of the code, the class doesn`t make anything, but that will change.
 
     Running this Python file tests consistency by executing the docstring below.
 
+    Below is a doctest that is testing consistency of the code
     >>> doc = Document()
     >>> doc # Prints the `doc` object showing the line answered by `__repr__`
     I am a Document

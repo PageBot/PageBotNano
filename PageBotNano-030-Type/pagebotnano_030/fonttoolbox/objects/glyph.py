@@ -18,12 +18,13 @@
 #
 import sys
 import weakref
+from random import random
+sys.path.insert(0, "../../../") # So we can import pagebotnano without installing.
 
-from pagebot.constants import XXXL
-from pagebot.fonttoolbox.analyzers import GlyphAnalyzer, APointContext
-from pagebot.fonttoolbox.analyzers.apoint import APoint
-from pagebot.fonttoolbox.analyzers.asegment import ASegment
-from pagebot.fonttoolbox.analyzers.acomponent import AComponent
+from pagebotnano_030.fonttoolbox.analyzers import GlyphAnalyzer, APointContext
+from pagebotnano_030.fonttoolbox.analyzers.apoint import APoint
+from pagebotnano_030.fonttoolbox.analyzers.asegment import ASegment
+from pagebotnano_030.fonttoolbox.analyzers.acomponent import AComponent
 
 F = 2.0 / 3.0
 C = 0.5
@@ -105,35 +106,29 @@ class Glyph:
     """The Glyph class wraps the glyph structure of a TrueType Font and
     extracts data from the raw glyph such as point sequence and type.
 
-    >>> from pagebot.fonttoolbox.objects.font import findFont
-    >>> f = findFont('RobotoDelta-VF') # Keep font alive to glyph.font weakref
-    >>> g = f['a']
-    >>> g.name
-    'a'
-    """
-
-    """
+    >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+    >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+    >>> f = Font(path)
+    >>> g = f['H']
+    >>> g
+    <Glyph 'H' (Pts:12, Cnt:1, Cmp:0)>
+    >>> g.leftMargin, g.width, g.rightMargin
+    (62, 714, 62)
     >>> len(g.points)
-    46
+    12
     >>> g.points[-1].onCurve
-    False
+    True
     >>> contours = g.contours
     >>> len(contours)
-    2
-    >>> g = f['agrave']
-    >>> g.components
-    [Cmp(a, 0, 0), Cmp(grave, 51, 0)]
-    >>> g.getComponentNames()
-    ['a', 'grave']
-
+    1
     """
     GLYPHANALYZER_CLASS = GlyphAnalyzer
     AXIS_DELTAS_CLASS = AxisDeltas
 
-    def __init__(self, font, name):
+    def __init__(self, font=None, name=None):
 
         self.name = name
-        self.font = font # Stored as weakref
+        self.font = font # Stored as weakref, can be None
         self.dirty = True # Mark that we need initialization or something changed in the points.
 
         self._analyzer = None # Installed upon request
@@ -168,6 +163,7 @@ class Glyph:
         """Initializes the cached data, such as points, contours, components,
         segments and bounding box. """
         self._points = []
+        xxxl = 1000000
 
         # Same as self.points property with added 4 spacing points in TTF
         # style.
@@ -181,8 +177,8 @@ class Glyph:
         coordinates = self.coordinates
 
         if coordinates or components:
-            minX = minY = XXXL # Store bounding box as we process the coordinate.
-            maxX = maxY = -XXXL
+            minX = minY = xxxl # Store bounding box as we process the coordinate.
+            maxX = maxY = -xxxl
         else:
             minX = minY = maxX = maxY = 0
 
@@ -350,13 +346,25 @@ class Glyph:
     ttGlyph = property(_get_ttGlyph)
 
     def _set_font(self, font):
-        self._font = weakref.ref(font)
-
+        if font is not None:
+            font = weakref.ref(font)
+        self._font = font
     def _get_font(self):
+        """Answer the parent Font instance of self.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.font
+        <Font PageBot-Bold>
+        >>> g = Glyph(name='H') # Single glyph without a parent
+        >>> g.font is None
+        True
+        """
         if self._font is not None:
             return self._font()
         return None
-
     font = property(_get_font, _set_font)
 
     def _get_width(self):
@@ -372,6 +380,9 @@ class Glyph:
     width = property(_get_width, _set_width)
 
     def _get_leftMargin(self):
+        """Answer the left margin (not angled) of this glyph.
+
+        """
         return self.minX
     leftMargin = property(_get_leftMargin)
 
@@ -383,6 +394,13 @@ class Glyph:
         """Answers Contour direction. Simple and fast.
 
         http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.isClockwise(g.contours[0])
+        True
         """
         total = 0
         for index, point in enumerate(contour):
@@ -393,16 +411,27 @@ class Glyph:
     # Direct TTFont coordinates compatibility
 
     def _get_coordinates(self):
-        """Answers the ttFont.coordinates, if it exists, as GlyphCoordinates
-        instance. Otherwise answer None. Note that this is the “raw” list of
+        """Answers the ttFont.coordinates, if it exists, as GlyphCoordinates, 
+        cast to a list. Otherwise answer None. Note that this is the “raw” list of
         (x, y) positions, without information on contour index or if the point
         is on/off curve. This information is stored in ttFont.endPtsOfContours
         and ttFont.flags. This property is only for low-level access of the
         coordinates. For regular use, self.points and self.contours are
         available. Also notice that writing the list is at “own risk”, e.g
-        hinting and related tables are not automatically updated."""
+        hinting and related tables are not automatically updated.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> len(g.coordinates)
+        12
+        >>> g.coordinates[0]
+        (62, 0)
+    
+        """
         if hasattr(self.ttGlyph, 'coordinates'):
-            return self.ttGlyph.coordinates
+            return list(self.ttGlyph.coordinates)
         return [] # No coordinates in the TTGlyph
     def _set_coordinates(self, coordinates):
         self.ttGlyph.coordinates = coordinates
@@ -427,6 +456,15 @@ class Glyph:
     # Kind of RoboFont glyph compatibility
 
     def __len__(self):
+        """Answer the amount of contours in the glyph.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> len(g)
+        1
+        """
         return len(self.contours)
 
     def _get_points(self):
@@ -454,6 +492,15 @@ class Glyph:
     points4 = property(_get_points4)
 
     def _get_pointContexts(self):
+        """Answer the list of all 7 points context (index of -3, -2, -1, 0, 1, 2, 3)
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.pointContexts[0]
+        pc[index:0](62,0) vertical
+        """
         if self._pointContexts is None or self.dirty:
             self._pointContexts = []
             for cIndex, contour in enumerate(self.contours):
@@ -480,6 +527,15 @@ class Glyph:
     pointContexts = property(_get_pointContexts)
 
     def _get_contours(self): # Read only for now. List of Point instance lists.
+        """Answer the list of contours.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.contours[0][3]
+        APoint(238,410,On)
+        """
         if self._contours is None or self.dirty:
             self._initialize()
         return self._contours

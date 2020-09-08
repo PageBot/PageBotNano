@@ -23,6 +23,7 @@
 from pagebotnano_002.document import Document
 from pagebotnano_002.page import Page
 from pagebotnano_002.elements import Element
+from pagebotnano_002.constants import EXPORT_DIR
 
 class TypeSpecimen(Document):
     """Class names start with a capital. See a class as a factory
@@ -43,9 +44,10 @@ class TypeSpecimen(Document):
 
 typeSpecimen = TypeSpecimen() # Execute the class/factory by adding "()"
 print(typeSpecimen) # Shows: I am a TypeSpecimen(w=595, h=842) with default size
+
 # Create the "_export" folder if it does not exist yet.
 # This Github repository is filtering file to not upload _export.
 # Export the specimen as empty page as PDF and PNG.
-typeSpecimen.export('_export/MyTypeSpecimen.pdf')
-typeSpecimen.export('_export/MyTypeSpecimen.png')
+typeSpecimen.export(EXPORT_DIR + 'MyTypeSpecimen.pdf')
+typeSpecimen.export(EXPORT_DIR + 'MyTypeSpecimen.png')
 

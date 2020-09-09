@@ -82,6 +82,23 @@ def makeCoverPage(doc, title):
         stroke=strokeColor, strokeWidth=5)
     page.addElement(imageElement) # Add the rectangle element to the page.
 
+
+def makeTitlePage(doc, title, imagePath):
+    page = doc.newPage()
+    rx = ry = padding # Position from bottom-left
+    rh = page.h/4 # Make vertical height
+
+    # Make a FormattedString for the text box
+    fs = Text.FS(title, stroke=None,
+        font=fontName, fontSize=titleSize/4, lineHeight=titleSize*1.1, fill=0)
+    # Make a Text element with an (x, y) position and add it to the page.
+    e = Text(fs, x=padding, y=page.h*3/4)
+    page.addElement(e) # Add the text element to the page.
+
+    im = Image(imagePath, x=80, y=page.h/2, h=rh)
+    page.addElement(im) # Add the rectangle element to the page.
+
+
 def makeBodyPages(doc, bodyText):
     """Create a number of new pages in the document, as long as there is overflow. 
     If no new page size is given, it will take over the size of the document.
@@ -100,9 +117,12 @@ def makeBodyPages(doc, bodyText):
         if not fs:
             break
 
+typeSpecimen.padding = 30
+
 txt = loremipsum(doShuffle=True)
 
 makeCoverPage(typeSpecimen, 'Type specimen\n'+fontName)
+makeTitlePage(typeSpecimen, 'Created by PageBotNano', 'gallery/DocumentPagesElements.png')
 makeBodyPages(typeSpecimen, txt)
 
 # Build the document, all pages and their contained elements.

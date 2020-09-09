@@ -23,7 +23,7 @@ from random import random
 # that we need for creating the type specimen.
 # Classes can be recognised by their initial capital name.
 from pagebotnano_005.document import Document
-from pagebotnano_005.elements import Rect, Text, TextBox
+from pagebotnano_005.elements import Rect, Text, TextBox, Image
 from pagebotnano_005.toolbox.loremipsum import loremipsum
 
 class TypeSpecimen(Document):

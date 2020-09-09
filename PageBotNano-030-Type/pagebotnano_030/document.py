@@ -31,7 +31,7 @@ class Document:
     # of document objects (name spelled with an initial lower case.)
     
     def __init__(self, w=None, h=None, pt=None, pr=None, pb=None, pl=None,
-        theme=None, templates=None, context=None):
+        padding=None, theme=None, templates=None, context=None):
         """This is the "constructor" of a Document instance (=object).
         It takes two attributes: `w` is the general width of pages and
         `h` is the general height of pages.
@@ -52,7 +52,7 @@ class Document:
         # Store the values in the document instance.
         self.w = w
         self.h = h
-        self.padding = pt, pr, pb, pl # Initialize the default padding
+        self.padding = padding or (pt, pr, pb, pl) # Initialize the default padding
         # Storage for the pages in this document
         self.pages = [] # Simple list, the index is the page number (starting at 0)
 

@@ -24,7 +24,7 @@ import drawBot
 
 from pagebotnano_030.elements import Element, Rect, Line, Text
 from pagebotnano_030.babelstring import BabelString
-from pagebotnano_030.toolbox.color import noColor, Color
+from pagebotnano_030.toolbox.color import noColor, Color, color
 from pagebotnano_030.constants import CENTER, LEFT
 from pagebotnano_030.fonttoolbox.objects.font import Font
 
@@ -44,18 +44,30 @@ class GlyphView(Element):
     >>> page.addElement(e)
     >>> doc.export('_export/GlyphView.pdf')
     """
-    def __init__(self, glyphName, font, lineColor=None, lineWidth=None, **kwargs):
+    LINE_STROKE = color(0, 0, 1) # Defaultl color of the metrics lines (if defined)
+    GLYPH_FILL = color(0) # Default color of the glyph
+
+    def __init__(self, glyphName, font, lineStroke=True, lineWidth=None, 
+            textFill=None, **kwargs):
         Element.__init__(self, **kwargs)
         if isinstance(font, Font):
             font = font.path
         self.font = font
         self.glyphName = glyphName
-        self.lineColor = lineColor or (0, 0, 1) # Color of metrics lines
-        self.lineWidth = lineWidth or 0.5 # Thickness of metrics lines
-        self.fontSize = self.h # As start assume the full height of the element as fontSize
+        # As start assume the full height of the element as fontSize
+        self.fontSize = self.h 
+        if textFill and not isinstance(textFill, Color): # In case it is "True":
+            textFill = self.GLYPH_FILL # Color of the glyph, default is black
+        self.textFill = textFill 
+        # Flag to show horizontal metrics lines. Can be one of (None, True, False, Color)
+        # Default is self.LINE_STROKE color(0, 0, 1)
+        if lineStroke and not isinstance(lineStroke, Color): # In case it is "True"
+            lineStroke = self.LINE_STROKE
+        self.lineStroke = lineStroke
+        self.lineWidth = lineWidth or 1 # Thickness of metrics lines
 
         # Create a style for it, so we can draw the glyph(s) as Text.
-        style = dict(font=self.font, fontSize=self.fontSize, textFill=0, align=CENTER)
+        style = dict(font=self.font, fontSize=self.fontSize, textFill=textFill or color(0), align=CENTER)
         self.bs = BabelString(self.glyphName, style=style)
         tw, th = self.bs.textSize # Get the size of the glyph(s) string to see if it fits.
 
@@ -64,6 +76,7 @@ class GlyphView(Element):
             self.fontSize *= self.w / tw
             # Make a new string with the fitting fontSize
             style['fontSize'] = self.fontSize # Adjust the existing style
+            style['fill'] = textFill or color(0)
             self.bs = BabelString(self.glyphName, style=style)
 
     def drawContent(self, ox, oy, doc, page, parent):
@@ -83,22 +96,24 @@ class GlyphView(Element):
         y = oy + baseline # Calculate the position of the baseline.
         doc.context.text(self.bs, (ox+self.w/2, y)) # Draw the glyphs on centered position.
 
-        doc.context.stroke(self.lineColor, self.lineWidth)
-        doc.context.line((ox, y), (ox+self.w, y)) # Draw baseline
+        # If line color and line width are defined.
+        if self.lineStroke and self.lineWidth:
+            doc.context.stroke(self.lineStroke, self.lineWidth)
+            doc.context.line((ox, y), (ox+self.w, y)) # Draw baseline
 
-        xHeight = doc.context.fontXHeight()
-        y = oy + baseline + xHeight
-        doc.context.line((ox, y), (ox+self.w, y))
+            xHeight = doc.context.fontXHeight()
+            y = oy + baseline + xHeight
+            doc.context.line((ox, y), (ox+self.w, y))
 
-        capHeight = doc.context.fontCapHeight()
-        y = oy + baseline + capHeight
-        doc.context.line((ox, y), (ox+self.w, y))
+            capHeight = doc.context.fontCapHeight()
+            y = oy + baseline + capHeight
+            doc.context.line((ox, y), (ox+self.w, y))
 
-        y = oy + baseline + descender
-        doc.context.line((ox, y), (ox+self.w, y)) # Descender
+            y = oy + baseline + descender
+            doc.context.line((ox, y), (ox+self.w, y)) # Descender
 
-        y = oy + baseline + self.fontSize + descender
-        doc.context.line((ox, y), (ox+self.w, y)) # Descender
+            y = oy + baseline + self.fontSize + descender
+            doc.context.line((ox, y), (ox+self.w, y)) # Descender
 
 class Waterfall(Element):
     """The GlyphView show single glyphs with metrics lines.
@@ -124,9 +139,11 @@ class Waterfall(Element):
     DEFAULT_FONTSIZES = (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30, 
         32, 36, 40, 44, 48, 52, 56, 60, 64)
 
-    def __init__(self, sample, font, fontSizes=None, align=None, leading=None, **kwargs):
+    def __init__(self, sample=None, font=None, fontSizes=None, align=None, leading=None, **kwargs):
         Element.__init__(self, **kwargs)
         self.sample = sample or self.Hamburg
+        if isinstance(font, Font):
+            font = font.path
         self.font = font or 'Georgia'
         self.fontSizes = fontSizes or self.DEFAULT_FONTSIZES
         self.leading = leading or 1.2 # Leading * fontSize factor
@@ -190,8 +207,10 @@ class Stacked(Element):
     def __init__(self, words=None, font=None, fontChoice=None, leading=None, w=None, h=None, 
         theme=None, capsOnly=False, gh=None, **kwargs):
         Element.__init__(self, **kwargs)
+        if isinstance(font, Font):
+            font = font.path
         if words is None:
-            woefd = self.WORDS
+            words = self.WORDS
         self.words = list(words)
         self.fontChoice = fontChoice # If defined, choose randomly
         self.font = font or 'Georgia' # otherwise use this one.

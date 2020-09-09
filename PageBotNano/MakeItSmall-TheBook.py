@@ -54,7 +54,6 @@ book = Book(w=W, h=H, theme=theme, templates=templates, context=context)
 # Part of the elements is to be placed on the pages as elements,
 # (such as TextBox and Image) and part is just instructions for the composer
 # as non-displaying Marker elements.
-#
 ts = Typesetter()
 galley = ts.typesetFile(MARKDOWN_PATH)
 """

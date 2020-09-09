@@ -77,5 +77,5 @@ sample = Waterfall.AaBbCc
 st = Waterfall(sample, font=f, leading=1.4, x=page.pl, y=page.pb, w=page.pw, h=page.ph)
 page.addElement(st)
 
-doc.export('_export/GlyphViews.pdf')
+doc.export('_export/InsideFonts.pdf')
 print('Done 030')

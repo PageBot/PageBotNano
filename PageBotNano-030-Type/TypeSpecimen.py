@@ -43,5 +43,5 @@ page.addElement(e4)
 e5 = GlyphView('Hhj', font=FONT+'-Italic', x=page.pl+w+GUTTER, y=page.pb+e3.h, w=w, h=page.pb*3, fill=0.95)
 page.addElement(e5)
 
-doc.export('_export/GlyphViews.pdf')
+doc.export('_export/TypeSpecimen.pdf')
 print('Done 030')

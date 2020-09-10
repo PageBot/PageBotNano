@@ -22,3 +22,4 @@ class Element:
     
     def build(self, doc, page):
     	"""For now it will do nothing, but that will change."""
+    	

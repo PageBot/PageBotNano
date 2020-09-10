@@ -319,11 +319,13 @@ class Image(Element):
         """
         # Get the size in points of this image
         iw, ih = self.imageSize(self.path)
-        # If both (w, h) are defined, then scale non-proportional
+        # If self.w is defined and not self.h defined, then scale proportional
         if self.w and self.h is None:
             sx = sy = self.w/iw
+        # If self.w not defined and self.h is defined, then scale proportional
         elif self.w is None and self.h:
             sx = sy = self.h/ih
+        # If both (w, h) are defined, then scale non-proportional
         elif self.w and self.h: # Non-proportional scaling
             sx = self.w/iw
             sy = self.h/ih
@@ -342,10 +344,11 @@ class Image(Element):
         # In drawBot it is not possible to scale the image, so we need to scale
         # the canvas instead. Then also we need to scale the (ox, oy) positions.
         # After drawing, reverse scale the canvas back to 100%
+        drawBot.save()
         drawBot.scale(sx, sy)
         drawBot.image(self.path, (ox/sx, oy/sy))
-        drawBot.scale(1/sx, 1/sy)
-
+        #drawBot.scale(1/sx, 1/sy)
+        drawBot.restore()
 
 
 if __name__ == "__main__":

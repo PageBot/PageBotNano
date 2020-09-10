@@ -61,6 +61,12 @@ class Element:
     >>> page = doc.newPage()
     >>> page
     <Page pn=1 w=595 h=842 elements=0>
+    >>> e = Element(100, 100, 200, 300)
+    >>> page.addElement(e)
+    >>> page
+    <Page pn=1 w=595 h=842 elements=1>
+    >>> page.elements
+    [<Element x=100 y=100 w=200 h=300 elements=0>]
     """
     def __init__(self, x, y, w, h, fill=None, stroke=None, strokeWidth=0):
         self.x = x # (x, y) position of the element from bottom left of parent.
@@ -71,6 +77,11 @@ class Element:
         self.stroke = stroke # Default is drawing no stroke frame
         self.strokeWidth = strokeWidth
         self.elements = [] # Storage in case there are child elements
+
+    def __repr__(self):
+        return '<%s x=%d y=%d w=%d h=%d elements=%s>' % (
+            self.__class__.__name__, self.x, self.y, self.w, self.h, 
+            len(self.elements))
 
     def build(self, x, y, doc, page, parent=None):
         # Calculate the new origing relative to self, for all drawing,
@@ -129,6 +140,12 @@ class Rect(Element):
 class Text(Element):
     """This element draws a FormattedString on a defined place. Not text wrapping
     is done. 
+
+    >>> t = Text('ABC'*200, x=100, y=200)
+    >>> t
+    <Text ABCABCABCA... x=100 y=200 w=None h=None>
+    >>> t.fs[:10]
+    'ABCABCABCA'
     """
     FormattedString = drawBot.FormattedString
 
@@ -136,6 +153,13 @@ class Text(Element):
         # Call the base element with all standard attributes.
         Element.__init__(self, x, y, w=w, h=h, fill=fill, stroke=stroke, strokeWidth=strokeWidth)
         self.fs = fs # Store the FormattedString in self.
+
+    def __repr__(self):
+        s = self.fs[:10]
+        if len(s) != len(self.fs):
+            s += '...'
+        return '<%s %s x=%d y=%d w=%s h=%s>' % (
+            self.__class__.__name__, s, self.x, self.y, self.w, self.h)
 
     def drawForeground(self, ox, oy, dox, page, parent):
         """We just need to define drawing of the foreground. The rest of behavior

@@ -18,9 +18,11 @@
 import sys # Import access to some deep Python functions
 import os # Import standard Python library to create the _export directory
 import drawBot
-
+print(sys.version)
 if __name__ == "__main__":
-    sys.path.insert(0, "..") # So we can import pagebotnano002 without installing.
+    print(__name__)
+    sys.path.insert(0, "../") # So we can import pagebotnano002 without installing.
+    print(sys.path)
 
 from pagebotnano_004.constants import *
 from pagebotnano_004.page import Page

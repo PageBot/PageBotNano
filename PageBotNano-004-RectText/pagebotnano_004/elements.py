@@ -22,7 +22,7 @@ try:
     import pagebotnano_004
 except ImportError:
     import sys # Import access to some deep Python functions
-    sys.path.insert(0, "..") # So we can import pagebotnano002 without installing.
+    sys.path.insert(0, "../") # So we can import pagebotnano002 without installing.
 
 
 def asColor(r, g=None, b=None, a=None):

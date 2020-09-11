@@ -20,7 +20,7 @@ W = H = 600
 M = 50
 SW = 200 # Square size
 
-# Create a new page canvas of 1000 x 1000 px
+# Create a new page canvas of 600 x 600 px
 drawBot.newPage(W, H)
 # Fill page with white background
 drawBot.fill(1)

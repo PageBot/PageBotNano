@@ -28,10 +28,29 @@ class DrawBotContext:
     def saveImage(self, path, multipage=True):
         return drawBot.saveImage(path, multipage=multipage)
 
+    def newPath(self):
+        """Answer a new empty drawBot.BezierPath.
+
+        >>> context = DrawBotContext()
+        >>> context.newPath()
+        <BezierPath>
+        """
+        return drawBot.BezierPath()
+
     def font(self, fontName, fontSize=None):
+        """Set the context to this selected font name
+        
+        >>> context = DrawBotContext()
+        >>> context.font('Georgia', 12)
+        """
         drawBot.font(fontName, fontSize)
 
     def fontSize(self, fontSize):
+        """Set the context to this selected font name
+        
+        >>> context = DrawBotContext()
+        >>> context.fontSize(12)
+        """
         drawBot.fontSize(fontSize)
 
     def fontContainsCharacters(self, characters):

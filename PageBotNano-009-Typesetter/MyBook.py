@@ -43,13 +43,21 @@ styles = dict(
 print('Generating the book “%s” by %s' % (title, author))
 
 # Construct the content as “xml” document.
-xml = '<xml><h1>%s</h1>\n<p>%s</p></xml>' % (title, (loremipsum() + ' ') * 20)
+xml = """<xml>
+<h1>%s</h1>
+<p>%s</p>
+<h1>Another headline</h1>
+<p>%s</p>
+</xml>""" % (title, (loremipsum() + ' ') * 20,  loremipsum())
+
+#print(xml)
 # Create the typesetter that will do content parsing into a “Galley”
 ts = Typesetter()
 # Do the typesetting. Galley is now another type of element
 # that contains text and image elements in a sequence.
 # Passing styles as dictionary. In later versions this will be come a Theme object.
 galley = ts.typeset(xml, styles)
+print(galley, len(galley.elements))
 
 # Create the Book publication and feed it with the processed galley content.
 book = Book(w=w, h=h, title=title, author=author, galley=galley,

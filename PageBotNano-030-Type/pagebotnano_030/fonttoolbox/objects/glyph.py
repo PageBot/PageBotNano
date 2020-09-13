@@ -25,6 +25,7 @@ from pagebotnano_030.fonttoolbox.analyzers import GlyphAnalyzer, APointContext
 from pagebotnano_030.fonttoolbox.analyzers.apoint import APoint
 from pagebotnano_030.fonttoolbox.analyzers.asegment import ASegment
 from pagebotnano_030.fonttoolbox.analyzers.acomponent import AComponent
+from pagebotnano_030.contexts.drawbotcontext import DrawBotContext
 
 F = 2.0 / 3.0
 C = 0.5
@@ -261,31 +262,53 @@ class Glyph:
         self._boundingBox = (minX, minY, maxX, maxY)
         self.dirty = False # All cleaned up.
 
+    def getGlyphPath(self, context=None, p=None, path=None):
+        """Answers the DrawBot path. Allow optional position offset and path,
+        in case we do recursive component drawing.
+        `p` is an option origin as transformation of the glyph coordinates.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> print(f)
+        <Font PageBot-Bold>
+        >>> g = f['H']
+        >>> g.getGlyphPath()
+        <BezierPath>
+        """
+        if context is None:
+            context = DrawBotContext()
+        if path is None:
+            path = context.newPath()
+
+        if p is None:
+            px = py = 0
+        else:
+            px = p[0]
+            py = p[1]
+
+        for command, t in self.cubic:
+            if command == 'moveTo':
+                path.moveTo((px+t[0], py+t[1]))
+            elif command == 'lineTo':
+                path.lineTo((px+t[0], py+t[1]))
+            elif command == 'curveTo':
+                path.curveTo((px+t[0][0], py+t[0][1]),
+                        (px+t[1][0], py+t[1][1]), (px+t[2][0], py+t[2][1]))
+            elif command == 'closePath':
+                path.closePath()
+            elif command == 'component':
+                (x, y), componentGlyph = t
+                self.getGlyphPath(context, componentGlyph, (px+x, py+y), path)
+
+        return path
+
     def update(self):
         """Update the font if it became dirty by changing cooridinates.
         Otherwise ignore. Note that in case the caller cache points, contours,
         components, etc. these are no longer valid."""
         if self.dirty:
             self._initialize()
-
-    def getAxisDeltas(self):
-        """Answers dictionary of axis-delta relations. Key is axis name, value
-        is an *AxisDeltas* instance. The instance containse (minValue,
-        defaultValue, maxValue) keys, holding the sets of deltas for the glyph
-        points."""
-        if self._axisDeltas is None:
-            font = self.font
-            self._axisDeltas = {}
-            if font is not None:
-                axisName = None
-                for rawDelta in font.rawDeltas[self.name]:
-                    axes = rawDelta.axes
-                    assert len(axes) == 1 # Can there be others here?
-                    axisName = axes.keys()[0]
-                    if not axisName in self._axisDeltas:
-                        self._axisDeltas[axisName] = self.AXIS_DELTAS_CLASS(axisName)
-                    self._axisDeltas[axisName][tuple(axes[axisName])] = rawDelta.coordinates
-        return self._axisDeltas
 
     def expandSegment(self, cp, segment):
         """Expands the Segment instance. It may contain multiple quadratics.
@@ -382,11 +405,26 @@ class Glyph:
     def _get_leftMargin(self):
         """Answer the left margin (not angled) of this glyph.
 
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.leftMargin
+        62
         """
         return self.minX
     leftMargin = property(_get_leftMargin)
 
     def _get_rightMargin(self):
+        """Answer the left margin (not angled) of this glyph.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.rightMargin
+        62
+        """
         return self.width - self.maxX
     rightMargin = property(_get_rightMargin)
 
@@ -438,6 +476,15 @@ class Glyph:
     coordinates = property(_get_coordinates, _set_coordinates)
 
     def _get_endPtsOfContours(self):
+        """
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.endPtsOfContours
+        [11]
+        """
         if hasattr(self.ttGlyph, 'endPtsOfContours'):
             return self.ttGlyph.endPtsOfContours
         return [] # No endPtsOfContours in the TTGlyph
@@ -446,6 +493,16 @@ class Glyph:
     endPtsOfContours = property(_get_endPtsOfContours, _set_endPtsOfContours)
 
     def _get_flags(self):
+        """
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f['H'].flags # Types of points
+        array('B', [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+        >>> f['O'].flags[:8] # Types of points
+        array('B', [1, 0, 0, 1, 0, 0, 1, 0])
+        """
         if hasattr(self.ttGlyph, 'flags'):
             return self.ttGlyph.flags
         return [] # No flags in the TTGlyph
@@ -473,7 +530,16 @@ class Glyph:
         the list in TTF style.  Read only for now. Although APoints are
         constructed from the self.ttFont coordinates, they keep a weakref to
         the glyph and their index. This way point positions in the self.ttFont
-        can be modified."""
+        can be modified.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f['H'].points[:2]
+        [APoint(62,0,On), APoint(62,658,On)]
+        >>> len(f['O'].points)
+        24
+        """
         if self._points is None or self.dirty:
             self._initialize()
         return self._points
@@ -485,7 +551,16 @@ class Glyph:
         list in TTF style.  Read only for now. Although APoints are constructed
         from the self.ttFont coordinates, they keep a weakref to the glyph and
         their index. This way point positions in the self.ttFont can be
-        modified."""
+        modified.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f['H'].points[-2]
+        APoint(238,251,On)
+        >>> len(f['O'].points4)
+        28
+        """
         if self._points4 is None or self.dirty:
             self._initialize()
         return self._points4
@@ -549,13 +624,31 @@ class Glyph:
     segments = property(_get_segments)
 
     def _get_cubic(self):
+        """self.cubic answer the list of (instruction, position), 
+        describing the path and the components for this glyph.
+
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> g = f['H']
+        >>> g.cubic[:3]
+        [('moveTo', (62, 0)), ('lineTo', (62, 0)), ('lineTo', (62, 658))]
+        """
         if self._cubic is None or self.dirty:
             self._initialize()
         return self._cubic
-
     cubic = property(_get_cubic)
 
     def _get_components(self): # Read only for now. List Contour instances.
+        """
+        
+        >>> from pagebotnano_030.fonttoolbox.objects.font import Font
+        >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
+        >>> f = Font(path)
+        >>> f.keys()
+        >>> g = f['semicolon']
+        >>> g.components
+        """
         if self._components is None or self.dirty:
             self._components = []
             self.ttGlyph.expand(self.font.ttFont['glyf'])
@@ -563,41 +656,21 @@ class Glyph:
             if hasattr(self.ttGlyph, 'components'):
                 for ttComponent in self.ttGlyph.components:
                     self._components.append(AComponent(ttComponent))
-
         return self._components
     components = property(_get_components)
 
+    def addComponent(self, glyphName, p=None):
+        """
+
+        """
+        if p is None:
+            p = 0, 0
+        
     def getComponentNames(self):
         componentNames = []
         for component in self.components:
             componentNames.append(component.baseGlyph)
         return componentNames
-
-    def _get_variables(self):
-        """Answers the axis-deltas for this glyph. Answer an None if there are
-        no deltas for this glyph or if the parent is not a Var-font.
-
-        >>> from pagebot.fonttoolbox.fontpaths import getTestFontsPath
-        >>> from pagebot.fonttoolbox.objects.font import getFont
-        >>> fontPath = getTestFontsPath()
-        >>> path = fontPath + '/fontbureau/Amstelvar-Roman-VF.ttf'
-        >>> font = getFont(path) # Keep font alive to glyph.font weakref
-        >>> glyph = font['H']
-        """
-
-        """
-        TODO: Get more docTests to work
-        >>> variables = glyph.variables
-        >>> sorted(glyph.variables.keys())
-        ['GRAD', 'XOPQ', 'XTRA', 'YOPQ', 'YTRA', 'YTSE', 'YTUC', 'opsz', 'wdth', 'wght']
-        >>> axis, deltas = variables['GRAD']
-        >>> axis
-        {'GRAD': (0.0, 1.0, 1.0)}
-        >>> deltas[:6]
-        [(0, 0), None, (52, 0), None, None, (89, 0)]
-        """
-        return self.font.variables.get(self.name) # Answer None if variations for this glyph don't exist.
-    variables = property(_get_variables)
 
     def _get_analyzer(self):
         if self._analyzer is None:

@@ -19,10 +19,6 @@
 #
 from random import random
 
-import sys
-if __name__ == "__main__":
-    sys.path.insert(0, ".") # So we can import pagebotnano_004 without installing.
-
 # From the library we import the classes (=object factories)
 # that we need for creating the type specimen.
 # Classes can be recognised by their initial capital name.

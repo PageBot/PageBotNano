@@ -37,6 +37,24 @@ from pagebotnano_030.fonttoolbox.analyzers.fontanalyzer import FontAnalyzer
 from pagebotnano_030.toolbox.transformer import path2Extension, path2FontName
 from pagebotnano_030.contributions.adobe.kerndump.getKerningPairsFromOTF import OTFKernReader
 
+def findFont(name):
+    """
+
+    >>> findFont('Georgia').endswith('/Fonts/Georgia')
+    True
+    """
+    fontPaths = ('~/Library/Fonts/', '/Library/Fonts/')
+    for fontPath in fontPaths:
+        fontPath = os.path.expanduser(fontPath)
+        print(fontPath)
+        for fileName in os.listdir(fontPath):
+            if fileName.startswith('.'):
+                continue
+            print(fontPath, fileName)
+            if name in fileName:
+                return fontPath + fileName
+    return None
+
 class Font:
     """Storage of font information while composing the pages.
 

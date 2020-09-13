@@ -76,7 +76,7 @@ class Book(Publication):
         headSize = fontSize*1.5
         titleSize = 36
         subTitleSize = titleSize * 0.5
-        pad = 48
+        pad = 48 # Padding of the page.
 
         titleStyle = dict(font='Georgia-Bold', 
             lineHeight=titleSize*1.1, 

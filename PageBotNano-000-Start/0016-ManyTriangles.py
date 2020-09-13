@@ -9,6 +9,7 @@
 #   Licensed under MIT conditions
 #
 import os
+from random import random
 import drawBot
 
 W = H = 600

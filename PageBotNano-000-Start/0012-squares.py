@@ -16,6 +16,7 @@ if __name__ == "__main__":
 
 from pagebotnano_000 import export
 
+W = H = 600
 # Create a new page canvas of 1000 x 1000 px
 drawBot.newPage(600, 600)
 # Fill page with white background

@@ -18,7 +18,7 @@ from pagebotnano_030.constants import A4
 from pagebotnano_030.document import Document
 from pagebotnano_030.elements import (Rect, Text, GlyphView, GlyphPathView, 
 	Stacked, Waterfall)
-from pagebotnano_030.fonttoolbox.objects.font import Font
+from pagebotnano_030.fonttoolbox.objects.font import Font, findFont
 from pagebotnano_030.toolbox.color import color
 
 # PageBot is a demo (incomplete) family version of TYPETR Upgrade,
@@ -33,6 +33,7 @@ fontPath = '../resources/fonts/typetr/PageBot-Bold.ttf'
 # data. Some compatibility is kept with the RoboFont/FontParts api, such as
 # storing the meta information in a Font.info instance.
 f = Font(fontPath)
+#f = findFont('PageBot-Bold.ttf') Another way of getting the font.
 
 # Size and padding of the specimen page.
 w, h = A4
@@ -58,10 +59,10 @@ page = doc.newPage()
 # black on white background.
 # The GlyphView element has a number of attributes (guided by attributes), 
 # to define the details that should be shown with the glyph outline.
-e = GlyphView('g', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
-	lineWidth=4)
+gv = GlyphView('g', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
+	textFill=color(1, 0, 0), lineWidth=4)
 # Place the element on the page.
-page.addElement(e)
+page.addElement(gv)
 
 page = doc.newPage()
 # Show a single glyph, as large as it fits (in height or width) on the page, 
@@ -69,7 +70,7 @@ page = doc.newPage()
 # The GlyphView element has a number of attributes (guided by attributes), 
 # to define the details that should be shown with the glyph outline.
 gv = GlyphView('H', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
-	fill=color('darkblue'), textFill=color(1), lineStroke=False)
+	fill=color('darkblue'), textFill=color(1), lineStroke=True)
 page.addElement(gv)
 
 page = doc.newPage()

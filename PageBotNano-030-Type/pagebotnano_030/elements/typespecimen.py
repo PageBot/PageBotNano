@@ -17,7 +17,7 @@
 #   can be placed on a page.
 #
 import sys
-sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+sys.path.insert(0, "../../") # So we can import pagebotnano without installing.
 
 from random import shuffle, choice
 import drawBot
@@ -40,7 +40,8 @@ class GlyphView(Element):
 
     >>> from pagebotnano_030.document import Document
     >>> from pagebotnano_030.fonttoolbox.objects.font import findFont
-    >>> f = findFont('PageBot-Light.ttf')
+    >>> f = Font('../../resources/fonts/typetr/PageBot-Light.ttf')
+    >>> #f = findFont('PageBot-Light.ttf')
     >>> doc = Document(w=200, h=200)
     >>> page = doc.newPage()
     >>> pad = 10
@@ -57,7 +58,7 @@ class GlyphView(Element):
             pointStroke=None, pointStrokeWidth=0, pointMarkerSize=None, **kwargs):
         Element.__init__(self, **kwargs)
         assert isinstance(font, Font)
-        self.font = font
+        self.font = font # This is a real Font instance
         self.glyphName = glyphName
         # As start assume the full height of the element as fontSize
         self.fontSize = self.h 
@@ -78,13 +79,14 @@ class GlyphView(Element):
         self.lineWidth = lineWidth or 0 # Thickness of metrics lines
 
         # Create a style for it, so we can draw the glyph(s) as Text.
-        style = dict(font=self.font.path, fontSize=self.fontSize, textFill=textFill or color(0), align=CENTER)
+        style = dict(font=self.font.path, fontSize=self.fontSize, 
+            textFill=textFill or color(0), align=CENTER)
         self.bs = BabelString(self.glyphName, style=style)
         tw, th = self.bs.textSize # Get the size of the glyph(s) string to see if it fits.
 
         if self.w and tw > self.w: # If width of self is defined and string is wider
             # Interpolate the fontSize from the measured width to smaller scaled fontSize.
-            self.fontSize *= self.w / tw
+            self.fontSize *= self.w / tw # Multiply original fontsize by ratio
             # Make a new string with the fitting fontSize
             style['fontSize'] = self.fontSize # Adjust the existing style
             style['fill'] = textFill or color(0)
@@ -182,12 +184,19 @@ class GlyphPathView(GlyphView):
         # Just the first glyph of the string for now.
         glyph = self.font[self.glyphName[0]]
         glyphPath = glyph.getGlyphPath(doc.context)
+        #print(glyphPath._path) # Showing the points in a BezierPath
 
+        # Draw stroke and fill separate, to overwrite the inline
+        # side of a thick stroke. 
         doc.context.save()
-        doc.context.fill(self.textFill)
-        doc.context.stroke(self.textStroke, self.textStrokeWidth)
         doc.context.scale(scale)
         doc.context.translate(ox/scale, y/scale)
+        doc.context.stroke(self.textStroke, self.textStrokeWidth)
+        doc.context.fill(None)
+        doc.context.drawPath(glyphPath)
+        # Something else could draw here, between stroke-fill
+        doc.context.fill(self.textFill)
+        doc.context.stroke(None)
         doc.context.drawPath(glyphPath)
         doc.context.restore()
 
@@ -221,7 +230,10 @@ class GlyphPathView(GlyphView):
             # PointContext instances, that hold a sequence of 7 points.
             lineWidth = self.pointStrokeWidth or 1
             doc.context.stroke(self.pointLine or self.pointStroke, lineWidth/2)
-            for pc in glyph.pointContexts:
+            # Point context naming
+            # O   O   O   O     O   O   O   O   O   O   O   O
+            #                   p_3 p_2 p_1 p   p1  p2  p3
+            for pc in glyph.pointContexts: 
                 # Calculate the positions of marker + line + marker,
                 # so the line does not overlap to the middle of the marker.
                 doc.context.fill(None)
@@ -304,7 +316,7 @@ class Waterfall(Element):
             tw, th = bs.textSize
 
         e = Text(bs, x=ox, y=oy+self.h)
-        page.h = page.pb + page.pt + th
+        #page.h = page.pb + page.pt + th ???
         page.addElement(e)
 
 class Stacked(Element):

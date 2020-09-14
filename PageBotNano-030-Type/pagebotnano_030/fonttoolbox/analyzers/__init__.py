@@ -11,13 +11,16 @@
 #     Supporting Flat, xxyxyz.org/flat
 # -----------------------------------------------------------------------------
 
-from pagebot.fonttoolbox.analyzers.glyphanalyzer import GlyphAnalyzer
-from pagebot.fonttoolbox.analyzers.fontanalyzer import FontAnalyzer
+import sys
+sys.path.insert(0, "../../../") # So we can import pagebotnano without installing.
+
+from pagebotnano_030.fonttoolbox.analyzers.glyphanalyzer import GlyphAnalyzer
+from pagebotnano_030.fonttoolbox.analyzers.fontanalyzer import FontAnalyzer
 # Analyzer point and pointContext classes.
 # A point context is an instance holding a range of neighboring points.
 # Not to same as the overall drawing board context, such as DrawBotContext or FlatContext.
-from pagebot.fonttoolbox.analyzers.asegment import ASegment
-from pagebot.fonttoolbox.analyzers.acontour import AContour
-from pagebot.fonttoolbox.analyzers.acomponent import AComponent
-from pagebot.fonttoolbox.analyzers.apoint import APoint
-from pagebot.fonttoolbox.analyzers.apointcontext import APointContext
+from pagebotnano_030.fonttoolbox.analyzers.asegment import ASegment
+from pagebotnano_030.fonttoolbox.analyzers.acontour import AContour
+from pagebotnano_030.fonttoolbox.analyzers.acomponent import AComponent
+from pagebotnano_030.fonttoolbox.analyzers.apoint import APoint
+from pagebotnano_030.fonttoolbox.analyzers.apointcontext import APointContext

@@ -16,7 +16,7 @@
 import sys
 sys.path.insert(0, "../../../") # So we can import pagebotnano without installing.
 
-from pagebot.fonttoolbox.analyzers.apointcontext import APointContext
+from pagebotnano_030.fonttoolbox.analyzers.apointcontext import APointContext
 
 class APointContextList(list):
     """The PointContextList us a group of related PointContext instances that can be

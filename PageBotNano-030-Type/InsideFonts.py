@@ -16,7 +16,8 @@
 import os
 from pagebotnano_030.constants import A4
 from pagebotnano_030.document import Document
-from pagebotnano_030.elements import Rect, Text, GlyphView, Stacked, Waterfall
+from pagebotnano_030.elements import (Rect, Text, GlyphView, GlyphPathView, 
+	Stacked, Waterfall)
 from pagebotnano_030.fonttoolbox.objects.font import Font
 from pagebotnano_030.toolbox.color import color
 
@@ -43,6 +44,17 @@ doc = Document(w=w, h=h)
 # Create the first page in the document, taking over the document size and padding.
 page = doc.newPage()
 # Show a single glyph, as large as it fits (in height or width) on the page, 
+# white on color background.
+# The GlyphView element has a number of attributes (guided by attributes), 
+# to define the details that should be shown with the glyph outline.
+gv = GlyphPathView('G', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
+	fill=color(0.9), textFill=color(0.7), textStroke=color(1, 0, 0), 
+	textStrokeWidth=2, pointStroke=color('darkblue'), pointStrokeWidth=2,
+	pointMarkerSize=12, pointFill=color(0.9), pointLine=True)
+page.addElement(gv)
+
+page = doc.newPage()
+# Show a single glyph, as large as it fits (in height or width) on the page, 
 # black on white background.
 # The GlyphView element has a number of attributes (guided by attributes), 
 # to define the details that should be shown with the glyph outline.
@@ -51,7 +63,6 @@ e = GlyphView('g', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
 # Place the element on the page.
 page.addElement(e)
 
-# Create the first page in the document, taking over the document size and padding.
 page = doc.newPage()
 # Show a single glyph, as large as it fits (in height or width) on the page, 
 # white on color background.

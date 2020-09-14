@@ -40,26 +40,34 @@ from pagebotnano_030.contributions.adobe.kerndump.getKerningPairsFromOTF import 
 def findFont(name):
     """
 
-    >>> findFont('Georgia').endswith('/Fonts/Georgia')
+    >>> font = findFont('SFText-Bold')
+    >>> font
+
+    >>> #font.path.endswith('/Fonts/SFText-Bold.otf')
     True
     """
-    fontPaths = ('~/Library/Fonts/', '/Library/Fonts/')
+    fontPaths = (
+        '../../../../resources/fonts/typetr/',
+        '../../../resources/fonts/typetr/',
+        '../../resources/fonts/typetr/',
+        '../resources/fonts/typetr/',
+        '~/Library/Fonts/', # Expands to library fonts directory in user directory
+        '/Library/Fonts/')
     for fontPath in fontPaths:
-        fontPath = os.path.expanduser(fontPath)
-        print(fontPath)
+        if not os.path.exists(fontPath):
+            continue
+        fontPath = os.path.expanduser(fontPath) # In case path starts with "~"
         for fileName in os.listdir(fontPath):
             if fileName.startswith('.'):
-                continue
-            print(fontPath, fileName)
-            if name in fileName:
-                return fontPath + fileName
+                continue # Skip invisible files.
+            if name in fileName: # We found a matching file name, answer the font.
+                return Font(fontPath + fileName)
     return None
 
 class Font:
     """Storage of font information while composing the pages.
 
-    >>> fontPath = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
-    >>> f = Font(fontPath)
+    >>> f = findFont('PageBot-Bold')
     >>> f.info.familyName
     'PageBot'
     >>> len(f)

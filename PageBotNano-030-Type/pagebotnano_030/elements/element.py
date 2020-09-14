@@ -44,8 +44,8 @@ class Element:
         self.y = y or 0
         self.w = w # Width and height of the element bounding box
         self.h = h
-        self.fill = color(fill) # Default is drawing a black rectangle.
-        self.stroke = color(stroke) # Default is drawing no stroke frame
+        self.fill = fill # Default is drawing a black rectangle.
+        self.stroke = stroke # Default is drawing no stroke frame
         self.strokeWidth = strokeWidth
         self.padding = pt, pr, pb, pl # Initialize the padding
         self.elements = [] # Storage in case there are child elements

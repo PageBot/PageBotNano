@@ -567,14 +567,17 @@ class Glyph:
     points4 = property(_get_points4)
 
     def _get_pointContexts(self):
-        """Answer the list of all 7 points context (index of -3, -2, -1, 0, 1, 2, 3)
+        """Answer the list of all 7 points context tuples (index of -3, -2, -1, 0, 1, 2, 3)
 
         >>> from pagebotnano_030.fonttoolbox.objects.font import Font
         >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
         >>> f = Font(path)
         >>> g = f['H']
-        >>> g.pointContexts[0]
+        >>> pc = g.pointContexts[0]
+        >>> pc
         pc[index:0](62,0) vertical
+        >>> pc.p_3, pc.p, pc.p1, pc.p3
+        (APoint(476,251,On), APoint(62,0,On), APoint(62,658,On), APoint(238,410,On))
         """
         if self._pointContexts is None or self.dirty:
             self._pointContexts = []
@@ -645,9 +648,9 @@ class Glyph:
         >>> from pagebotnano_030.fonttoolbox.objects.font import Font
         >>> path = '../../../../resources/fonts/typetr/PageBot-Bold.ttf'
         >>> f = Font(path)
-        >>> f.keys()
         >>> g = f['semicolon']
         >>> g.components
+        []
         """
         if self._components is None or self.dirty:
             self._components = []

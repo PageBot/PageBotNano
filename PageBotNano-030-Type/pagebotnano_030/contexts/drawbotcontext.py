@@ -37,6 +37,9 @@ class DrawBotContext:
         """
         return drawBot.BezierPath()
 
+    def drawPath(self, bezierPath):
+        drawBot.drawPath(bezierPath)
+
     def font(self, fontName, fontSize=None):
         """Set the context to this selected font name
         
@@ -139,8 +142,8 @@ class DrawBotContext:
         """
         if c is None:
             drawBot.fill(None)
-        else: # Make sure is it a Color instance.
-            if not isinstance(c, Color):
+        else:
+            if not isinstance(c, Color): # Make sure is it a Color instance.
                 c = color(c)
             r, g, b, a = c.rgba
             drawBot.fill(r, g, b, a)
@@ -172,8 +175,8 @@ class DrawBotContext:
     def rect(self, x, y, w, h):
         drawBot.rect(x, y, w, h)
                 
-    def oval(self, x, y, w, h):
-        drawBot.rect(x, y, w, h)
+    def oval(self, x, y, w, h=None):
+        drawBot.oval(x, y, w, h or w)
     
     def line(self, p1, p2):
         drawBot.line(p1, p2)
@@ -181,8 +184,19 @@ class DrawBotContext:
     def imageSize(self, path):
         return drawBot.imageSize(path)
 
-    def scale(self, sx, sy):
-        drawBot.scale(sx, sy)
+    def scale(self, sx, sy=None):
+        drawBot.scale(sx, sy or sx)
+
+    def translate(self, x, y):
+        drawBot.translate(x, y)
+
+    def save(self):
+        """Save the drawBot graphics state"""
+        drawBot.save()
+
+    def restore(self):
+        """Restore the drawBot graphics state"""
+        drawBot.restore()
 
     def image(self, path, p):
         drawBot.image(path, p)

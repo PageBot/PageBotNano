@@ -26,21 +26,26 @@ from pagebotnano_030.elements import Element, Rect, Line, Text
 from pagebotnano_030.babelstring import BabelString
 from pagebotnano_030.toolbox.color import noColor, Color, color
 from pagebotnano_030.constants import CENTER, LEFT
-from pagebotnano_030.fonttoolbox.objects.font import Font
+from pagebotnano_030.fonttoolbox.objects.font import Font, findFont
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10
 LEADING = 13
 
 class GlyphView(Element):
-    """The GlyphView show single glyphs with metrics lines.
+    """The GlyphView show single glyphs with metrics lines, using a 
+    FormattedString to show the text in a specified font. This is
+    faster and more direct than drawing with a GlyphPath (which is
+    demonstrated in the Element class GlyphPathView).
 
     >>> from pagebotnano_030.document import Document
+    >>> from pagebotnano_030.fonttoolbox.objects.font import findFont
+    >>> f = findFont('PageBot-Light.ttf')
     >>> doc = Document(w=200, h=200)
     >>> page = doc.newPage()
     >>> pad = 10
     >>> page.padding = pad
-    >>> e = GlyphView('Hhj', 'Georgia', x=pad, y=pad, w=page.pw, h=page.ph, fill=0.96)
+    >>> e = GlyphView('Hhj', f, x=pad, y=pad, w=page.pw, h=page.ph, fill=color(0.96))
     >>> page.addElement(e)
     >>> doc.export('_export/GlyphView.pdf')
     """
@@ -48,26 +53,32 @@ class GlyphView(Element):
     GLYPH_FILL = color(0) # Default color of the glyph
 
     def __init__(self, glyphName, font, lineStroke=True, lineWidth=None, 
-            textFill=None, **kwargs):
+            textFill=None, textStroke=None, textStrokeWidth=0, 
+            pointStroke=None, pointStrokeWidth=0, pointMarkerSize=None, **kwargs):
         Element.__init__(self, **kwargs)
-        if isinstance(font, Font):
-            font = font.path
+        assert isinstance(font, Font)
         self.font = font
         self.glyphName = glyphName
         # As start assume the full height of the element as fontSize
         self.fontSize = self.h 
-        if textFill and not isinstance(textFill, Color): # In case it is "True":
-            textFill = self.GLYPH_FILL # Color of the glyph, default is black
-        self.textFill = textFill 
+
+        assert textFill is None or isinstance(textFill, Color)
+        assert textStroke is None or isinstance(textStroke, Color)
+        if textFill is None:
+            textFill = self.GLYPH_FILL
+        self.textFill = textFill
+        self.textStroke = textStroke 
+        self.textStrokeWidth = textStrokeWidth or 0
+
         # Flag to show horizontal metrics lines. Can be one of (None, True, False, Color)
         # Default is self.LINE_STROKE color(0, 0, 1)
         if lineStroke and not isinstance(lineStroke, Color): # In case it is "True"
             lineStroke = self.LINE_STROKE
         self.lineStroke = lineStroke
-        self.lineWidth = lineWidth or 1 # Thickness of metrics lines
+        self.lineWidth = lineWidth or 0 # Thickness of metrics lines
 
         # Create a style for it, so we can draw the glyph(s) as Text.
-        style = dict(font=self.font, fontSize=self.fontSize, textFill=textFill or color(0), align=CENTER)
+        style = dict(font=self.font.path, fontSize=self.fontSize, textFill=textFill or color(0), align=CENTER)
         self.bs = BabelString(self.glyphName, style=style)
         tw, th = self.bs.textSize # Get the size of the glyph(s) string to see if it fits.
 
@@ -87,7 +98,7 @@ class GlyphView(Element):
         """
 
         # Set the context to font and fontSize, so we get the right descender back.
-        doc.context.font(self.font, self.fontSize) # Set to new fontSize, so metrics do fit
+        doc.context.font(self.font.path, self.fontSize) # Set to new fontSize, so metrics do fit
         descender = doc.context.fontDescender() # Scaled descender of current font/fontSize
         # If the fontSize is down scaled to match the string width, then evenely 
         # distribute the extra vertical space above and below that scaled fontSize.
@@ -114,6 +125,118 @@ class GlyphView(Element):
 
             y = oy + baseline + self.fontSize + descender
             doc.context.line((ox, y), (ox+self.w, y)) # Descender
+
+class GlyphPathView(GlyphView):
+    """The GlyphPathView show single glyphs with metrics lines, using 
+    the Glyph.getGlyphPath as contour drawing. This is more flexible
+    than drawing text as FormattedString. 
+    GlyphPathView inherits from GlyphView, because it only is different
+    in the GlyphPathView.drawContent method.
+
+    >>> from pagebotnano_030.document import Document
+    >>> from pagebotnano_030.fonttoolbox.objects.font import findFont
+    >>> f = findFont('PageBot-Bold.ttf')
+    >>> doc = Document(w=595, h=842)
+    >>> page = doc.newPage()
+    >>> pad = 10
+    >>> page.padding = pad
+    >>> e = GlyphPathView('Oi', f, x=pad, y=pad, w=page.pw, h=page.ph, fill=color(0.96), textFill=color(0.6), textStroke=color(0), textStrokeWidth=1)
+    >>> page.addElement(e)
+    >>> doc.export('_export/GlyphPathView.pdf')
+    """
+    POINT_STROKE = color('darkblue')
+    POINT_FILL = color(0.9)
+
+    def __init__(self, glyphName, font, pointStroke=None, pointStrokeWidth=0, 
+            pointFill=None, pointSize=None, pointLine=None, **kwargs):
+        GlyphView.__init__(self, glyphName, font, **kwargs)
+
+        # Flag to show point markers. Can be one of (None, True, False, Color)
+        # Default is self.POINT_STROKE color(1, 0, 0)
+        if pointFill and not isinstance(pointFill, Color): # In case it is "True"
+            pointFill = self.POINT_FILL
+        self.pointFill = pointFill
+        if pointStroke and not isinstance(pointStroke, Color): # In case it is "True"
+            pointStroke = self.POINT_STROKE
+        self.pointStroke = pointStroke
+        self.pointStrokeWidth = pointStrokeWidth or 0 # Thickness of metrics lines
+        self.pointSize = pointSize or 0 # Size of point markers
+        if pointLine and not isinstance(pointLine, Color): # In case it is "True"
+            pointLine = self.POINT_STROKE
+        self.pointLine = pointLine # Flag or color of lines between the point markers
+
+    def drawContent(self, ox, oy, doc, page, parent):
+        """Draw the content of this single glyph/string fitting, with line indicators
+        of vertical metrics.
+
+        TODO: Show more font metrics and glyph metrics here. Add labels of values and names.
+        """
+        scale = self.fontSize / self.font.info.unitsPerEm
+        descender = scale * self.font.info.descender
+        # Scaled descender of current font/fontSize
+        # If the fontSize is down scaled to match the string width, then evenely 
+        # distribute the extra vertical space above and below that scaled fontSize.
+        baseline = (self.h - self.fontSize)/2 - descender # Distance from baseline to bottom y
+        
+        y = oy + baseline # Calculate the position of the baseline.
+        # Just the first glyph of the string for now.
+        glyph = self.font[self.glyphName[0]]
+        glyphPath = glyph.getGlyphPath(doc.context)
+
+        doc.context.save()
+        doc.context.fill(self.textFill)
+        doc.context.stroke(self.textStroke, self.textStrokeWidth)
+        doc.context.scale(scale)
+        doc.context.translate(ox/scale, y/scale)
+        doc.context.drawPath(glyphPath)
+        doc.context.restore()
+
+        # If line color and line width are defined.
+        if self.lineStroke and self.lineWidth:
+            doc.context.stroke(self.lineStroke, self.lineWidth)
+            doc.context.line((ox, y), (ox+self.w, y)) # Draw baseline
+
+            xHeight = scale * self.font.info.xHeight
+            ly = oy + baseline + xHeight
+            doc.context.line((ox, ly), (ox+self.w, ly))
+
+            capHeight = scale * self.font.info.capHeight
+            ly = oy + baseline + capHeight
+            doc.context.line((ox, ly), (ox+self.w, ly))
+
+            ly = oy + baseline + descender
+            doc.context.line((ox, ly), (ox+self.w, ly)) # Descender
+
+            ly = oy + baseline + self.fontSize + descender
+            doc.context.line((ox, ly), (ox+self.w, ly)) # Descender
+
+        if self.pointFill or (self.pointStroke and self.pointStrokeWidth):
+            radius = (self.pointSize or 16)/2
+            doc.context.save()
+            doc.context.scale(scale)
+            doc.context.translate(ox/scale, y/scale)
+
+            # First draw the connecting lines between the points
+            # Instead of using glyph.points we iterate through a list of 
+            # PointContext instances, that hold a sequence of 7 points.
+            lineWidth = self.pointStrokeWidth or 1
+            doc.context.stroke(self.pointLine or self.pointStroke, lineWidth/2)
+            for pc in glyph.pointContexts:
+                # Calculate the positions of marker + line + marker,
+                # so the line does not overlap to the middle of the marker.
+                doc.context.fill(None)
+                if pc.p_1.offCurve and pc.p.onCurve:
+                    doc.context.line(pc.p_1.p, pc.p.p)
+                if pc.p.onCurve and pc.p1.offCurve:
+                    doc.context.line(pc.p.p, pc.p1.p)
+            for p in glyph.points:
+                # Now draw all markers, only for the middle point
+                doc.context.fill(self.pointFill)
+                if p.offCurve: # Off-curves radius 60% point size
+                    doc.context.oval(p.x-radius*0.6, p.y-radius*0.6, radius*2*0.6)
+                else:
+                    doc.context.oval(p.x-radius, p.y-radius, 2*radius)
+            doc.context.restore()
 
 class Waterfall(Element):
     """The GlyphView show single glyphs with metrics lines.

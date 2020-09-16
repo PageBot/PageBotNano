@@ -181,74 +181,75 @@ class GlyphPathView(GlyphView):
         baseline = (self.h - self.fontSize)/2 - descender # Distance from baseline to bottom y
         
         y = oy + baseline # Calculate the position of the baseline.
-        # Just the first glyph of the string for now.
-        glyph = self.font[self.glyphName[0]]
-        glyphPath = glyph.getGlyphPath(doc.context)
-        #print(glyphPath._path) # Showing the points in a BezierPath
+        for char in self.glyphName:
+            # Just the first glyph of the string for now.
+            glyph = self.font[char]
+            glyphPath = glyph.getGlyphPath(doc.context)
+            #print(glyphPath._path) # Showing the points in a BezierPath
 
-        # Draw stroke and fill separate, to overwrite the inline
-        # side of a thick stroke. 
-        doc.context.save()
-        doc.context.scale(scale)
-        doc.context.translate(ox/scale, y/scale)
-        doc.context.stroke(self.textStroke, self.textStrokeWidth)
-        doc.context.fill(None)
-        doc.context.drawPath(glyphPath)
-        # Something else could draw here, between stroke-fill
-        doc.context.fill(self.textFill)
-        doc.context.stroke(None)
-        doc.context.drawPath(glyphPath)
-        doc.context.restore()
-
-        # If line color and line width are defined.
-        if self.lineStroke and self.lineWidth:
-            doc.context.stroke(self.lineStroke, self.lineWidth)
-            doc.context.line((ox, y), (ox+self.w, y)) # Draw baseline
-
-            xHeight = scale * self.font.info.xHeight
-            ly = oy + baseline + xHeight
-            doc.context.line((ox, ly), (ox+self.w, ly))
-
-            capHeight = scale * self.font.info.capHeight
-            ly = oy + baseline + capHeight
-            doc.context.line((ox, ly), (ox+self.w, ly))
-
-            ly = oy + baseline + descender
-            doc.context.line((ox, ly), (ox+self.w, ly)) # Descender
-
-            ly = oy + baseline + self.fontSize + descender
-            doc.context.line((ox, ly), (ox+self.w, ly)) # Descender
-
-        if self.pointFill or (self.pointStroke and self.pointStrokeWidth):
-            radius = (self.pointSize or 16)/2
+            # Draw stroke and fill separate, to overwrite the inline
+            # side of a thick stroke. 
             doc.context.save()
             doc.context.scale(scale)
             doc.context.translate(ox/scale, y/scale)
-
-            # First draw the connecting lines between the points
-            # Instead of using glyph.points we iterate through a list of 
-            # PointContext instances, that hold a sequence of 7 points.
-            lineWidth = self.pointStrokeWidth or 1
-            doc.context.stroke(self.pointLine or self.pointStroke, lineWidth/2)
-            # Point context naming
-            # O   O   O   O     O   O   O   O   O   O   O   O
-            #                   p_3 p_2 p_1 p   p1  p2  p3
-            for pc in glyph.pointContexts: 
-                # Calculate the positions of marker + line + marker,
-                # so the line does not overlap to the middle of the marker.
-                doc.context.fill(None)
-                if pc.p_1.offCurve and pc.p.onCurve:
-                    doc.context.line(pc.p_1.p, pc.p.p)
-                if pc.p.onCurve and pc.p1.offCurve:
-                    doc.context.line(pc.p.p, pc.p1.p)
-            for p in glyph.points:
-                # Now draw all markers, only for the middle point
-                doc.context.fill(self.pointFill)
-                if p.offCurve: # Off-curves radius 60% point size
-                    doc.context.oval(p.x-radius*0.6, p.y-radius*0.6, radius*2*0.6)
-                else:
-                    doc.context.oval(p.x-radius, p.y-radius, 2*radius)
+            doc.context.stroke(self.textStroke, self.textStrokeWidth)
+            doc.context.fill(None)
+            doc.context.drawPath(glyphPath)
+            # Something else could draw here, between stroke-fill
+            doc.context.fill(self.textFill)
+            doc.context.stroke(None)
+            doc.context.drawPath(glyphPath)
             doc.context.restore()
+
+            # If line color and line width are defined.
+            if self.lineStroke and self.lineWidth:
+                doc.context.stroke(self.lineStroke, self.lineWidth)
+                doc.context.line((ox, y), (ox+self.w, y)) # Draw baseline
+
+                xHeight = scale * self.font.info.xHeight
+                ly = oy + baseline + xHeight
+                doc.context.line((ox, ly), (ox+self.w, ly))
+
+                capHeight = scale * self.font.info.capHeight
+                ly = oy + baseline + capHeight
+                doc.context.line((ox, ly), (ox+self.w, ly))
+
+                ly = oy + baseline + descender
+                doc.context.line((ox, ly), (ox+self.w, ly)) # Descender
+
+                ly = oy + baseline + self.fontSize + descender
+                doc.context.line((ox, ly), (ox+self.w, ly)) # Descender
+
+            if self.pointFill or (self.pointStroke and self.pointStrokeWidth):
+                radius = (self.pointSize or 16)/2
+                doc.context.save()
+                doc.context.scale(scale)
+                doc.context.translate(ox/scale, y/scale)
+
+                # First draw the connecting lines between the points
+                # Instead of using glyph.points we iterate through a list of 
+                # PointContext instances, that hold a sequence of 7 points.
+                lineWidth = self.pointStrokeWidth or 1
+                doc.context.stroke(self.pointLine or self.pointStroke, lineWidth/2)
+                # Point context naming
+                # O   O   O   O     O   O   O   O   O   O   O   O
+                #                   p_3 p_2 p_1 p   p1  p2  p3
+                for pc in glyph.pointContexts: 
+                    # Calculate the positions of marker + line + marker,
+                    # so the line does not overlap to the middle of the marker.
+                    doc.context.fill(None)
+                    if pc.p_1.offCurve and pc.p.onCurve:
+                        doc.context.line(pc.p_1.p, pc.p.p)
+                    if pc.p.onCurve and pc.p1.offCurve:
+                        doc.context.line(pc.p.p, pc.p1.p)
+                for p in glyph.points:
+                    # Now draw all markers, only for the middle point
+                    doc.context.fill(self.pointFill)
+                    if p.offCurve: # Off-curves radius 60% point size
+                        doc.context.oval(p.x-radius*0.6, p.y-radius*0.6, radius*2*0.6)
+                    else:
+                        doc.context.oval(p.x-radius, p.y-radius, 2*radius)
+                doc.context.restore()
 
 class Waterfall(Element):
     """The GlyphView show single glyphs with metrics lines.

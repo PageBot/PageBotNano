@@ -37,6 +37,15 @@ from pagebotnano_030.fonttoolbox.analyzers.fontanalyzer import FontAnalyzer
 from pagebotnano_030.toolbox.transformer import path2Extension, path2FontName
 from pagebotnano_030.contributions.adobe.kerndump.getKerningPairsFromOTF import OTFKernReader
 
+FONT_PATHS = (
+    '../../../../resources/fonts/typetr/',
+    '../../../resources/fonts/typetr/',
+    '../../resources/fonts/typetr/',
+    '../resources/fonts/typetr/',
+    '~/Library/Fonts/', # Expands to library fonts directory in user directory
+    '/Library/Fonts/'
+)
+
 def findFont(name):
     """
 
@@ -46,14 +55,7 @@ def findFont(name):
     >>> #font.path.endswith('/Fonts/SFText-Bold.otf')
     True
     """
-    fontPaths = (
-        '../../../../resources/fonts/typetr/',
-        '../../../resources/fonts/typetr/',
-        '../../resources/fonts/typetr/',
-        '../resources/fonts/typetr/',
-        '~/Library/Fonts/', # Expands to library fonts directory in user directory
-        '/Library/Fonts/')
-    for fontPath in fontPaths:
+    for fontPath in FONT_PATHS:
         if not os.path.exists(fontPath):
             continue
         fontPath = os.path.expanduser(fontPath) # In case path starts with "~"
@@ -63,6 +65,27 @@ def findFont(name):
             if name in fileName: # We found a matching file name, answer the font.
                 return Font(fontPath + fileName)
     return None
+
+def allFonts():
+    """
+
+    >>> allFonts()
+    """
+    fonts = []
+    for fontPath in FONT_PATHS:
+        if not os.path.exists(fontPath):
+            continue
+        fontPath = os.path.expanduser(fontPath) # In case path starts with "~"
+        for fileName in os.listdir(fontPath):
+            if fileName.startswith('.'):
+                continue # Skip invisible files.
+            #print(fontPath, fileName)
+            #filePath = fontPath + fileName
+            #try:
+            #    fonts[fileName] = Font(filePath)
+            #except TTLibError:
+            #    pass # Ignore font that we cannot read.
+    return fonts
 
 class Font:
     """Storage of font information while composing the pages.

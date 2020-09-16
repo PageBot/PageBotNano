@@ -54,6 +54,21 @@ gv = GlyphPathView('G', font=f, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
 	pointMarkerSize=12, pointFill=color(0.9), pointLine=True)
 page.addElement(gv)
 
+# Create the first page in the document, taking over the document size and padding.
+page = doc.newPage()
+# Show a single glyph, as large as it fits (in height or width) on the page, 
+# white on color background.
+# The GlyphView element has a number of attributes (guided by attributes), 
+# to define the details that should be shown with the glyph outline.
+completeFont = findFont('Responder_P-Regular.ttf')
+#print(completeFont.path)
+#print(completeFont.keys())
+gv = GlyphPathView('oòóôõöōŏőø', font=completeFont, x=page.pl, y=page.pb, w=page.pw, h=page.ph,
+	fill=color(0.9), textFill=color(0.7), textStroke=color(1, 0, 0), 
+	textStrokeWidth=2, pointStroke=color('darkblue'), pointStrokeWidth=2,
+	pointMarkerSize=12, pointFill=color(0.9), pointLine=True)
+page.addElement(gv)
+
 page = doc.newPage()
 # Show a single glyph, as large as it fits (in height or width) on the page, 
 # black on white background.

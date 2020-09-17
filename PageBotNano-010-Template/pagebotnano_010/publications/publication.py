@@ -21,7 +21,6 @@ if __name__ == "__main__":
 
 from pagebotnano_010.document import Document
 from pagebotnano_010.constants import CENTER
-from pagebotnano_010.themes import HappyHolidays as DefaultTheme
 from pagebotnano_010.toolbox.typesetter import Galley
 # Default set of template functions.
 from pagebotnano_010.templates.onecolumn import OneColumnTemplates 
@@ -45,15 +44,8 @@ class Publication:
     >>> page.addElement(e)
     >>> pub.export('_export/Publication.pdf')
     """
-    def __init__(self, w=None, h=None, theme=None, galley=None, 
+    def __init__(self, w=None, h=None, galley=None, 
             templates=None, styles=None, context=None):
-        # The theme contains (or can produce) all stylistic parameters
-        # of a publication, such as color, typographic values and the 
-        # selected mood (lightest, light, dark, darkest) to create
-        # dark-on-light or light-on-dark moods with the same color palette.
-        if theme is None: # If not default, we choose one here.
-            theme = DefaultTheme()
-        self.theme = theme
         
         if styles is None:
             styles = {}

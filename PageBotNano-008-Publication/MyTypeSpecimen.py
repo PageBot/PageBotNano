@@ -30,12 +30,12 @@ w, h = mm(130), mm(210) # Nice little booklet
 
 title = randomTitle()
 author = randomName()
-contextPath = '../resources/TypeSpecimen.md'
+contextPath = 'resources/TypeSpecimen.md'
 coverImagePath = choice([
-    '../resources/images/Berthold-Grid.pdf',
-    '../resources/images/cookbot1.jpg',
-    '../resources/images/cookbot10.jpg',
-    '../resources/images/cookbot2.jpg',
+    'resources/images/Berthold-Grid.pdf',
+    'resources/images/cookbot1.jpg',
+    'resources/images/cookbot10.jpg',
+    'resources/images/cookbot2.jpg',
 ])
 coverColor = (random()*0.1,random()*0.1, random()*0.5)
 

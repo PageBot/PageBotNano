@@ -26,6 +26,38 @@ from pagebotnano_009.page import Page
 from pagebotnano_009.elements import Element
 from pagebotnano_009.contexts.drawbotcontext import DrawBotContext
 
+class ComposerData:
+    """Collection of running resources, used while composing pages, 
+    as passed over to templates.
+
+    >>> doc = Document()
+    >>> page = doc.newPage()
+    >>> page is doc.cd.page # Current page is stored in the ComposerData
+    True
+    >>> doc.pages[0] is doc.cd.page
+    True
+    """
+    def __init__(self, page=None, galley=None, template=None):
+        self.page = page
+        self.galley = galley
+        self.template = template  # Current running template name
+        self.elements = [] # Selected galley elements for the current template
+        self.errors = []
+        self.verbose = []
+
+    def _get_template(self):
+        return self._template
+    def _set_template(self, template):
+        assert template is None or isinstance(template, str), ('%s:template: should be None or string "%s"' % (self.__class__.__name__, template))
+        self._template = template
+    template = property(_get_template, _set_template)
+
+    def _get_pn(self):
+        if self.page is not None:
+            return self.page.pn
+        return None
+    pn = property(_get_pn)
+
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
@@ -55,6 +87,10 @@ class Document:
         self.pages = [] # Simple list, the index is the page number (starting at 0)
         # Keep the flag is self.build was already executed when calling self.export
         self.hasBuilt = False
+
+        # Storage of composer data, while a session runs with this document.
+        self.cd = ComposerData() 
+
         # Store the context in the Document. Use DrawBotContext by default.
         if context is None:
             context = DrawBotContext()
@@ -78,9 +114,9 @@ class Document:
         # Make a new page and add the page number from the total number of pages.
         # Note that the page number is 1 higher (starting at 1) than its index
         # will be in self.pages.
-        page = Page(w or self.w, h or self.h, pn=len(self.pages)+1) 
-        self.pages.append(page)
-        return page # Answer the new create page, so the caller add elements to it.
+        self.cd.page = Page(w or self.w, h or self.h, pn=len(self.pages)+1) 
+        self.pages.append(self.cd.page)
+        return self.cd.page # Answer the new create page, so the caller add elements to it.
 
     def build(self):
         """Build the document by looping trough the pages, an then recursively

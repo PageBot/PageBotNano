@@ -14,3 +14,8 @@
 #   This source makes it possible to import other sources
 #   from this directory/folder
 #
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+from pagebotnano_010.templates.base import BaseTemplates
+from pagebotnano_010.templates.onecolumn import OneColumnTemplates

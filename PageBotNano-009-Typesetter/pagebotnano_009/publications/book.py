@@ -45,7 +45,7 @@ class Book(Publication):
     >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
     >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, styles)    
-    >>> imagePath = '../../../resources/images/cookbot1.jpg'
+    >>> imagePath = '../../resources/images/cookbot1.jpg'
     >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath)
     >>> book.export('_export/Book.pdf')
     """

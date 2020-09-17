@@ -27,8 +27,7 @@ from pagebotnano_010.document import Document
 from pagebotnano_010.elements import Rect, Text, TextBox, Image
 from pagebotnano_010.babelstring import BabelString
 from pagebotnano_010.toolbox.typesetter import Typesetter
-from pagebotnano_010.templates.onecolumn import (coverPage, oneColumnPage, 
-    frenchPage, tableOfContentPage, titlePage, colophonPage)
+from pagebotnano_010.templates.onecolumn import OneColumnTemplates
 
 class Book(Publication):
     """A Book publication takes a volume of text/imges source
@@ -48,8 +47,8 @@ class Book(Publication):
     >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
     >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
     >>> g = ts.typeset(xml, styles)    
-    >>> imagePath = '../../../resources/images/cookbot1.jpg'
-    >>> templates = dict(cover=coverPage, french=frenchPage, title=titlePage, toc=tableOfContentPage, main=oneColumnPage, colophon=colophonPage)
+    >>> imagePath = '../../resources/images/cookbot1.jpg'
+    >>> templates = OneColumnTemplates()
     >>> book = Book(w=w, h=h, title=title, author=author, galley=g, coverImagePath=imagePath, templates=templates)
     >>> book.export('_export/Book.pdf')
     """
@@ -139,7 +138,7 @@ class Book(Publication):
             page.addElement(e)
 
         # Make “French” “Voordehandse” page.
-        page = self.templates['french'](self.doc) # No page number here.
+        page = self.templates.frenchTitle(self.doc) # No page number here.
 
         # CENTER text alignment overwrites the value in headStyle.
         # fontSize overwrites the value in headStyle

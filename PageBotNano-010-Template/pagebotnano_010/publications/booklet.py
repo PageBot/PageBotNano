@@ -27,8 +27,7 @@ from pagebotnano_010.document import Document
 from pagebotnano_010.elements import Rect, Text, TextBox, Image
 from pagebotnano_010.babelstring import BabelString
 from pagebotnano_010.toolbox.typesetter import Typesetter
-from pagebotnano_010.templates.onecolumn import (coverPage, oneColumnPage, 
-    frenchPage, tableOfContentPage, titlePage, colophonPage)
+from pagebotnano_010.templates.onecolumn import OneColumnTemplates
 
 class Booklet(Publication):
     """A Book publication takes a volume of text/imges source
@@ -39,7 +38,6 @@ class Booklet(Publication):
     >>> from pagebotnano_010.constants import A5
     >>> from pagebotnano_010.toolbox.loremipsum import loremipsum, randomName, randomTitle
     >>> from pagebotnano_010.templates.onecolumn import *
-    >>> from pagebotnano_010.themes import BackToTheCity
     >>> theme = BackToTheCity()
     >>> w, h = A5
     >>> title = randomTitle()
@@ -47,10 +45,11 @@ class Booklet(Publication):
     >>> ts = Typesetter()
     >>> galley = ts.galley
     >>> xml = '<xml><h1>%s</h1><p>%s</p></xml>' % (title, (loremipsum() + ' ') * 50)
-    >>> theme.styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
-    >>> theme.styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
-    >>> g = ts.typeset(xml, theme.styles)    
-    >>> imagePath = '../../../resources/images/cookbot1.jpg'
+    >>> styles = {}
+    >>> styles['h1'] = dict(font='Georgia-Bold', fontSize=18, lineHeight=20, paragraphBottomSpacing=18)
+    >>> styles['p'] = dict(font='Georgia', fontSize=10, lineHeight=14)
+    >>> g = ts.typeset(xml, styles)    
+    >>> imagePath = '../../resources/images/cookbot1.jpg'
     >>> booklet = Booklet(w=w, h=h, theme=theme, galley=galley, templates=OneColumnTemplates())
     >>> booklet.export('_export/Booklet.pdf')
     """

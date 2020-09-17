@@ -24,6 +24,39 @@ from pagebotnano_040.elements import Element, Page
 from pagebotnano_040.contexts.drawbot.context import DrawBotContext
 from pagebotnano_040.toolbox import makePadding
 
+class ComposerData:
+    """Collection of running resources, used while composing pages, 
+    as passed over to templates. A ComposerData instance is created
+    by Document and stored as doc.cd 
+
+    >>> doc = Document()
+    >>> page = doc.newPage()
+    >>> page is doc.cd.page # Current page is stored in the ComposerData
+    True
+    >>> doc.pages[0] is doc.cd.page
+    True
+    """
+    def __init__(self, page=None, galley=None, template=None):
+        self.page = page
+        self.galley = galley
+        self.template = template  # Current running template name
+        self.elements = [] # Selected galley elements for the current template
+        self.errors = []
+        self.verbose = []
+
+    def _get_template(self):
+        return self._template
+    def _set_template(self, template):
+        assert template is None or isinstance(template, str), ('%s:template: should be None or string "%s"' % (self.__class__.__name__, template))
+        self._template = template
+    template = property(_get_template, _set_template)
+
+    def _get_pn(self):
+        if self.page is not None:
+            return self.page.pn
+        return None
+    pn = property(_get_pn)
+
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
@@ -61,6 +94,9 @@ class Document:
         if context is None:
             context = DrawBotContext()
         self.context = context
+
+        # Storage of composer data, while a session runs with this document.
+        self.cd = ComposerData() 
 
     def __repr__(self):
         # This method is called when print(document) is executed.

@@ -58,7 +58,7 @@ class SketchBuilder:
         """Answer the list of all SketchPage instances.
 
         >>> import pysketch
-        >>> path = '../../../resources/TemplateSquare.sketch'
+        >>> path = '../../resources/TemplateSquare.sketch'
         >>> b = SketchBuilder(path)
         >>> b.pages
         [<SketchPage name=Page 1>]
@@ -70,7 +70,7 @@ class SketchBuilder:
         """Answer a list with all artboards on the current selected page.
 
         >>> import pysketch
-        >>> path = '../../../resources/TemplateSquare.sketch'
+        >>> path = '../../resources/TemplateSquare.sketch'
         >>> b = SketchBuilder(path)
         >>> b.artboards
         [<SketchArtboard name=Artboard 1 w=576 h=783>]

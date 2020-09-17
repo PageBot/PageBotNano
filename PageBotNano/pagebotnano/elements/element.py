@@ -493,7 +493,7 @@ class Image(Element):
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> padding = 40
-    >>> imagePath = '../../../resources/images/cookbot10.jpg'
+    >>> imagePath = '../../resources/images/cookbot10.jpg'
     >>> e = Image(imagePath, x=padding, w=page.w/2-2*padding)
     >>> iw, ih = e.getSize(doc) # Get the size of the Image element
     >>> e.y = page.h - padding - ih # Align the image on top of the page.
@@ -519,7 +519,7 @@ class Image(Element):
 
         >>> from pagebotnano.document import Document
         >>> doc = Document()
-        >>> path = '../../../resources/images/cookbot10.jpg'
+        >>> path = '../../resources/images/cookbot10.jpg'
         >>> Image.imageSize(path, doc)
         (2058, 946)
         """
@@ -530,7 +530,7 @@ class Image(Element):
 
         >>> from pagebotnano.document import Document
         >>> doc = Document()
-        >>> imagePath = '../../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
         >>> w, h = e.getSize(doc)
         >>> '%0.2f, %0.2f' % (w, h) # Python method of rounding float numbers.
@@ -547,7 +547,7 @@ class Image(Element):
 
         >>> from pagebotnano.document import Document
         >>> doc = Document()
-        >>> imagePath = '../../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
         >>> sx, sy = e.getScale(doc)
         >>> '%0.2f, %0.2f' % (sx, sy) # Python method of rounding float numbers.

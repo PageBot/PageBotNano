@@ -93,11 +93,11 @@ class Typesetter:
 
         >>> from pagebotnano_009.toolbox.markdown import parseMarkdownFile
         >>> ts = Typesetter()
-        >>> g = ts.typesetFile('../../../resources/test.md')
+        >>> g = ts.typesetFile('../../resources/test.md')
         >>> ts.verbose[-1]
         'Node "h1" has no supporting style'
         >>> ts.reset()
-        >>> g = ts.typesetFile('../../../resources/images/cookbot1.jpg')
+        >>> g = ts.typesetFile('../../resources/images/cookbot1.jpg')
         >>> ts.verbose
         ['Node "xml" has no supporting style', 'Node "img" has no supporting style']
         >>> ts.reset() # Reset the verbose warnings

@@ -71,7 +71,7 @@ def makeCoverPage(doc, title):
     page.addElement(textElement) # Add the text element to the page.
 
     # Add square image with frame around
-    imagePath = '../resources/images/cookbot1.jpg'
+    imagePath = 'resources/images/cookbot1.jpg'
 
     # Add square with light color (> 50% for (r, g, b)) and lighter frame.
     rx = ry = padding # Position from bottom-left

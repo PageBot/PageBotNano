@@ -26,6 +26,39 @@ from pagebotnano_030.toolbox import makePadding
 from pagebotnano_030.themes import DefaultTheme
 from pagebotnano_030.templates.onecolumn import OneColumnTemplates
 
+class ComposerData:
+    """Collection of running resources, used while composing pages, 
+    as passed over to templates. A ComposerData instance is created
+    by Document and stored as doc.cd 
+
+    >>> doc = Document()
+    >>> page = doc.newPage()
+    >>> page is doc.cd.page # Current page is stored in the ComposerData
+    True
+    >>> doc.pages[0] is doc.cd.page
+    True
+    """
+    def __init__(self, page=None, galley=None, template=None):
+        self.page = page
+        self.galley = galley
+        self.template = template  # Current running template name
+        self.elements = [] # Selected galley elements for the current template
+        self.errors = []
+        self.verbose = []
+
+    def _get_template(self):
+        return self._template
+    def _set_template(self, template):
+        assert template is None or isinstance(template, str), ('%s:template: should be None or string "%s"' % (self.__class__.__name__, template))
+        self._template = template
+    template = property(_get_template, _set_template)
+
+    def _get_pn(self):
+        if self.page is not None:
+            return self.page.pn
+        return None
+    pn = property(_get_pn)
+
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
@@ -71,6 +104,9 @@ class Document:
             theme = DefaultTheme()
         self.theme = theme
  
+        # Storage of composer data, while a session runs with this document.
+        self.cd = ComposerData() 
+
         # Keep the flag is self.build was already executed when calling self.export
         self.hasComposed = False
         self.hasBuilt = False
@@ -129,10 +165,10 @@ class Document:
         # Make a new page and add the page number from the total number of pages.
         # Note that the page number is 1 higher (starting at 1) than its index
         # will be in self.pages.
-        page = Page(w=w or self.w, h=h or self.h, pn=len(self.pages)+1,
+        self.cd.page = Page(w=w or self.w, h=h or self.h, pn=len(self.pages)+1,
             name=name, template=template) 
-        self.addPage(page)
-        return page # Answer the new create page, so the caller add elements to it.
+        self.addPage(self.cd.page)
+        return self.cd.page # Answer the new create page, so the caller add elements to it.
 
     def addPage(self, page):
         """Add the page to self.pages. If the page.w or page.h is undefined, then
@@ -150,6 +186,7 @@ class Document:
             page.w = self.w
         if page.h is None:
             page.h = self.h
+        self.cd.page = page
         self.pages.append(page)
 
     def compose(self):
@@ -163,7 +200,8 @@ class Document:
         >>> doc.compose()
         """
         for page in self.pages:
-            page.compose(doc=self, page=page) # Passing self as document, in case the page needs more info
+            self.cs.page = page
+            page.compose(doc=self) # Passing self as document, in case the page needs more info
         self.hasComposed = True # Flag that we did this, in case called separate from self.export
 
     def build(self):
@@ -175,6 +213,7 @@ class Document:
 
         # Tell each page to build itself in context, including their child elements.
         for page in self.pages:
+            self.cd.page = page
             page.build(doc=self) # Passing self as document, in case the page needs more info.
         self.hasBuilt = True # Flag that we did this, in case called separate from self.export.
 

@@ -29,10 +29,10 @@ w, h = mm(130), mm(210) # Nice little booklet
 
 title = randomTitle()
 author = randomName()
-contextPath = '../resources/PublishingVariables.md'
+contextPath = 'resources/PublishingVariables.md'
 coverImagePath = choice([
-    '../resources/images/PageBotSchema2.pdf',
-    #'../resources/images/cookbot2.jpg',
+    'resources/images/PageBotSchema2.pdf',
+    'resources/images/cookbot2.jpg',
 ])
 coverColor = (random()*0.1,random()*0.1, random()*0.5)
 

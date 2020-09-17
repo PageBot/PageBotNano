@@ -256,7 +256,7 @@ class Image(Element):
     >>> doc = Document()
     >>> page = doc.newPage()
     >>> padding = 40
-    >>> imagePath = '../../resources/images/cookbot10.jpg'
+    >>> imagePath = '../resources/images/cookbot10.jpg'
     >>> e = Image(imagePath, x=padding, w=page.w/2-2*padding)
     >>> iw, ih = e.getSize() # Get the size of the Image element
     >>> e.y = page.h - padding - ih # Align the image on top of the page.
@@ -279,7 +279,7 @@ class Image(Element):
     def imageSize(cls, path):
         """Answer the images size in points.
 
-        >>> imagePath = '../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../resources/images/cookbot10.jpg'
         >>> Image.imageSize(imagePath)
         (2058, 946)
         """
@@ -288,7 +288,7 @@ class Image(Element):
     def getSize(self):
         """Answer the scaled size of the image.
 
-        >>> imagePath = '../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
         >>> w, h = e.getSize()
         >>> '%0.2f, %0.2f' % (w, h) # Python method of rounding float numbers.
@@ -303,7 +303,7 @@ class Image(Element):
         Detect if the image should proportionally scaled to (w, h) in case one 
         of the two is undefined.
 
-        >>> imagePath = '../../resources/images/cookbot10.jpg'
+        >>> imagePath = '../resources/images/cookbot10.jpg'
         >>> e = Image(imagePath, w=500)
         >>> sx, sy = e.getScale()
         >>> '%0.2f, %0.2f' % (sx, sy) # Python method of rounding float numbers.

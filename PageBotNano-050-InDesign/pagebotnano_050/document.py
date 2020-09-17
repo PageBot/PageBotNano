@@ -26,6 +26,40 @@ from pagebotnano_050.toolbox import makePadding
 from pagebotnano_050.themes import BaseTheme, DefaultTheme
 from pagebotnano_050.templates.onecolumn import OneColumnTemplates
 
+
+class ComposerData:
+    """Collection of running resources, used while composing pages, 
+    as passed over to templates. A ComposerData instance is created
+    by Document and stored as doc.cd 
+
+    >>> doc = Document()
+    >>> page = doc.newPage()
+    >>> page is doc.cd.page # Current page is stored in the ComposerData
+    True
+    >>> doc.pages[0] is doc.cd.page
+    True
+    """
+    def __init__(self, page=None, galley=None, template=None):
+        self.page = page
+        self.galley = galley
+        self.template = template  # Current running template name
+        self.elements = [] # Selected galley elements for the current template
+        self.errors = []
+        self.verbose = []
+
+    def _get_template(self):
+        return self._template
+    def _set_template(self, template):
+        assert template is None or isinstance(template, str), ('%s:template: should be None or string "%s"' % (self.__class__.__name__, template))
+        self._template = template
+    template = property(_get_template, _set_template)
+
+    def _get_pn(self):
+        if self.page is not None:
+            return self.page.pn
+        return None
+    pn = property(_get_pn)
+
 class Document:
     # Class names start with a capital. See a class as a factory
     # of document objects (name spelled with an initial lower case.)
@@ -70,7 +104,10 @@ class Document:
         if theme is None: # If not default, we choose one here.
             theme = DefaultTheme()
         self.theme = theme
- 
+
+        # Storage of composer data, while a session runs with this document.
+        self.cd = ComposerData() 
+
         # Keep the flag is self.build was already executed when calling self.export
         self.hasComposed = False
         self.hasBuilt = False
@@ -129,10 +166,10 @@ class Document:
         # Make a new page and add the page number from the total number of pages.
         # Note that the page number is 1 higher (starting at 1) than its index
         # will be in self.pages.
-        page = Page(w=w or self.w, h=h or self.h, pn=len(self.pages)+1,
+        self.cd.page = Page(w=w or self.w, h=h or self.h, pn=len(self.pages)+1,
             name=name, template=template) 
-        self.addPage(page)
-        return page # Answer the new create page, so the caller add elements to it.
+        # Answer the new create page, so the caller add elements to it.
+        return self.addPage(self.cd.page)
 
     def addPage(self, page):
         """Add the page to self.pages. If the page.w or page.h is undefined, then
@@ -142,7 +179,7 @@ class Document:
         >>> page = Page()
         >>> page.w, page.h
         (None, None)
-        >>> doc.addPage(page)
+        >>> page = doc.addPage(page)
         >>> page.w, page.h
         (595, 842)
         """
@@ -151,6 +188,7 @@ class Document:
         if page.h is None:
             page.h = self.h
         self.pages.append(page)
+        return page # Answer the page as convenience for the caller.
 
     def compose(self):
         """Compose the document, by looking through the pages, and the recursively

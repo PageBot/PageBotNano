@@ -19,7 +19,7 @@ import codecs
 def parseMarkdownFile(path):
     """Regular expression based markdown parser.
 
-    >>> path = '../../../resources/test.md'
+    >>> path = '../../resources/test.md'
     >>> xml = parseMarkdownFile(path)
     >>> '<python>' in xml and '</python>' in xml
     True

@@ -52,7 +52,7 @@ class InDesignContext(BaseContext):
         >>> scaleType = None #SCALE_TYPE_FITWH # for non-proportional
         >>> e = Image('../../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0.5))
         >>> page = doc.newPage()
-        >>> e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0.2))
+        >>> e = Image('../../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0.2))
         >>> e = Rect(parent=page, w=p(16), h=p(16), x=p(20), y=p(41), stroke=color(1, 0, 0), strokeWidth=p(2), fill=color(c=1, m=0.5, y=0, k=0, a=0.8))
         >>> e = Rect(parent=page, w=p(16), h=p(16), x=page.pl, y=page.pt, fill=color(1, 0, 0))
         >>> e = Rect(parent=page, w=p(16), h=p(16), x=page.pl+p(2), y=p(50), fill=color(c=0.5, m=1, y=0, k=0, a=0.5))
@@ -60,16 +60,16 @@ class InDesignContext(BaseContext):
         >>> bs = BabelString('ABCD EFGH IJKL MNOP', style=doc.styles['h1'])
         >>> e = Text(bs, parent=page, w=p(16), h=p(8), x=p(34), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
         >>> page = page.newPage()       
-        >>> e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0.5))
+        >>> e = Image('../../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0.5))
         >>> bs = BabelString('@XYZ', style=doc.styles['h0'])
         >>> e = Text(bs, parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
         >>> page = page.newPage()
-        >>> e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0, 0, 1))
+        >>> e = Image('../../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(0, 0, 1))
         >>> e = Rect(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=1, y=1, k=0, a=0.5))
         >>> bs = BabelString('@EEE', style=doc.styles['h0'])
         >>> e = Text(bs, parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
         >>> page = page.newPage()
-        >>> e = Image('../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(1, 0, 0))
+        >>> e = Image('../../resources/images/cookbot10.jpg', parent=page, x=page.pl, y=page.pt, w=page.pw, h=page.pw, fill=color(1, 0, 0))
         >>> e = Rect(parent=page, w=p(16), h=p(16), x=p(24), y=p(22), fill=color(c=0.5, m=1, y=1, k=0, a=0.5))
         >>> bs = BabelString('@EEE', style=doc.styles['h0'])
         >>> e = TextBox(bs, parent=page, w=p(26), h=p(8), x=p(14), y=p(22), padding=p(1), fill=color(c=0, m=0.5, y=1, k=0, a=0.5))
@@ -173,7 +173,7 @@ class InDesignContext(BaseContext):
         """Draw the image
 
         >>> context = InDesignContext()
-        >>> context.image('../../../../resources/images/cookbot10.jpg', (100, 200))
+        >>> context.image('../../resources/images/cookbot10.jpg', (100, 200))
         """
         self.b.image(path, p, alpha=alpha, pageNumber=pageNumber, w=w, h=h, scaleType=scaleType)
 
@@ -199,11 +199,11 @@ class InDesignContext(BaseContext):
         image, then determine by parsing the SVG-XML.
 
         >>> context = InDesignContext()
-        >>> context.imageSize('../../../../resources/images/cookbot10.jpg')
+        >>> context.imageSize('../../resources/images/cookbot10.jpg')
         (2058, 946)
-        >>> context.imageSize('../../../../resources/images/Berthold-Grid.pdf')
+        >>> context.imageSize('../../resources/images/Berthold-Grid.pdf')
         (590, 842)
-        >>> context.imageSize('../../../NOTEXIST.pdf') is None
+        >>> context.imageSize('../../NOTEXIST.pdf') is None
         True
         """
         return self.b.imageSize(path)

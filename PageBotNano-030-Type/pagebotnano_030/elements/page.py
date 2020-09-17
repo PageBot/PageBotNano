@@ -40,10 +40,9 @@ class Page(Element):
         return '<%s pn=%d w=%d h=%d elements=%d>' % (self.__class__.__name__, 
             self.pn, self.w, self.h, len(self.elements))
 
-    def compose(self, doc, page=None, parent=None):
-        if page is None:
-            page = self
-        Element.compose(self, doc, page, parent)
+    def compose(self, doc, parent=None):
+        doc.cd.page = self # Store self as current selected page.
+        Element.compose(self, doc, parent)
 
     def addElement(self, e):
         """Add the element to the list of child elements.

@@ -9,7 +9,7 @@
 
 ### Petr van Blokland
 
-![](../resources/images/cookbot10.jpg)
+![](resources/images/cookbot10.jpg)
 
 ==frenchTitle==
 
@@ -34,7 +34,7 @@
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam efficitur sed turpis ac varius. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse feugiat dui scelerisque purus pellentesque mollis. Pellentesque cursus eu justo et fringilla. Sed fermentum dolor sed arcu sodales, quis molestie nulla finibus. Donec viverra hendrerit ligula, ut rhoncus ex porttitor ut. Pellentesque vitae urna a nisl egestas convallis ac ut purus. Vivamus ultricies urna tincidunt, porta mauris eu, luctus diam. Sed tincidunt, mi et placerat feugiat, mi erat scelerisque[^fn1] nulla, sit amet dignissim mauris enim quis metus. Sed maximus ullamcorper ipsum vitae auctor. Aliquam erat volutpat. [^fn2] Sed sodales tristique faucibus. [^lit123] Cras imperdiet dui ac lacus efficitur, sollicitudin dapibus urna scelerisque. Mauris sollicitudin, ex vitae ullamcorper cursus, velit turpis convallis nunc, ut tristique ipsum massa sit amet arcu. Integer et purus et est accumsan blandit. Curabitur imperdiet egestas maximus.
 
 [^fn1]: This is a footnote
-[^fn2]: Another a very long footnote, running over multiple lines, including an image ![](../resources/images/cookbot1.jpg)
+[^fn2]: Another a very long footnote, running over multiple lines, including an image ![](resources/images/cookbot1.jpg)
 
 [^lit123]: Literature reference.
 

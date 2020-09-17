@@ -51,3 +51,4 @@ print(typeSpecimen) # Shows: I am a TypeSpecimen(w=595, h=842) with default size
 typeSpecimen.export(EXPORT_DIR + 'MyTypeSpecimen.pdf')
 typeSpecimen.export(EXPORT_DIR + 'MyTypeSpecimen.png')
 
+print('Done 002')

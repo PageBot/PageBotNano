@@ -277,11 +277,11 @@ class InDesignBuilder:
         image, then determine by parsing the SVG-XML.
 
         >>> builder = InDesignBuilder()
-        >>> builder.imageSize('../../../../resources/images/cookbot10.jpg')
+        >>> builder.imageSize('../../resources/images/cookbot10.jpg')
         (2058, 946)
-        >>> builder.imageSize('../../../../resources/images/Berthold-Grid.pdf')
+        >>> builder.imageSize('../../resources/images/Berthold-Grid.pdf')
         (590, 842)
-        >>> builder.imageSize('../../../NOTEXIST.pdf') is None
+        >>> builder.imageSize('../../NOTEXIST.pdf') is None
         True
         """
         if not os.path.exists(path):

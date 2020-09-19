@@ -17,3 +17,5 @@ A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
 
 EXPORT_DIR = '_export/' # Name of the directory that does not commit in Github
 
+LAYOUT_GRID = 'grid'
+LAYOUT_WRAPPED = 'wrapped'

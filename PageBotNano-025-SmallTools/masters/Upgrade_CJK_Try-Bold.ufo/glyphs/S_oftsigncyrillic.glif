@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Softsigncyrillic" format="2">
+  <advance height="1000" width="681"/>
+  <unicode hex="042C"/>
+  <outline>
+    <contour>
+      <point x="64" y="0" type="line"/>
+      <point x="355" y="0" type="line" smooth="yes"/>
+      <point x="533" y="0"/>
+      <point x="649" y="101"/>
+      <point x="649" y="264" type="curve" smooth="yes"/>
+      <point x="649" y="427"/>
+      <point x="534" y="517"/>
+      <point x="355" y="517" type="curve" smooth="yes"/>
+      <point x="264" y="517" type="line"/>
+      <point x="264" y="740" type="line"/>
+      <point x="64" y="740" type="line"/>
+    </contour>
+    <contour>
+      <point x="264" y="351" type="line"/>
+      <point x="345" y="351" type="line" smooth="yes"/>
+      <point x="404" y="351"/>
+      <point x="447" y="319"/>
+      <point x="447" y="258" type="curve" smooth="yes"/>
+      <point x="447" y="198"/>
+      <point x="404" y="166"/>
+      <point x="345" y="166" type="curve" smooth="yes"/>
+      <point x="264" y="166" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0,0,1,1</string>
+    </dict>
+  </lib>
+</glyph>

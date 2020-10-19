@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni24DB" format="2">
+  <advance width="1000"/>
+  <unicode hex="24DB"/>
+  <outline>
+    <contour>
+      <point x="583" y="56.0" type="line"/>
+      <point x="583" y="572.0" type="line"/>
+      <point x="419" y="572.0" type="line"/>
+      <point x="419" y="56.0" type="line"/>
+    </contour>
+  </outline>
+</glyph>

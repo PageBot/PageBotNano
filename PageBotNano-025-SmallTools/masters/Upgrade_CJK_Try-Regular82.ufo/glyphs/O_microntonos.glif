@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Omicrontonos" format="2">
+  <advance height="1000" width="872"/>
+  <unicode hex="038C"/>
+  <outline>
+    <contour>
+      <point x="443.0" y="-15.0" type="curve" smooth="yes"/>
+      <point x="672.0" y="-15.0"/>
+      <point x="824.0" y="139.0"/>
+      <point x="824.0" y="371.0" type="curve" smooth="yes"/>
+      <point x="824.0" y="601.0"/>
+      <point x="672.0" y="755.0"/>
+      <point x="443.0" y="755.0" type="curve" smooth="yes"/>
+      <point x="214.0" y="755.0"/>
+      <point x="62.0" y="601.0"/>
+      <point x="62.0" y="371.0" type="curve" smooth="yes"/>
+      <point x="62.0" y="139.0"/>
+      <point x="214.0" y="-15.0"/>
+    </contour>
+    <contour>
+      <point x="443.0" y="60.0" type="curve" smooth="yes"/>
+      <point x="265.0" y="60.0"/>
+      <point x="146.0" y="185.0"/>
+      <point x="146.0" y="371.0" type="curve" smooth="yes"/>
+      <point x="146.0" y="556.0"/>
+      <point x="265.0" y="680.0"/>
+      <point x="443.0" y="680.0" type="curve" smooth="yes"/>
+      <point x="621.0" y="680.0"/>
+      <point x="740.0" y="556.0"/>
+      <point x="740.0" y="371.0" type="curve" smooth="yes"/>
+      <point x="740.0" y="185.0"/>
+      <point x="621.0" y="60.0"/>
+    </contour>
+    <contour>
+      <point x="0" y="588" type="line"/>
+      <point x="78" y="588" type="line"/>
+      <point x="123" y="740" type="line"/>
+      <point x="39" y="740" type="line"/>
+    </contour>
+  </outline>
+</glyph>

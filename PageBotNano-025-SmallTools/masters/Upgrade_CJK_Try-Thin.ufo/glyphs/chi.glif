@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="chi" format="2">
+  <advance height="1000" width="409"/>
+  <unicode hex="03C7"/>
+  <outline>
+    <contour>
+      <point x="32" y="-220" type="line"/>
+      <point x="49" y="-220" type="line"/>
+      <point x="367" y="462" type="line"/>
+      <point x="350" y="462" type="line"/>
+    </contour>
+    <contour>
+      <point x="360" y="-220" type="line"/>
+      <point x="378" y="-220" type="line"/>
+      <point x="59" y="462" type="line"/>
+      <point x="41" y="462" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0.7,1</string>
+      <key>public.verticalOrigin</key>
+      <integer>850</integer>
+    </dict>
+  </lib>
+</glyph>

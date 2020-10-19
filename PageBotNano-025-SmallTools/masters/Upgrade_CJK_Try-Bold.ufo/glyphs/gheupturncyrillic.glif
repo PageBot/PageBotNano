@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="gheupturncyrillic" format="2">
+  <advance height="1000" width="467"/>
+  <unicode hex="0491"/>
+  <outline>
+    <contour>
+      <point x="443" y="376" type="line"/>
+      <point x="443" y="654" type="line"/>
+      <point x="257" y="654" type="line"/>
+      <point x="257" y="536" type="line"/>
+      <point x="48" y="536" type="line"/>
+      <point x="48" y="0" type="line"/>
+      <point x="238" y="0" type="line"/>
+      <point x="238" y="376" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0,0,1,1</string>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Pecyrillic" format="2">
+  <advance height="1000" width="739"/>
+  <unicode hex="041F"/>
+  <outline>
+    <contour>
+      <point x="76" y="0" type="line"/>
+      <point x="158" y="0" type="line"/>
+      <point x="158" y="664" type="line"/>
+      <point x="581" y="664" type="line"/>
+      <point x="581" y="0" type="line"/>
+      <point x="663" y="0" type="line"/>
+      <point x="663" y="740" type="line"/>
+      <point x="76" y="740" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.6,0.609,1,1</string>
+    </dict>
+  </lib>
+</glyph>

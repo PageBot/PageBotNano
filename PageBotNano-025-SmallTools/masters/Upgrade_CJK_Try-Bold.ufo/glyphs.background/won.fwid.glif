@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="won.fwid" format="2">
+  <advance width="1000"/>
+  <outline>
+    <contour>
+      <point x="220" y="0" type="line"/>
+      <point x="437" y="0" type="line"/>
+      <point x="556" y="484" type="line"/>
+      <point x="676" y="0" type="line"/>
+      <point x="894" y="0" type="line"/>
+      <point x="1101" y="740" type="line"/>
+      <point x="906" y="740" type="line"/>
+      <point x="789" y="237" type="line"/>
+      <point x="667" y="740" type="line"/>
+      <point x="465" y="740" type="line"/>
+      <point x="342" y="233" type="line"/>
+      <point x="225" y="740" type="line"/>
+      <point x="16" y="740" type="line"/>
+    </contour>
+  </outline>
+</glyph>

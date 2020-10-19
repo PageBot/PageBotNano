@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni3257" format="2">
+  <advance width="1000"/>
+  <unicode hex="3257"/>
+  <guideline x="527" y="70.0" angle="247.22383870080665" identifier="dbU3xSndMB"/>
+  <outline>
+    <contour>
+      <point x="527" y="70.0" type="line"/>
+      <point x="675" y="70.0" type="line"/>
+      <point x="806" y="382.0" type="line"/>
+      <point x="806" y="477.0" type="line"/>
+      <point x="494" y="477.0" type="line"/>
+      <point x="494" y="354.0" type="line"/>
+      <point x="652" y="354.0" type="line"/>
+    </contour>
+  </outline>
+</glyph>

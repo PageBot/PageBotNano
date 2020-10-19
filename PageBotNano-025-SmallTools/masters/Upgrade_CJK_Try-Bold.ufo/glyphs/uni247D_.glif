@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni247D" format="2">
+  <advance height="1000" width="600"/>
+  <unicode hex="247D"/>
+  <outline>
+    <component base="typetry.com"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.8456,0.9945,0.7306,1</string>
+    </dict>
+  </lib>
+</glyph>

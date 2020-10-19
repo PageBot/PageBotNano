@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Tshecyrillic" format="2">
+  <advance height="1000" width="898"/>
+  <unicode hex="040B"/>
+  <outline>
+    <contour>
+      <point x="638" y="740" type="line"/>
+      <point x="24" y="740" type="line"/>
+      <point x="24" y="560" type="line"/>
+      <point x="224" y="560" type="line"/>
+      <point x="224" y="0" type="line"/>
+      <point x="424" y="0" type="line"/>
+      <point x="424" y="267" type="line"/>
+      <point x="446" y="277"/>
+      <point x="494" y="287"/>
+      <point x="536" y="287" type="curve" smooth="yes"/>
+      <point x="620" y="287"/>
+      <point x="650" y="263"/>
+      <point x="650" y="187" type="curve" smooth="yes"/>
+      <point x="650" y="0" type="line"/>
+      <point x="850" y="0" type="line"/>
+      <point x="850" y="211" type="line" smooth="yes"/>
+      <point x="850" y="389"/>
+      <point x="762" y="464"/>
+      <point x="588" y="464" type="curve" smooth="yes"/>
+      <point x="530" y="464"/>
+      <point x="466" y="454"/>
+      <point x="424" y="438" type="curve"/>
+      <point x="424" y="560" type="line"/>
+      <point x="638" y="560" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0,0,1,1</string>
+    </dict>
+  </lib>
+</glyph>

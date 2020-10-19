@@ -1693,6 +1693,17 @@
     <string>curve</string>
     <key>com.typemytype.robofont.shouldAddPointsInSplineConversion</key>
     <integer>1</integer>
+    <key>com.typemytype.robofont.smartSets.uniqueKey</key>
+    <string>4813751248</string>
+    <key>com.typetr.outliner</key>
+    <dict>
+      <key>contrast</key>
+      <integer>16</integer>
+      <key>contrastAngle</key>
+      <integer>320</integer>
+      <key>thickness</key>
+      <integer>100</integer>
+    </dict>
     <key>designspace.location</key>
     <array>
       <array>
@@ -3341,6 +3352,16 @@
       <string>won.rh</string>
       <string>typetry.com</string>
       <string>typetry.component</string>
+      <string>one.tab</string>
+      <string>two.tab</string>
+      <string>three.tab</string>
+      <string>four.tab</string>
+      <string>five.tab</string>
+      <string>six.tab</string>
+      <string>seven.tab</string>
+      <string>eight.tab</string>
+      <string>nine.tab</string>
+      <string>zero.tab</string>
     </array>
     <key>tnCurvePalette</key>
     <dict>

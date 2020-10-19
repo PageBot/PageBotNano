@@ -1270,6 +1270,8 @@
     <string>eight.sinf.glif</string>
     <key>eight.sups</key>
     <string>eight.sups.glif</string>
+    <key>eight.tab</key>
+    <string>eight.tab.glif</string>
     <key>elcyrillic</key>
     <string>elcyrillic.glif</string>
     <key>ellipsis</key>
@@ -1404,6 +1406,8 @@
     <string>five.sinf.glif</string>
     <key>five.sups</key>
     <string>five.sups.glif</string>
+    <key>five.tab</key>
+    <string>five.tab.glif</string>
     <key>fiveeighths</key>
     <string>fiveeighths.glif</string>
     <key>fl</key>
@@ -1430,6 +1434,8 @@
     <string>four.sinf.glif</string>
     <key>four.sups</key>
     <string>four.sups.glif</string>
+    <key>four.tab</key>
+    <string>four.tab.glif</string>
     <key>fraction</key>
     <string>fraction.glif</string>
     <key>franc</key>
@@ -1850,6 +1856,8 @@
     <string>nine.sinf.glif</string>
     <key>nine.sups</key>
     <string>nine.sups.glif</string>
+    <key>nine.tab</key>
+    <string>nine.tab.glif</string>
     <key>njecyrillic</key>
     <string>njecyrillic.glif</string>
     <key>notequal</key>
@@ -1940,6 +1948,8 @@
     <string>one.sinf.glif</string>
     <key>one.sups</key>
     <string>one.sups.glif</string>
+    <key>one.tab</key>
+    <string>one.tab.glif</string>
     <key>oneeighth</key>
     <string>oneeighth.glif</string>
     <key>onefifth</key>
@@ -2230,6 +2240,8 @@
     <string>seven.sinf.glif</string>
     <key>seven.sups</key>
     <string>seven.sups.glif</string>
+    <key>seven.tab</key>
+    <string>seven.tab.glif</string>
     <key>seveneighths</key>
     <string>seveneighths.glif</string>
     <key>shacyrillic</key>
@@ -2262,6 +2274,8 @@
     <string>six.sinf.glif</string>
     <key>six.sups</key>
     <string>six.sups.glif</string>
+    <key>six.tab</key>
+    <string>six.tab.glif</string>
     <key>slash</key>
     <string>slash.glif</string>
     <key>slash.fwid</key>
@@ -2356,6 +2370,8 @@
     <string>three.sinf.glif</string>
     <key>three.sups</key>
     <string>three.sups.glif</string>
+    <key>three.tab</key>
+    <string>three.tab.glif</string>
     <key>threeeighths</key>
     <string>threeeighths.glif</string>
     <key>threequarters</key>
@@ -2404,6 +2420,8 @@
     <string>two.sinf.glif</string>
     <key>two.sups</key>
     <string>two.sups.glif</string>
+    <key>two.tab</key>
+    <string>two.tab.glif</string>
     <key>twosuperior</key>
     <string>twosuperior.glif</string>
     <key>twothirds</key>
@@ -3274,6 +3292,8 @@
     <string>zero.sinf.glif</string>
     <key>zero.sups</key>
     <string>zero.sups.glif</string>
+    <key>zero.tab</key>
+    <string>zero.tab.glif</string>
     <key>zeta</key>
     <string>zeta.glif</string>
     <key>zhecyrillic</key>

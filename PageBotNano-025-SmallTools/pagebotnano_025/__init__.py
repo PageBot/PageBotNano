@@ -53,7 +53,10 @@ def copyGlyph(srcFont, glyphName, dstFont, dstGlyphName=None):
     dstGlyph = dstFont[dstGlyphName]
     dstGlyph.clear()
     for srcLayerGlyph in srcGlyph.layers:
-        dstLayerGlyph = dstGlyph.getLayer(srcLayerGlyph.layerName)
+        try:
+            dstLayerGlyph = dstGlyph.getLayer(srcLayerGlyph.layerName)
+        except AttributeError:
+            dstLayerGlyph = dstGlyph
         pen = dstLayerGlyph.getPen()
         srcLayerGlyph.draw(pen)
         dstLayerGlyph.width = srcLayerGlyph.width

@@ -2,6 +2,11 @@
 import os, codecs
 from pagebotnano_025 import openFont
 
+# Kerning pair (group1, group2) 
+# Kerning pair (group1, glyph2)
+# Kerning pair (glyph1, group2)
+# Kerning pair (glyph1, glyph2)
+# 
 TAB_WIDTH = 630
 
 PATH = 'masters/'
@@ -13,14 +18,37 @@ import sys
 if __name__ == "__main__":
    sys.path.insert(0, "../")
 from pagebotnano_025 import openFont
+
 font = openFont("../%s") """
 
 def getGroupsSource(f):
     code = [INIT_OPEN % f.path]
+    code.append('')
+    code.append('def g(f, groupName, group):')
+    code.append('   f.groups[groupName] = group')
+    code.append('')
+    
+    for groupName, group in f.groups.items():
+        code.append('g(font, "%s", %s)' % (groupName, group))
+    code.append('')
+    code.append('font.save()')
+    code.append('font.close()')
+    code.append('')
     return '\n'.join(code)
 
 def getKerningSource(f):
     code = [INIT_OPEN % f.path]
+    code.append('')
+    code.append('def k(f, pair, value):')
+    code.append('   f.kerning[pair] = value')
+    code.append('')
+    
+    for pair, value in f.kerning.items():
+        code.append('k(font, %s, %s)' % (pair, value))
+    code.append('')
+    code.append('font.save()')
+    code.append('font.close()')
+    code.append('')
     return '\n'.join(code)
 
 def writeFile(path, code):

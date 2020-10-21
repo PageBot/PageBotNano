@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="kadescendercyrillic" format="2">
+  <advance height="1000" width="468"/>
+  <unicode hex="049B"/>
+  <outline>
+    <contour>
+      <point x="176" y="275" type="line"/>
+      <point x="406" y="525" type="line"/>
+      <point x="386" y="525" type="line"/>
+      <point x="162" y="281" type="line"/>
+      <point x="92" y="281" type="line"/>
+      <point x="92" y="525" type="line"/>
+      <point x="76" y="525" type="line"/>
+      <point x="76" y="0" type="line"/>
+      <point x="92" y="0" type="line"/>
+      <point x="92" y="266" type="line"/>
+      <point x="162" y="266" type="line"/>
+      <point x="399" y="0" type="line"/>
+      <point x="420" y="0" type="line"/>
+    </contour>
+    <contour>
+      <point x="399" y="15" type="line"/>
+      <point x="399" y="0" type="line"/>
+      <point x="448" y="0" type="line"/>
+      <point x="448" y="-128" type="line"/>
+      <point x="464" y="-128" type="line"/>
+      <point x="464" y="15" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.656,1,0.6,1</string>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="nine.fwid" format="2">
+  <advance height="1000" width="600"/>
+  <unicode hex="FF19"/>
+  <outline>
+    <component base="typetry.com"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.994,0.7266,0.7238,1</string>
+    </dict>
+  </lib>
+</glyph>

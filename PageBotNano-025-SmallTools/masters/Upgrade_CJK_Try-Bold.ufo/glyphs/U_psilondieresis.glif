@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Upsilondieresis" format="2">
+  <advance height="1000" width="759"/>
+  <unicode hex="03AB"/>
+  <outline>
+    <contour>
+      <point x="282" y="0" type="line"/>
+      <point x="482" y="0" type="line"/>
+      <point x="482" y="267" type="line"/>
+      <point x="747" y="740" type="line"/>
+      <point x="539" y="740" type="line"/>
+      <point x="390" y="446" type="line"/>
+      <point x="241" y="740" type="line"/>
+      <point x="12" y="740" type="line"/>
+      <point x="282" y="264" type="line"/>
+    </contour>
+    <contour>
+      <point x="217" y="804" type="line"/>
+      <point x="349" y="804" type="line"/>
+      <point x="349" y="936" type="line"/>
+      <point x="217" y="936" type="line"/>
+    </contour>
+    <contour>
+      <point x="409" y="804" type="line"/>
+      <point x="541" y="804" type="line"/>
+      <point x="541" y="936" type="line"/>
+      <point x="409" y="936" type="line"/>
+    </contour>
+  </outline>
+</glyph>

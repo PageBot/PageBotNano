@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni32BF" format="2">
+  <advance height="1000" width="600"/>
+  <unicode hex="32BF"/>
+  <outline>
+    <component base="typetry.com"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.verticalOrigin</key>
+      <integer>850</integer>
+    </dict>
+  </lib>
+</glyph>

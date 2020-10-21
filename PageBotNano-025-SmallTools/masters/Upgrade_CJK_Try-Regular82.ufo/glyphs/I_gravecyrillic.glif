@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Igravecyrillic" format="2">
+  <advance height="1000" width="761"/>
+  <unicode hex="040D"/>
+  <outline>
+    <contour>
+      <point x="76" y="0" type="line"/>
+      <point x="158" y="0" type="line"/>
+      <point x="603" y="613" type="line"/>
+      <point x="603" y="0" type="line"/>
+      <point x="685" y="0" type="line"/>
+      <point x="685" y="740" type="line"/>
+      <point x="603" y="740" type="line"/>
+      <point x="158" y="127" type="line"/>
+      <point x="158" y="740" type="line"/>
+      <point x="76" y="740" type="line"/>
+    </contour>
+    <contour>
+      <point x="338" y="787" type="line"/>
+      <point x="420" y="787" type="line"/>
+      <point x="310" y="939" type="line"/>
+      <point x="220" y="939" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.6,0.609,1,1</string>
+    </dict>
+  </lib>
+</glyph>

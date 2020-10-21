@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Iocyrillic" format="2">
+  <advance height="1000" width="597"/>
+  <unicode hex="0401"/>
+  <outline>
+    <contour>
+      <point x="64" y="0" type="line"/>
+      <point x="541" y="0" type="line"/>
+      <point x="541" y="178" type="line"/>
+      <point x="264" y="178" type="line"/>
+      <point x="264" y="294" type="line"/>
+      <point x="516" y="294" type="line"/>
+      <point x="516" y="452" type="line"/>
+      <point x="264" y="452" type="line"/>
+      <point x="264" y="562" type="line"/>
+      <point x="531" y="562" type="line"/>
+      <point x="531" y="740" type="line"/>
+      <point x="64" y="740" type="line"/>
+    </contour>
+    <contour>
+      <point x="140" y="779" type="line"/>
+      <point x="272" y="779" type="line"/>
+      <point x="272" y="911" type="line"/>
+      <point x="140" y="911" type="line"/>
+    </contour>
+    <contour>
+      <point x="332" y="779" type="line"/>
+      <point x="464" y="779" type="line"/>
+      <point x="464" y="911" type="line"/>
+      <point x="332" y="911" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0,0,1,1</string>
+    </dict>
+  </lib>
+</glyph>

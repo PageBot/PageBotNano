@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Zhedescendercyrillic" format="2">
+  <advance height="1000" width="935"/>
+  <unicode hex="0496"/>
+  <outline>
+    <contour>
+      <point x="443" y="0" type="line"/>
+      <point x="459" y="0" type="line"/>
+      <point x="459" y="378" type="line"/>
+      <point x="547" y="378" type="line"/>
+      <point x="837" y="0" type="line"/>
+      <point x="858" y="0" type="line"/>
+      <point x="561" y="386" type="line"/>
+      <point x="842" y="740" type="line"/>
+      <point x="822" y="740" type="line"/>
+      <point x="547" y="393" type="line"/>
+      <point x="459" y="393" type="line"/>
+      <point x="459" y="740" type="line"/>
+      <point x="443" y="740" type="line"/>
+      <point x="443" y="393" type="line"/>
+      <point x="355" y="393" type="line"/>
+      <point x="80" y="740" type="line"/>
+      <point x="60" y="740" type="line"/>
+      <point x="341" y="386" type="line"/>
+      <point x="44" y="0" type="line"/>
+      <point x="65" y="0" type="line"/>
+      <point x="355" y="378" type="line"/>
+      <point x="443" y="378" type="line"/>
+    </contour>
+    <contour>
+      <point x="837" y="15" type="line"/>
+      <point x="837" y="0" type="line"/>
+      <point x="913" y="0" type="line"/>
+      <point x="913" y="-143" type="line"/>
+      <point x="929" y="-143" type="line"/>
+      <point x="929" y="15" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.656,1,0.6,1</string>
+    </dict>
+  </lib>
+</glyph>

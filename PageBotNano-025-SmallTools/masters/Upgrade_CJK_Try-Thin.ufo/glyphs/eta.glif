@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="eta" format="2">
+  <advance height="1000" width="518"/>
+  <unicode hex="03B7"/>
+  <outline>
+    <contour>
+      <point x="75" y="0" type="line"/>
+      <point x="91" y="0" type="line"/>
+      <point x="91" y="417" type="line"/>
+      <point x="120.0" y="478"/>
+      <point x="184.0" y="518.0"/>
+      <point x="253" y="518" type="curve" smooth="yes"/>
+      <point x="346" y="518"/>
+      <point x="414.0" y="450.0"/>
+      <point x="414.0" y="348" type="curve" smooth="yes"/>
+      <point x="414" y="-107" type="line" smooth="yes"/>
+      <point x="414" y="-153"/>
+      <point x="417.0" y="-191.0"/>
+      <point x="422" y="-220" type="curve"/>
+      <point x="439" y="-220" type="line"/>
+      <point x="433.0" y="-191.0"/>
+      <point x="430" y="-153"/>
+      <point x="430" y="-107" type="curve" smooth="yes"/>
+      <point x="430.0" y="348" type="line" smooth="yes"/>
+      <point x="430.0" y="459.0"/>
+      <point x="357" y="533"/>
+      <point x="253" y="533" type="curve" smooth="yes"/>
+      <point x="186" y="533"/>
+      <point x="124.0" y="499"/>
+      <point x="91" y="447" type="curve"/>
+      <point x="91" y="525" type="line"/>
+      <point x="75" y="525" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0.7,1</string>
+      <key>public.verticalOrigin</key>
+      <integer>850</integer>
+    </dict>
+  </lib>
+</glyph>

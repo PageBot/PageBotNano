@@ -17,21 +17,24 @@ You can make a selection from the following exercises. And it is also possible t
 ## Type related tools
 
 * Make a script that generates TTF and OTF fonts, after doing some automated operations on the outlines.
-* Read a UFO, do something to it, save it.
-* Groups and kerning, exporting to Python source
-* Make a script that checks a font for mistakes in spacing and kerning;
 * QA stuff
 * accentnamecmb --> width = 0
-* **check width of .tab for a whole family**
 * Add anchors and position accents on anchors, check vertical position of anchors
 * Check component base glyphs to exist in the font
 * Check interpolation errors between masters
 * Check margins (using kerning groups as source)
 * Check unicode (no doubles, relevant glyphs have unicode)
 * Automatic export of feature source
-* Export Python source for groups and kerning
 * OT-features and glyph replacement (exporting to Python source)
 * ...
+
+## Done
+
+* Read a UFO, do something to it, save it.
+* **check width of .tab for a whole family**
+* **Groups and kerning, exporting to Python source**
+* **Make a script that checks a font for mistakes in spacing and kerning**
+* **Export Python source for groups and kerning**
 
 ## Other example exercises
 

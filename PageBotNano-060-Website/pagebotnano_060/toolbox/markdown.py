@@ -146,23 +146,9 @@ def parseMarkdownPages(md):
 
     pages = {}
     for pageMd in md.split('{{page}}'):
-        page = PageData(pageMd)
-        pages[page.id] = page
+        pageData = PageData(pageMd)
+        pages[pageData.id] = pageData
     return pages
-
-"""
-    # ==template index== --> <template id="main"/> # Select the current template if different than default
-    # ==template contact== --> <template id="contact"/> 
-    md = re.sub('\\=\\=template\\ ([a-zA-Z0-9]*)\\=\\=.*$', '<template id="\\1"/>', md, flags=re.MULTILINE)
-    # ==pageName== --> <template type="cover"/> # XML-based page selector tags
-    # ==frenchTitle== --> <template type="frenchTitle"/> 
-    # ==title== --> <template type="title"/> 
-    # ==tableOfContent== --> <template type="tableOfContent"/> 
-    # ==chapter== --> <template type="chapter"/> 
-    # ==page== --> <template type="page"/> 
-    # ==index== --> <template type="index"/> 
-    # ==colophon== --> <template type="colophon"/> 
-"""
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

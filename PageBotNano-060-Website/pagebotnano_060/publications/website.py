@@ -26,7 +26,6 @@ class Website(Publication):
     as markdown document, and merges that into an existing HTML website
     that contains markers where to place the context.
 
-    >>> from pagebotnano_060.constants import A5
     >>> from pagebotnano_060.toolbox.loremipsum import loremipsum, randomName, randomTitle
     >>> from pagebotnano_060.templates.templated import Templated
     >>> from pagebotnano_060.themes import BackToTheCity
@@ -51,15 +50,20 @@ class Website(Publication):
     # Mamp 6 assumes Apache sites in user Site/localhost
     MAMP_PATH = '~/Sites/localhost/'  
 
-    def compose(self):
+    def compose(self, pages):
         """This is the core of a publication, composing the specific
         content of the document. The compose method gets called
         before building and exporting the self.doc document.
+
+        pageData is a dictionary of PageData instance, key is pageData.id
+
         """
+
         anchors = self.templates.getAnchors()
         for path, html in self.templates.html.items():
             for anchorName in anchors:
-                print(path, anchorName)
+                #print(path, anchorName)
+                pass
             pass
             #print(path)
         #print('Composing')
@@ -71,8 +75,8 @@ class Website(Publication):
         if path is None:
             path = '_export/'
         path = os.path.expanduser(path)
-        self.compose()
-        self.build()
+        #self.compose()
+        #self.build()
         self.templates.export(path)
 
 if __name__ == "__main__":

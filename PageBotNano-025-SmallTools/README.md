@@ -18,7 +18,7 @@ You can make a selection from the following exercises. And it is also possible t
 
 * Make a script that generates TTF and OTF fonts, after doing some automated operations on the outlines.
 * Read a UFO, do something to it, save it.
-* Groups and kerning
+* Groups and kerning, exporting to Python source
 * Make a script that checks a font for mistakes in spacing and kerning;
 * QA stuff
 * accentnamecmb --> width = 0
@@ -30,6 +30,7 @@ You can make a selection from the following exercises. And it is also possible t
 * Check unicode (no doubles, relevant glyphs have unicode)
 * Automatic export of feature source
 * Export Python source for groups and kerning
+* OT-features and glyph replacement (exporting to Python source)
 * ...
 
 ## Other example exercises

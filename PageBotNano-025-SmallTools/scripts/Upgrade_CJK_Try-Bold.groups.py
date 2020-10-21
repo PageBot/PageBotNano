@@ -10,7 +10,7 @@ font = openFont("../masters/Upgrade_CJK_Try-Bold.ufo")
 def g(f, groupName, group):
    f.groups[groupName] = group
 
-g(font, "TC1.I", ('H', 'I', 'Iacute', 'Ibreve', 'Icircumflex', 'Idieresis', 'Idotaccent', 'Igrave', 'Imacron', 'Iogonek', 'Iota', 'Itilde'))
+g(font, "TC1.I", ('H', 'I', 'Iacute', 'IbreveIcircumflex', 'Idieresis', 'Idotaccent', 'Igrave', 'Imacron', 'Iogonek', 'Iota', 'Itilde'))
 g(font, "TC1.comma", ('colon', 'ellipsis', 'period'))
 g(font, "TC1.eight_dnom", ('eight.dnom', 'eight.numr', 'eight.sinf', 'eight.sups'))
 g(font, "TC1.exclam", ('exclam', 'exclamdown'))

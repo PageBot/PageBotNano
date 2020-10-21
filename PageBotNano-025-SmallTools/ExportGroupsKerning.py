@@ -1,6 +1,15 @@
 
 import os, codecs
-from pagebotnano_025 import openFont
+#from pagebotnano_025 import openFont
+
+def openFont(nameOrPath, showUI=False):
+    """
+    Open a font defined by the name of path. If the font is already open
+    in RoboFont, then answer.
+    """
+    from fontParts.fontshell.font import RFont
+    #print('RFONT', nameOrPath) 
+    return RFont(nameOrPath, showInterface=showUI)
 
 # Kerning pair (group1, group2) 
 # Kerning pair (group1, glyph2)

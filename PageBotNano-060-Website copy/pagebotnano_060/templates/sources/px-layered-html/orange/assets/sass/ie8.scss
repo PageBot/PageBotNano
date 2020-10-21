@@ -1,0 +1,74 @@
+@import 'libs/vars';
+@import 'libs/functions';
+@import 'libs/mixins';
+@import 'libs/skel';
+
+/*
+	Layered by Pixelarity
+	pixelarity.com | hello@pixelarity.com
+	License: pixelarity.com/license
+*/
+
+/* List */
+
+	ul {
+		&.style3 {
+			.date {
+				position: relative;
+				-ms-behavior: url('assets/js/ie/PIE.htc');
+			}
+		}
+	}
+
+/* Buttons */
+
+	.button {
+		position: relative;
+		-ms-behavior: url('assets/js/ie/PIE.htc');
+	}
+
+/* Forms */
+
+	form {
+		input[type=text],
+		input[type=password],
+		select,
+		textarea {
+			position: relative;
+			-ms-behavior: url('assets/js/ie/PIE.htc');
+		}
+	}
+
+/* Nav */
+
+	#nav {
+		li {
+			&.active {
+				a {
+					position: relative;
+					-ms-behavior: url('assets/js/ie/PIE.htc');
+				}
+			}
+		}
+	}
+
+	.dropotron {
+		-ms-behavior: url('assets/js/ie/PIE.htc');
+
+		a, span {
+			border-top: none;
+		}
+	}
+
+	.dropotron-level-0:before {
+		display: none;
+	}
+
+/* Main */
+
+	#main {
+		.container, img {
+			position: relative;
+			-ms-behavior: url('assets/js/ie/PIE.htc');
+		}
+	}

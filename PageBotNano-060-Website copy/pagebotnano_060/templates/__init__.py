@@ -14,10 +14,8 @@
 #   This source makes it possible to import other sources
 #   from this directory/folder
 #
-#   Try two types of import, so we don't need to install the pagebotnano 
-#   package into the Python of your system.
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_009.constants import *
-from pagebotnano_009.document import Document
-from pagebotnano_009.page import Page
-from pagebotnano_009.elements import Element
+from pagebotnano_060.templates.base import BaseTemplates
+from pagebotnano_060.templates.webtemplates import WebTemplates

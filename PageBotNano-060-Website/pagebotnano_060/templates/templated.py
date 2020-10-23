@@ -40,9 +40,10 @@ class Templated(BaseTemplates):
             path += '/'
         self.path = path
         self.pageName = None # Name key of current selected page
+        self.htmlTemplates = {} # Key is file path, value is file text content.
         self.html = {} # Key is file path, value is file text content.
-        self.css = {} # Key is file path
-        self.js = {}
+        self.css = {} # Anchor substitution directly on this file content.
+        self.js = {} # Anchor substitution directly on this file content.
         self.images = []
         self.pdf = []
         self.fonts = []

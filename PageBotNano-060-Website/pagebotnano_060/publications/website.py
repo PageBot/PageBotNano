@@ -56,13 +56,18 @@ class Website(Publication):
         before building and exporting the self.doc document.
 
         pageData is a dictionary of PageData instance, key is pageData.id
+        There are some directions how the content is distributed on the 
+        template anchors.
+
+        Cross matching the pageData with the anchors in the template
+        and the available methods define in the self.templates instance.
 
         """
-
+        print(pages)
         anchors = self.templates.getAnchors()
         for path, html in self.templates.html.items():
             for anchorName in anchors:
-                #print(path, anchorName)
+                print(path, anchorName)
                 pass
             pass
             #print(path)

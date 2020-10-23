@@ -112,7 +112,7 @@ def parseMarkdown(md):
 
     return md
 
-TAGS = ('site', 'page', 'template', 'logo', 'content')
+TAGS = ('site', 'page', 'template', 'logo', 'content', 'copyright')
 
 class PageData:
     def __init__(self, md):

@@ -1,0 +1,3 @@
+Checking masters/Upgrade_CJK_Try-Thin.ufo Groups 474 Kerning 0
+Checking masters/Upgrade_CJK_Try-Bold.ufo Groups 471 Kerning 9051
+Checking masters/Upgrade_CJK_Try-Regular82.ufo Groups 473 Kerning 0

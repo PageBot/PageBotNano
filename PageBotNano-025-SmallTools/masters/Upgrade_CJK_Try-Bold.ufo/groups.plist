@@ -4,10 +4,10 @@
   <dict>
     <key>TC1.I</key>
     <array>
+      <string>H</string>
       <string>I</string>
       <string>Iacute</string>
-      <string>Ibreve</string>
-      <string>Icircumflex</string>
+      <string>IbreveIcircumflex</string>
       <string>Idieresis</string>
       <string>Idotaccent</string>
       <string>Igrave</string>

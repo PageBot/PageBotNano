@@ -9,14 +9,19 @@
 #   Licensed under MIT conditions
 #
 #   Supporting DrawBot, www.drawbot.com
-# 
+#
+#   Set all negative width for all glyphs. Set to 111 (DEFAULT_WIDTH) standard, 
+#   so it can be found.
 # 
 import os, codecs
 # Include the openFont function here, instead of the import, in case this
 # script is not running inside the current folder.
 from pagebotnano_025 import openFont 
 
-TESTING = False
+TESTING = True
+REPLACE = False # Just do reporting, otherwise set missing references to 'H'
+REPLACE_BY = 'H'
+
 PATH = 'masters/' # Check all .ufo in this local folder
 REPORT_PATH = 'reports/' # Create folder if not exists, export report file there.
 
@@ -27,25 +32,30 @@ for fileName in os.listdir(PATH): # For all the files in the masters/ folder
         continue # Skip anything that is not a ufo file.
     font = openFont(PATH+fileName) # Open the font as instance (not opening a window)
 
-    if TESTING: # Insert error to test on
-        font['A'].unicode = 61
-        font['B'].unicode = 61
-
+    if TESTING: # Introduce an error, so we test the script
+        for component in font['Agrave']:
+            if component.baseGlyph == 'A':
+                component.baseGlyph = 'HHH' # Does not exist
+                break
+        
     # Display the font as header of the errors/warning with a marker line.
     report.append('-'*80)
-    report.append('Checking %s Groups %d Kerning %d' % (font.path, len(font.groups), len(font.kerning)))
+    report.append('Checking %s missing component references' % font.path)
 
-    unicode2Name = {}
-    for g in font:
-        if g.unicode is None or not g.unicodes: # Only test if there is a unicode set.
-            continue
-        for u in g.unicodes:
-            # In RoboFont g.unicode == g.unicodes[0]
-            if u in unicode2Name: # Not just test on the first unicode
-                report.append('Error: Glyph "%s" has same unicode %04x as "%s"' % (g.name, u, unicode2Name[u]))
-                #print(g.name, g.unicode, g.unicodes)
-            else: # Otherwise remember this first glyph name<-->unicode
-                unicode2Name[u] = g.name 
+    # Report if glyph.width < 0, then set it to DEFAULT_WIDTH
+    for g in font: # For all glyphs in the font
+        if g.components:
+            for component in g.components:
+                #print(g.name, component)
+                if component.baseGlyph not in font:
+                    if REPLACE:
+                        report.append('Fixed: Component in glyph "%s" baseGlyph "%s" changed to "%s"' %
+                            (g.name, component.baseGlyph, REPLACE_BY))
+                        ccomponent.baseGlyph = REPLACE_BY
+                    else:
+                        report.append('Warning: Component in glyph "%s" baseGlyph "%s" should change to "%s"' %
+                            (g.name, component.baseGlyph, REPLACE_BY))
+
 
     if not TESTING:
         font.save()
@@ -57,8 +67,8 @@ if not os.path.exists(REPORT_PATH):
     os.makedirs(REPORT_PATH)
 # Write the errors/warnings file, glueing the separate lines with '\n' newline
 print('Errors and warnings: %d' % len(report))
-print('\n'.join(report))
-f = codecs.open(REPORT_PATH + 'duplicateunicode_fixes.txt', 'w', encoding='utf-8')
+#print('\n'.join(report))
+f = codecs.open(REPORT_PATH + 'fixmissingcomponent_fixed_sortof.txt', 'w', encoding='utf-8')
 f.write('\n'.join(report))
 f.close()
 

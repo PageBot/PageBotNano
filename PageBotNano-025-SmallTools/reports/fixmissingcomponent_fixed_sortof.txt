@@ -1,0 +1,4 @@
+--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_Testing.ufo missing component references
+--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_Italic_Testing.ufo missing component references

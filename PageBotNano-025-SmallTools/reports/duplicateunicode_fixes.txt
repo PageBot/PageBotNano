@@ -1,0 +1,4 @@
+--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_Testing.ufo Groups 642 Kerning 9483
+--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_Italic_Testing.ufo Groups 643 Kerning 9994

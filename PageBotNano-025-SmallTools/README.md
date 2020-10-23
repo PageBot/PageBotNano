@@ -24,9 +24,8 @@ You can make a selection from the following exercises. And it is also possible t
 * Check on off-curves in extremes that are not vertical/horizontal
 * ...
 
-## Doing
+## To be fixed by Petr
 
-* Check unicode (no doubles, relevant glyphs have unicode)
 * Check component base glyphs to exist in the font
 * Check margins (using kerning groups as source)
 
@@ -37,6 +36,7 @@ You can make a selection from the following exercises. And it is also possible t
 
 ## Done
 
+* Check unicode (no doubles, relevant glyphs have unicode)
 * accentnamecmb --> width = 0
 * Check on negative width
 * Read a UFO, do something to it, save it.

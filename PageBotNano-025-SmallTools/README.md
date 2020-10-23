@@ -22,10 +22,13 @@ You can make a selection from the following exercises. And it is also possible t
 * Add anchors and position accents on anchors, check vertical position of anchors
 * Check component base glyphs to exist in the font
 * Check interpolation errors between masters
+* Check on negative width
 * Check margins (using kerning groups as source)
 * Check unicode (no doubles, relevant glyphs have unicode)
 * Automatic export of feature source
 * OT-features and glyph replacement (exporting to Python source)
+* Check on exact vertical/horizontal lines (within margin)
+* Check on off-curves in extremes that are not vertical/horizontal
 * ...
 
 ## Done

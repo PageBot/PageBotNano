@@ -49,7 +49,7 @@ FONT_PATHS = (
 def findFont(name):
     """
 
-    >>> font = findFont('SFText-Bold')
+    >>> font = findFont('SFText-Bold.otf')
     >>> font
 
     >>> #font.path.endswith('/Fonts/SFText-Bold.otf')

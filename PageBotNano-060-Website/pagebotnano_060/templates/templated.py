@@ -24,14 +24,14 @@ from pagebotnano_060.toolbox import path2DirectoryName
 class Templated(BaseTemplates):
     """    
     The Templated reads all templates sources, ending with .css,
-    .js and .html, and keeps them as objects that can be altered
+    .js and .html, and keeps them as strings that can be altered
     and queried.
     The Templated class is based on the structure of the https://templated.co
-    template structure, adapted to the use with PageBotNano.
+    template structure, adapted to be used with PageBotNano.
 
     >>> wt = Templated()
     >>> wt
-    <Templated html=3 css=2 js=5 images=10 fonts=6>
+    <Templated html=3 css=2 js=5 images=11 fonts=6>
     """
     def __init__(self, path=None): # Standard API for all templates
         if path is None:

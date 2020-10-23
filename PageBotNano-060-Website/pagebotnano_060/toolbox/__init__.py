@@ -17,8 +17,6 @@
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.constants import PADDING
-
 def path2Extension(path):
     """Answer the extension of path. Answer None of there is no extension.
 
@@ -83,38 +81,7 @@ def pt(pt):
     72
     """
     return pt
-    
-def makePadding(padding):
-    """Check on the various ways that padding can be defined.
-
-    >>> makePadding((10, 20, 30, 40))
-    (10, 20, 30, 40)
-    >>> makePadding((10, 20))
-    (10, 20, 10, 20)
-    >>> makePadding(50)
-    (50, 50, 50, 50)
-    """
-    if isinstance(padding, (list, tuple)):  
-        if len(padding) == 2:
-            pt, pr = pb, pl = padding
-        elif len(padding) == 4:
-            pt, pr, pb, pl = padding
-        else: # In case None or illegal value, then just use defailt
-            raise ValueError('%s.padding: Not the right kind of padding "%s"' % (self.__class.__.__name__, padding))
-    elif padding is None or isinstance(padding, (int, float)):
-        pt = pr = pb = pl = padding or PADDING
-    else: # In case None or illegal value, then just use defailt
-        raise ValueError('%s.padding: Not the right kind of padding "%s"' % (self.__class.__.__name__, padding))
-    if pt is None:
-        pt = PADDING
-    if pr is None:
-        pr = PADDING
-    if pb is None:
-        pb = PADDING
-    if pl is None:
-        pl = PADDING
-    return pt, pr, pb, pl
-
+ 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest

@@ -29,11 +29,12 @@ class Website(Publication):
     >>> from pagebotnano_060.toolbox.loremipsum import loremipsum, randomName, randomTitle
     >>> from pagebotnano_060.templates.templated import Templated
     >>> from pagebotnano_060.themes import BackToTheCity
+    >>> from pagebotnano_060.toolbox.markdown import parseMarkdownFile
     >>> theme = BackToTheCity()
     >>> title = randomTitle()
     >>> author = randomName()
-    >>> xml = '<xml><h1>%s</h1><p>%s</p></xml>' % (title, (loremipsum() + ' ') * 50)
     >>> siteName = 'pagebotnano_demo'
+    >>> pageData = parseMarkdownFile('../../PublishingVariables.md')
     >>> templatePath = '../templates/sources/templated-hielo'
     >>> #templatePath = '../templates/sources/templated-interphase'
     >>> #templatePath = '../templates/sources/px-layered-html-cyan'
@@ -42,13 +43,18 @@ class Website(Publication):
     >>> website = Website(theme=theme, templates=templates)
     >>> website.templates is templates
     True
+    >>> website.compose(pageData)
     >>> # Start MAMP to see this website on localhost, port 80
-    >>> website.export(website.MAMP_PATH + siteName) 
-    >>> result = os.system(u'/usr/bin/open %s' % 'http:localhost/' + siteName)
+    >>> website.export(website.MAMP_PATH + siteName)
+    >>> url = 'http:localhost:%d/%s' % (website.PORT or 80, siteName) 
+    >>> result = os.system(u'/usr/bin/open %s' % url)
 
     """  
     # Mamp 6 assumes Apache sites in user Site/localhost
-    MAMP_PATH = '~/Sites/localhost/'  
+    MAMP_PATH = '~/Sites/localhost/'  # MAMP v6
+    MAMP_PATH = '/Applications/MAMP/htdocs/' # MAMP v5 and earlier  
+
+    PORT = 8888
 
     def compose(self, pages):
         """This is the core of a publication, composing the specific
@@ -63,15 +69,16 @@ class Website(Publication):
         and the available methods define in the self.templates instance.
 
         """
-        print(pages)
         anchors = self.templates.getAnchors()
-        for path, html in self.templates.html.items():
-            for anchorName in anchors:
-                print(path, anchorName)
+        for pageId, pageData in pages.items():
+            for path, html in self.templates.html.items():
+                # html contains {{anchorName}} patterns.
+                for anchorName in anchors:
+                    print(path, anchorName)
+                    pass
                 pass
-            pass
-            #print(path)
-        #print('Composing')
+                #print(path)
+            #print('Composing')
 
     def build(self):
         pass

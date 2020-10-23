@@ -13,13 +13,6 @@
 #
 #   constants.py
 #
-A3 = 842, 1191 # Rounded equivalent in points of 297mm x 420mm
-A4 = 595, 842 # Rounded equivalent in points of 210mm x 297mm
-A5 = 421, 595
-
-DEFAULT_WIDTH = 100 # Default width for some of the element types.
-PADDING = 30 # Default padding of pages, template and elements.
-
 # Types of text alignment
 LEFT = 'left'
 CENTER = 'center'
@@ -35,15 +28,6 @@ PN_LEFT = 'pn'+LEFT # Text box with pagenumber on left side of page.
 PN_CENTER = 'pn'+CENTER # Text box with pagenumber centered page.
 PN_RIGHT = 'pn'+RIGHT # Text box with pagenumber on right side of page.
 
-# Set of names that are allowed as attribute in DrawBot.FormattedString,
-# so we can filter from a more generic style description.
-# See: https://www.drawbot.com/content/text/formattedString.html
-FS_ATTRIBUTES = {
-    'txt', 'font', 'fontSize', 'fallbackFont', 'fill', 'cmykFill', 'stroke',
-    'cmykStroke', 'strokeWidth', 'align', 'lineHeight', 'tracking', 'baselineShift',
-    'openTypeFeatures', 'tabs', 'language', 'indent', 'tailIndent', 
-    'firstLineIndent', 'paragraphTopSpacing', 'paragraphBottomSpacing',
-}
 # This dictionary translate PageBotNano style names into their CSS equivalents.
 CSS_ATTRIBUTES = dict(
     font='font-family',

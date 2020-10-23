@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="periodcentered" format="2">
-  <advance height="1000" width="600"/>
-  <unicode hex="00B7"/>
-  <unicode hex="2219"/>
-  <outline>
-    <component base="typetry.com"/>
-  </outline>
-</glyph>

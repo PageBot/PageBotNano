@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="musicalnote" format="2">
-  <advance height="1000" width="600"/>
-  <unicode hex="266A"/>
-  <outline>
-    <component base="typetry.com"/>
-  </outline>
-</glyph>

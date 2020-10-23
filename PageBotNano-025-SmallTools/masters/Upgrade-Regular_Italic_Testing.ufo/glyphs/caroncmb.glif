@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="caroncmb" format="2">
+  <advance width="264"/>
+  <unicode hex="030C"/>
+  <anchor x="63" y="450" name="_top"/>
+  <anchor x="4" y="16" name="_bottom"/>
+  <outline>
+    <contour>
+      <point x="41" y="524" type="line"/>
+      <point x="108" y="524" type="line"/>
+      <point x="224" y="658" type="line"/>
+      <point x="149" y="658" type="line"/>
+      <point x="67" y="567" type="line"/>
+      <point x="89" y="567" type="line"/>
+      <point x="33" y="658" type="line"/>
+      <point x="-39" y="658" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,0.8971,0.5018,1</string>
+    </dict>
+  </lib>
+</glyph>

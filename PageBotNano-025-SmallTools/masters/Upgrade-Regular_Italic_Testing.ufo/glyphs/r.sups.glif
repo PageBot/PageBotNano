@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="r.sups" format="2">
+  <advance width="255"/>
+  <anchor x="158" y="0" name="bottom"/>
+  <anchor x="224" y="458" name="top"/>
+  <outline>
+    <component base="r.sinf" xOffset="86" yOffset="610"/>
+  </outline>
+</glyph>

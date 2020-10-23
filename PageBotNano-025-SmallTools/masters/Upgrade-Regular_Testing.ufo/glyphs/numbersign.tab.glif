@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="numbersign.tab" format="2">
+  <advance width="601"/>
+  <outline>
+    <contour>
+      <point x="166" y="-35" type="line"/>
+      <point x="237" y="-35" type="line"/>
+      <point x="309" y="515" type="line"/>
+      <point x="238" y="515" type="line"/>
+    </contour>
+    <contour>
+      <point x="344" y="-35" type="line"/>
+      <point x="415" y="-35" type="line"/>
+      <point x="487" y="515" type="line"/>
+      <point x="416" y="515" type="line"/>
+    </contour>
+    <contour>
+      <point x="105" y="304" type="line"/>
+      <point x="561" y="304" type="line"/>
+      <point x="561" y="378" type="line"/>
+      <point x="105" y="378" type="line"/>
+    </contour>
+    <contour>
+      <point x="89" y="103" type="line"/>
+      <point x="545" y="103" type="line"/>
+      <point x="545" y="177" type="line"/>
+      <point x="89" y="177" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>4</string>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-142.3125</real>
+          <key>interpolateX</key>
+          <real>130.54063415527344</real>
+          <key>interpolateY</key>
+          <real>130.54063415527344</real>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>72.5374984741211</real>
+          <key>scaleY</key>
+          <real>72.5374984741211</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

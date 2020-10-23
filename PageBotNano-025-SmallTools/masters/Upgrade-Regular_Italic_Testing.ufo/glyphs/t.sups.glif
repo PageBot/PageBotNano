@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="t.sups" format="2">
+  <advance width="240"/>
+  <anchor x="346" y="466" name="caron.vert"/>
+  <anchor x="160" y="0" name="bottom"/>
+  <outline>
+    <component base="t.sinf" xOffset="86" yOffset="610"/>
+  </outline>
+</glyph>

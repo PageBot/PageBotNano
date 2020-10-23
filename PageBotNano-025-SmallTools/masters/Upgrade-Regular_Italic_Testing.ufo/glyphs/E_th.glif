@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Eth" format="2">
+  <advance width="706"/>
+  <unicode hex="00D0"/>
+  <anchor x="371" y="642" name="top"/>
+  <outline>
+    <contour>
+      <point x="69" y="293" type="line"/>
+      <point x="328" y="293" type="line"/>
+      <point x="338" y="366" type="line"/>
+      <point x="79" y="366" type="line"/>
+    </contour>
+    <component base="D" xOffset="10"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+    </dict>
+  </lib>
+</glyph>

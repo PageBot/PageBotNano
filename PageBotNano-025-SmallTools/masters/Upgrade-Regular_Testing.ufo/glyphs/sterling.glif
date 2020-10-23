@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="sterling" format="2">
+  <advance width="518"/>
+  <unicode hex="00A3"/>
+  <outline>
+    <contour>
+      <point x="60" y="0" type="line"/>
+      <point x="470" y="0" type="line"/>
+      <point x="470" y="80" type="line"/>
+      <point x="84" y="80" type="line"/>
+      <point x="128" y="56" type="line"/>
+      <point x="217" y="110"/>
+      <point x="249" y="201"/>
+      <point x="225" y="309" type="curve" smooth="yes"/>
+      <point x="202" y="412" type="line" smooth="yes"/>
+      <point x="176" y="530"/>
+      <point x="223" y="599"/>
+      <point x="319" y="599" type="curve" smooth="yes"/>
+      <point x="376" y="599"/>
+      <point x="429" y="585"/>
+      <point x="478" y="554" type="curve"/>
+      <point x="478" y="636" type="line"/>
+      <point x="425" y="660"/>
+      <point x="369" y="673"/>
+      <point x="311" y="673" type="curve" smooth="yes"/>
+      <point x="149" y="673"/>
+      <point x="83" y="569"/>
+      <point x="119" y="409" type="curve" smooth="yes"/>
+      <point x="142" y="306" type="line" smooth="yes"/>
+      <point x="166" y="197"/>
+      <point x="131" y="123"/>
+      <point x="60" y="80" type="curve"/>
+    </contour>
+    <contour>
+      <point x="51" y="298" type="line"/>
+      <point x="369" y="298" type="line"/>
+      <point x="369" y="373" type="line"/>
+      <point x="51" y="373" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>4</string>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-142.3125</real>
+          <key>interpolateX</key>
+          <real>130.54063415527344</real>
+          <key>interpolateY</key>
+          <real>130.54063415527344</real>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>72.5374984741211</real>
+          <key>scaleY</key>
+          <real>72.5374984741211</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

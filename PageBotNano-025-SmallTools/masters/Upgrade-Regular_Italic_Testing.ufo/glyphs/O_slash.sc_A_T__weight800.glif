@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Oslash.sc_AT_weight800" format="2">
+  <advance width="615"/>
+  <anchor x="352" y="500" name="top"/>
+  <outline>
+    <contour>
+      <point x="437" y="471" type="line"/>
+      <point x="494" y="439" type="line"/>
+      <point x="567" y="560" type="line"/>
+      <point x="491" y="560" type="line"/>
+    </contour>
+    <contour>
+      <point x="121" y="-48" type="line"/>
+      <point x="198" y="-48" type="line"/>
+      <point x="249" y="37" type="line"/>
+      <point x="192" y="69" type="line"/>
+    </contour>
+    <component base="O.sc"/>
+  </outline>
+</glyph>

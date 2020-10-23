@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="j.sups" format="2">
+  <advance width="161"/>
+  <outline>
+    <component base="j.sinf" yOffset="610"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <integer>0</integer>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-169.7586669921875</real>
+          <key>glyphSource</key>
+          <string>n</string>
+          <key>interpolateX</key>
+          <real>139.87124633789062</real>
+          <key>interpolateY</key>
+          <real>139.87124633789062</real>
+          <key>lockInterpolationXY</key>
+          <integer>1</integer>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>76.15612030029297</real>
+          <key>scaleY</key>
+          <real>76.15612030029297</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

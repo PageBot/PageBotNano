@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="egrave.sinf" format="2">
+  <advance width="395"/>
+  <outline>
+    <contour>
+      <point x="167" y="237" type="line"/>
+      <point x="236" y="237" type="line"/>
+      <point x="138" y="362" type="line"/>
+      <point x="66" y="362" type="line"/>
+    </contour>
+    <component base="e.sinf"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typenetwork.accentbuilder.locked</key>
+      <true/>
+      <key>public.markColor</key>
+      <string>0,0,0,0.5</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>0</string>
+          <key>RSB</key>
+          <string>0</string>
+          <key>baseline</key>
+          <real>-170.10202026367188</real>
+          <key>glyphSource</key>
+          <string></string>
+          <key>interpolateX</key>
+          <real>38.80564880371094</real>
+          <key>interpolateY</key>
+          <real>38.80564880371094</real>
+          <key>lockInterpolationXY</key>
+          <integer>1</integer>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>77.74686431884766</real>
+          <key>scaleY</key>
+          <real>77.74686431884766</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

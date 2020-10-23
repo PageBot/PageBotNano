@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="w.sinf" format="2">
+  <advance width="600"/>
+  <anchor x="387" y="310" name="top"/>
+  <outline>
+    <contour>
+      <point x="108" y="-170" type="line"/>
+      <point x="188" y="-170" type="line"/>
+      <point x="251" y="-62"/>
+      <point x="306" y="45"/>
+      <point x="350" y="163" type="curve"/>
+      <point x="301" y="160" type="line"/>
+      <point x="325" y="23" type="line"/>
+      <point x="363" y="-170" type="line"/>
+      <point x="443" y="-170" type="line"/>
+      <point x="510" y="-52"/>
+      <point x="568" y="65"/>
+      <point x="617" y="190" type="curve"/>
+      <point x="549" y="190" type="line"/>
+      <point x="507" y="83"/>
+      <point x="454" y="-31"/>
+      <point x="388" y="-154" type="curve"/>
+      <point x="430" y="-154" type="line"/>
+      <point x="403" y="-8" type="line"/>
+      <point x="363" y="190" type="line"/>
+      <point x="296" y="190" type="line"/>
+      <point x="251" y="71"/>
+      <point x="197" y="-41"/>
+      <point x="133" y="-154" type="curve"/>
+      <point x="173" y="-154" type="line"/>
+      <point x="148" y="-8" type="line"/>
+      <point x="110" y="190" type="line"/>
+      <point x="37" y="190" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.Image.Brightness</key>
+      <integer>0</integer>
+      <key>com.typemytype.robofont.Image.Contrast</key>
+      <integer>1</integer>
+      <key>com.typemytype.robofont.Image.Saturation</key>
+      <integer>1</integer>
+      <key>com.typemytype.robofont.Image.Sharpness</key>
+      <real>0.4</real>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="a.sinf" format="2">
+  <advance width="396"/>
+  <anchor x="261" y="309" name="top"/>
+  <anchor x="385" y="8" name="ogonek"/>
+  <outline>
+    <contour>
+      <point x="149" y="-179" type="curve" smooth="yes"/>
+      <point x="195" y="-179"/>
+      <point x="244" y="-154"/>
+      <point x="271" y="-88" type="curve"/>
+      <point x="269" y="-109" type="line" smooth="yes"/>
+      <point x="268" y="-129"/>
+      <point x="266" y="-150"/>
+      <point x="266" y="-170" type="curve"/>
+      <point x="333" y="-170" type="line"/>
+      <point x="333" y="-134"/>
+      <point x="337" y="-100"/>
+      <point x="342" y="-64" type="curve" smooth="yes"/>
+      <point x="376" y="176" type="line"/>
+      <point x="337" y="191"/>
+      <point x="292" y="199"/>
+      <point x="251" y="199" type="curve" smooth="yes"/>
+      <point x="127" y="199"/>
+      <point x="28" y="96"/>
+      <point x="28" y="-34" type="curve" smooth="yes"/>
+      <point x="28" y="-123"/>
+      <point x="80" y="-179"/>
+    </contour>
+    <contour>
+      <point x="168" y="-118" type="curve" smooth="yes"/>
+      <point x="128" y="-118"/>
+      <point x="96" y="-86"/>
+      <point x="96" y="-26" type="curve" smooth="yes"/>
+      <point x="96" y="64"/>
+      <point x="164" y="139"/>
+      <point x="241" y="139" type="curve" smooth="yes"/>
+      <point x="262" y="139"/>
+      <point x="281" y="137"/>
+      <point x="302" y="129" type="curve"/>
+      <point x="294" y="76" type="line" smooth="yes"/>
+      <point x="268" y="-97"/>
+      <point x="210" y="-118"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.9982,0.3725,1,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict/>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

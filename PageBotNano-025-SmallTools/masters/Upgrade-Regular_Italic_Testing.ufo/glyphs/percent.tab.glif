@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="percent.tab" format="2">
+  <advance width="650"/>
+  <outline>
+    <contour>
+      <point x="165" y="0" type="line"/>
+      <point x="220" y="0" type="line"/>
+      <point x="569" y="654" type="line"/>
+      <point x="514" y="654" type="line"/>
+    </contour>
+    <contour>
+      <point x="228" y="346" type="curve" smooth="yes"/>
+      <point x="311" y="346"/>
+      <point x="376" y="419"/>
+      <point x="376" y="526" type="curve" smooth="yes"/>
+      <point x="376" y="606"/>
+      <point x="329" y="660"/>
+      <point x="253" y="660" type="curve" smooth="yes"/>
+      <point x="168" y="660"/>
+      <point x="102" y="587"/>
+      <point x="102" y="480" type="curve" smooth="yes"/>
+      <point x="102" y="401"/>
+      <point x="151" y="346"/>
+    </contour>
+    <contour>
+      <point x="230" y="397" type="curve" smooth="yes"/>
+      <point x="189" y="397"/>
+      <point x="162" y="427"/>
+      <point x="162" y="482" type="curve" smooth="yes"/>
+      <point x="162" y="558"/>
+      <point x="198" y="609"/>
+      <point x="248" y="609" type="curve" smooth="yes"/>
+      <point x="288" y="609"/>
+      <point x="316" y="579"/>
+      <point x="316" y="524" type="curve" smooth="yes"/>
+      <point x="316" y="447"/>
+      <point x="280" y="397"/>
+    </contour>
+    <contour>
+      <point x="491" y="-7" type="curve" smooth="yes"/>
+      <point x="574" y="-7"/>
+      <point x="639" y="66"/>
+      <point x="639" y="173" type="curve" smooth="yes"/>
+      <point x="639" y="253"/>
+      <point x="592" y="307"/>
+      <point x="516" y="307" type="curve" smooth="yes"/>
+      <point x="431" y="307"/>
+      <point x="365" y="234"/>
+      <point x="365" y="127" type="curve" smooth="yes"/>
+      <point x="365" y="48"/>
+      <point x="414" y="-7"/>
+    </contour>
+    <contour>
+      <point x="493" y="45" type="curve" smooth="yes"/>
+      <point x="452" y="45"/>
+      <point x="426" y="74"/>
+      <point x="426" y="130" type="curve" smooth="yes"/>
+      <point x="426" y="205"/>
+      <point x="461" y="256"/>
+      <point x="511" y="256" type="curve" smooth="yes"/>
+      <point x="551" y="256"/>
+      <point x="579" y="226"/>
+      <point x="579" y="171" type="curve" smooth="yes"/>
+      <point x="579" y="94"/>
+      <point x="543" y="45"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.petr.ptt</key>
+      <dict>
+        <key>winglabels</key>
+        <dict/>
+        <key>wings</key>
+        <dict/>
+      </dict>
+      <key>com.robofont.robohint</key>
+      <dict>
+        <key>wingcommands_json</key>
+        <string>{"aa": {"id": "aa", "name": "Anti-aliasing"}, "bw": {"id": "bw", "name": "Black &amp; white"}, "ct": {"id": "ct", "name": "Cleartype"}, "sp": {"id": "sp", "name": "Space constraint"}}</string>
+        <key>wingset_json</key>
+        <string>{"wings": {"78f4fa9b1aa5": {"id": "797ddac6bc8d", "name": "Testing IF-ELSE", "src": "/* Testing IF-ELSE */\nPUSHB[0] 1\nIF[] \nsrp0[] 24\nelse[]\nsrp0[] 11\neif[]\n"}, "78f4fa9b80d3": {}, "797d0c7721c2": {"id": "797d0c7721c2", "name": "(X) Horizontal hints for o", "src": "/* (X) Horizontal hints for o */\nSVTCA[X]\nSRP0[] 24\nMIRP[M&gt;RWh] 2 lsbRound\nMIRP[m&gt;rBl] 20 stemRound\nMDRP[M&gt;RGr] 8\nMIRP[m&gt;rBl] 14 stemRound\nSRP0[] 8\nMIRP[m&lt;RWh] 25 rsbRound\nIUP[X]\n/* (Y) Autohints for o */\nSVTCA[Y]\n/* ... */\nIUP[Y]"}, "797d108e34b0": {"id": "797d108e34b0", "name": "(X) Autohints for o", "src": "/* (X) Autohints for o */\nSVTCA[X]\nSRP0[] 24\nMIRP[M&gt;RWh] 2 lsbRound\nMIRP[m&gt;rBl] 20 stemRound\nMDRP[M&gt;RGr] 14\nMIRP[m&gt;rBl] 8 stemRound\nSRP0[] 8\nMIRP[m&lt;RWh] 25 rsbRound\n/* (Y) Autohints for o */\nSVTCA[Y]\n/* ... */\nIUP[X]\nIUP[Y]\n"}}}</string>
+      </dict>
+      <key>com.typemytype.roboFont.layerData</key>
+      <dict/>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>4</string>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-142.3125</real>
+          <key>interpolateX</key>
+          <real>130.54063415527344</real>
+          <key>interpolateY</key>
+          <real>130.54063415527344</real>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>72.5374984741211</real>
+          <key>scaleY</key>
+          <real>72.5374984741211</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="a.sups" format="2">
+  <advance width="400"/>
+  <anchor x="250" y="458" name="top"/>
+  <anchor x="373" y="8" name="ogonek"/>
+  <outline>
+    <component base="a.sinf" xOffset="86" yOffset="610"/>
+  </outline>
+</glyph>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="l.sups" format="2">
+  <advance width="156"/>
+  <anchor x="255" y="466" name="caron.vert"/>
+  <anchor x="181" y="458" name="top"/>
+  <anchor x="115" y="0" name="bottom"/>
+  <outline>
+    <component base="l.sinf" xOffset="86" yOffset="610"/>
+  </outline>
+</glyph>

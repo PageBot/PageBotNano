@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="cent_AT_weight800" format="2">
+  <advance width="464"/>
+  <outline>
+    <contour>
+      <point x="302" y="450" type="line"/>
+      <point x="371" y="450" type="line"/>
+      <point x="389" y="575" type="line"/>
+      <point x="320" y="575" type="line"/>
+    </contour>
+    <contour>
+      <point x="224" y="-109" type="line"/>
+      <point x="293" y="-109" type="line"/>
+      <point x="310" y="15" type="line"/>
+      <point x="241" y="15" type="line"/>
+    </contour>
+    <component base="c"/>
+  </outline>
+</glyph>

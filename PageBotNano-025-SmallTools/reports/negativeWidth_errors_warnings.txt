@@ -1,0 +1,12 @@
+--------------------------------------------------------------------------------
+Checking masters/Upgrade_CJK_Try-Thin.ufo Groups 474 Kerning 0
+Warning: Glyph H has DEFAULT_WIDTH (111)
+Warning: Glyph O has DEFAULT_WIDTH (111)
+--------------------------------------------------------------------------------
+Checking masters/Upgrade_CJK_Try-Bold.ufo Groups 471 Kerning 9051
+Warning: Glyph H has DEFAULT_WIDTH (111)
+Warning: Glyph O has DEFAULT_WIDTH (111)
+--------------------------------------------------------------------------------
+Checking masters/Upgrade_CJK_Try-Regular82.ufo Groups 473 Kerning 0
+Warning: Glyph H has DEFAULT_WIDTH (111)
+Warning: Glyph O has DEFAULT_WIDTH (111)

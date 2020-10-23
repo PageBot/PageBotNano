@@ -18,21 +18,27 @@ You can make a selection from the following exercises. And it is also possible t
 
 * Make a script that generates TTF and OTF fonts, after doing some automated operations on the outlines.
 * QA stuff
-* accentnamecmb --> width = 0
-* Add anchors and position accents on anchors, check vertical position of anchors
-* Check component base glyphs to exist in the font
-* Check interpolation errors between masters
-* Check on negative width
-* Check margins (using kerning groups as source)
-* Check unicode (no doubles, relevant glyphs have unicode)
 * Automatic export of feature source
 * OT-features and glyph replacement (exporting to Python source)
 * Check on exact vertical/horizontal lines (within margin)
 * Check on off-curves in extremes that are not vertical/horizontal
 * ...
 
+## Doing
+
+* Check unicode (no doubles, relevant glyphs have unicode)
+* Check component base glyphs to exist in the font
+* Check margins (using kerning groups as source)
+
+## Design knowledge
+* Check interpolation errors between masters (easy at start, complex with fixing)
+* Add anchors and position accents on anchors, check vertical position of anchors
+* write glyph.angledLeftMargin and glyph.angleRightMargin for fontParts.Font
+
 ## Done
 
+* accentnamecmb --> width = 0
+* Check on negative width
 * Read a UFO, do something to it, save it.
 * **check width of .tab for a whole family**
 * **Groups and kerning, exporting to Python source**

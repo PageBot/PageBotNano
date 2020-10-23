@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="v.sinf" format="2">
+  <advance width="366"/>
+  <outline>
+    <contour>
+      <point x="120" y="-170" type="line"/>
+      <point x="198" y="-170" type="line"/>
+      <point x="273" y="-50"/>
+      <point x="333" y="66"/>
+      <point x="383" y="190" type="curve"/>
+      <point x="312" y="190" type="line"/>
+      <point x="266" y="71"/>
+      <point x="210" y="-40"/>
+      <point x="139" y="-155" type="curve"/>
+      <point x="182" y="-155" type="line"/>
+      <point x="154" y="-8" type="line"/>
+      <point x="111" y="190" type="line"/>
+      <point x="37" y="190" type="line"/>
+    </contour>
+  </outline>
+</glyph>

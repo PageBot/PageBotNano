@@ -32,8 +32,7 @@ class Publication:
     >>> pub = Publication() # Default size A4
     >>> pub.export('_export/website')
     """
-    def __init__(self, theme=None, templates=None,
-            context=None):       
+    def __init__(self, theme=None, templates=None, context=None):       
         # In this approach there is no self.doc Document.
         if templates is None:
             templates = Templated()

@@ -55,6 +55,18 @@ class Website(Publication):
     MAMP_PATH = '/Applications/MAMP/htdocs/' # MAMP v5 and earlier  
 
     PORT = 8888
+    #PORT = 80 # Default for self.port
+
+    def __init__(self, url=None, domain=None, port=None, **kwargs):
+        Publication.__init__(self, **kwargs)
+        self.port = port
+        if domain is None:
+            domain = 'localhost'
+            if port:
+                domain += ':%d' % port
+        if url is None:
+            url = 'http:%s' % domain 
+        self.url = url
 
     def compose(self, pages):
         """This is the core of a publication, composing the specific

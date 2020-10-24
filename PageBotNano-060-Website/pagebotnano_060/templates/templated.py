@@ -19,7 +19,7 @@ import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_060.templates.base import BaseTemplates
-from pagebotnano_060.toolbox import path2DirectoryName
+from pagebotnano_060.toolbox import path2DirectoryName, path2FileName
 
 class Templated(BaseTemplates):
     """    
@@ -31,7 +31,7 @@ class Templated(BaseTemplates):
 
     >>> wt = Templated()
     >>> wt
-    <Templated html=3 css=2 js=5 images=11 fonts=6>
+    <Templated templates=3 css=2 js=5 images=11 fonts=6>
     """
     def __init__(self, path=None): # Standard API for all templates
         if path is None:
@@ -41,7 +41,7 @@ class Templated(BaseTemplates):
         self.path = path
         self.pageName = None # Name key of current selected page
         self.htmlTemplates = {} # Key is file path, value is file text content.
-        self.html = {} # Key is file path, value is file text content.
+        self.html = {} # Key is file path, value is file procesed page content.
         self.css = {} # Anchor substitution directly on this file content.
         self.js = {} # Anchor substitution directly on this file content.
         self.images = []
@@ -52,8 +52,8 @@ class Templated(BaseTemplates):
         self.read(path)
 
     def __repr__(self):
-        return '<%s html=%d css=%d js=%d images=%d fonts=%d>' % (self.__class__.__name__,
-            len(self.html), len(self.css), len(self.js), len(self.images), len(self.fonts))
+        return '<%s templates=%d css=%d js=%d images=%d fonts=%d>' % (self.__class__.__name__,
+            len(self.htmlTemplates), len(self.css), len(self.js), len(self.images), len(self.fonts))
 
     def _readFile(self, path):
         f = codecs.open(path, 'r', encoding='utf-8')
@@ -76,16 +76,23 @@ class Templated(BaseTemplates):
         shutil.copyfile(srcPath, dstPath)
 
     def read(self, path):
+        """Read all files in the templated folder, holding the templates
+        for a (simple) website, such as .html files, .css and .js,
+        For images and fonts, just the path name is stored, for later 
+        reference to copy to the target folder.
+        """
         if os.path.isdir(path): 
             if not path.endswith('/'):
                 path += '/'
             for fileName in os.listdir(path):
                 self.read(path + fileName)
         elif path.lower().endswith('.html'):
-            self.html[path] = self._readFile(path)
+            # self.html will contain processed copies of the htmlTemplates
+            htmlFileName = path2FileName(path)
+            self.htmlTemplates[htmlFileName] = self._readFile(path)
         elif path.lower().endswith('.css'):
             self.css[path] = self._readFile(path)
-        elif path.lower().endswith('.js'):
+        elif path.lower().endswith('.js') or path.lower().endswith('script'):
             self.js[path] = self._readFile(path)
         elif path.split('.')[-1] in ('gif', 'jpg', 'jpeg', 'png'):
             self.images.append(path)

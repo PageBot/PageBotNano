@@ -120,9 +120,10 @@ class PageData:
         self.md = md
         # Find meta data about this page
         self.name = self._find('name', 'Home')
-        self.id = self._find('id', 'index')
+        self.id = self._find('id', 'index.html')
         # Now split all other tags into elementData chunck of html code
-        for tag, html in re.findall('{{([^ ]*)}}([^{{]*)', md):
+        for tag, html in re.findall('{{([^ ]*)}}([^{{]*)', md, flags=re.MULTILINE):
+            print('+++++++', tag, html)
             self.elementData[tag] = html
 
     def _find(self, tag, default):

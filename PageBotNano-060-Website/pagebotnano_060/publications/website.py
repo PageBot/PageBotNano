@@ -73,7 +73,7 @@ class Website(Publication):
         content of the document. The compose method gets called
         before building and exporting the self.doc document.
 
-        pageData is a dictionary of PageData instance, key is pageData.id
+        pages is a dictionary of PageData instance, key is pageData.id
         There are some directions how the content is distributed on the 
         template anchors.
 
@@ -81,16 +81,23 @@ class Website(Publication):
         and the available methods define in the self.templates instance.
 
         """
-        anchors = self.templates.getAnchors()
+        #print('Templates', self.templates.htmlTemplates.keys())
+        anchors = self.templates.getAnchors() # {{Anchors}} of the website to be filled.
         for pageId, pageData in pages.items():
-            for path, html in self.templates.html.items():
-                # html contains {{anchorName}} patterns.
-                for anchorName in anchors:
-                    print(path, anchorName)
-                    pass
+            if not pageData.id in self.templates.htmlTemplates:
+                print('Cannot find page template', pageData.id)
+                pageData.id = 'index.html'
+            #print('==3=3=', pageData.elementData.get('logo'))
+            print('+++++++', pageData.md)
+            # Copy the template HTML into the page storage
+            html = self.templates.htmlTemplates[pageData.id]
+            #html = html.replace('{{logo}}', pageData.elementData['logo'])
+            # html contains {{anchorName}} patterns.
+            for anchorName in anchors:
+                print(path, anchorName)
                 pass
-                #print(path)
-            #print('Composing')
+
+            self.templates.html[pageData.id] = html # Store the processed html
 
     def build(self):
         pass

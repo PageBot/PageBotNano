@@ -1,8 +1,8 @@
 
 <site> Publishing variables with PageBot
 
-<page index> Home
-<template index>
+<page index.html> Home
+<logo> ![](images/peppertom_magenta_orange.png)
 
 <content>
 

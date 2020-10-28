@@ -12,6 +12,11 @@
 #
 #   Set all negative width for all glyphs. Set to 111 (DEFAULT_WIDTH) standard, 
 #   so it can be found.
+#   TODO: Extend the checking on component also on transformation matrix
+#   component.transformation = (m1, m2, m3, m4, dx, dy)
+#   (m1, m2, m3, m4) take care of skewing, scale and rotation. (Not in VF)
+#   Production fonts this better be (1, 0, 0, 1)
+#   (dx, dy) position of component, works in VF
 # 
 import os, codecs
 # Include the openFont function here, instead of the import, in case this
@@ -33,7 +38,7 @@ for fileName in os.listdir(PATH): # For all the files in the masters/ folder
     font = openFont(PATH+fileName) # Open the font as instance (not opening a window)
 
     if TESTING: # Introduce an error, so we test the script
-        for component in font['Agrave']:
+        for component in font['Agrave'].components:
             if component.baseGlyph == 'A':
                 component.baseGlyph = 'HHH' # Does not exist
                 break

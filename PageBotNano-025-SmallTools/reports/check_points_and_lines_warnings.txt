@@ -1,0 +1,8 @@
+--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_Testing.ufo
+Vertical off: Index:-3 Offset:8 Type=curve p_1=(40, 542) p=(48, 329)
+Vertical off: Index:-3 Offset:8 Type=curve p=(48, 329) p1=(56, 125)
+Horizontal off: Index:13 Offset:8 Type=curve p_1=(238, 602) p=(400, 594)
+Horizontal off: Index:13 Offset:3 Type=curve p=(400, 594) p1=(462, 591)
+--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_Italic_Testing.ufo

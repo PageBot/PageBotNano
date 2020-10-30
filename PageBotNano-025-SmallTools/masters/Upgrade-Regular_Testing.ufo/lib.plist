@@ -14,6 +14,7 @@
 	<key>com.schriftgestaltung.DisplayStrings</key>
 	<array>
 		<string>/Aogonek/Eogonek ÌÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Idotaccent/Jcircumflex/Dcroat/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾%/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Aogonek.sc/Egrave.sc/Eogonek.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Idotaccent.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Dcroat.sc/Ldot.sc/germandbls.sc/ordfeminine.lc/ordmasculine.lc</string>
+		<string>ÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Jcircumflex/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾%/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Egrave.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Ldot.sc/ordfeminine.lc/ordmasculine.lc</string>
 	</array>
 	<key>com.schriftgestaltung.disablesAutomaticAlignment</key>
 	<false/>

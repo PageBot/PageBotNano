@@ -1,33 +1,33 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="section.lc" format="2">
-  <advance width="415"/>
-  <outline>
-    <component base="section" yOffset="-75"/>
-  </outline>
-  <lib>
-    <dict>
-      <key>tnScalarpolator</key>
-      <dict>
-        <key>scalarpolatorPrefs</key>
-        <dict>
-          <key>LSB</key>
-          <string>4</string>
-          <key>RSB</key>
-          <integer>0</integer>
-          <key>baseline</key>
-          <real>-142.3125</real>
-          <key>interpolateX</key>
-          <real>130.54063415527344</real>
-          <key>interpolateY</key>
-          <real>130.54063415527344</real>
-          <key>lockScaleXY</key>
-          <integer>1</integer>
-          <key>scaleX</key>
-          <real>72.5374984741211</real>
-          <key>scaleY</key>
-          <real>72.5374984741211</real>
-        </dict>
-      </dict>
-    </dict>
-  </lib>
+	<advance width="415"/>
+	<outline>
+		<component base="section" yOffset="-75"/>
+	</outline>
+	<lib>
+		<dict>
+			<key>tnScalarpolator</key>
+			<dict>
+				<key>scalarpolatorPrefs</key>
+				<dict>
+					<key>LSB</key>
+					<string>4</string>
+					<key>RSB</key>
+					<integer>0</integer>
+					<key>baseline</key>
+					<real>-142.312</real>
+					<key>interpolateX</key>
+					<real>130.541</real>
+					<key>interpolateY</key>
+					<real>130.541</real>
+					<key>lockScaleXY</key>
+					<integer>1</integer>
+					<key>scaleX</key>
+					<real>72.537</real>
+					<key>scaleY</key>
+					<real>72.537</real>
+				</dict>
+			</dict>
+		</dict>
+	</lib>
 </glyph>

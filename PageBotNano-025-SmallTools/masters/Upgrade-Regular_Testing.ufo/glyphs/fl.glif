@@ -1,41 +1,60 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="fl" format="2">
-  <advance width="452"/>
-  <unicode hex="FB02"/>
-  <outline>
-    <component base="f.salt_connect"/>
-    <component base="l" xOffset="268"/>
-  </outline>
-  <lib>
-    <dict>
-      <key>public.markColor</key>
-      <string>1,1,0,1</string>
-      <key>tnScalarpolator</key>
-      <dict>
-        <key>scalarpolatorPrefs</key>
-        <dict>
-          <key>LSB</key>
-          <string>0</string>
-          <key>RSB</key>
-          <integer>0</integer>
-          <key>baseline</key>
-          <real>0.0</real>
-          <key>glyphSource</key>
-          <string></string>
-          <key>interpolateX</key>
-          <real>100.0</real>
-          <key>interpolateY</key>
-          <real>100.0</real>
-          <key>lockInterpolationXY</key>
-          <integer>1</integer>
-          <key>lockScaleXY</key>
-          <integer>1</integer>
-          <key>scaleX</key>
-          <real>100.0</real>
-          <key>scaleY</key>
-          <real>100.0</real>
-        </dict>
-      </dict>
-    </dict>
-  </lib>
+	<advance width="452"/>
+	<unicode hex="FB02"/>
+	<outline>
+		<component base="f.salt_connect"/>
+		<component base="l" xOffset="268"/>
+	</outline>
+	<lib>
+		<dict>
+			<key>com.schriftgestaltung.Glyphs.ComponentInfo</key>
+			<array>
+				<dict>
+					<key>alignment</key>
+					<integer>-1</integer>
+					<key>index</key>
+					<integer>0</integer>
+					<key>name</key>
+					<string>f.salt_connect</string>
+				</dict>
+				<dict>
+					<key>alignment</key>
+					<integer>-1</integer>
+					<key>index</key>
+					<integer>1</integer>
+					<key>name</key>
+					<string>l</string>
+				</dict>
+			</array>
+			<key>com.schriftgestaltung.Glyphs.lastChange</key>
+			<string>2020-10-30 15:13:13 +0000</string>
+			<key>public.markColor</key>
+			<string>1,1,0,1</string>
+			<key>tnScalarpolator</key>
+			<dict>
+				<key>scalarpolatorPrefs</key>
+				<dict>
+					<key>LSB</key>
+					<string>0</string>
+					<key>RSB</key>
+					<integer>0</integer>
+					<key>baseline</key>
+					<real>0.0</real>
+					<key>interpolateX</key>
+					<real>100.0</real>
+					<key>interpolateY</key>
+					<real>100.0</real>
+					<key>lockInterpolationXY</key>
+					<integer>1</integer>
+					<key>lockScaleXY</key>
+					<integer>1</integer>
+					<key>scaleX</key>
+					<real>100.0</real>
+					<key>scaleY</key>
+					<real>100.0</real>
+				</dict>
+			</dict>
+		</dict>
+	</lib>
 </glyph>

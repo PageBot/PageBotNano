@@ -1,40 +1,40 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glyph name="two.sups" format="2">
-  <advance width="320"/>
-  <unicode hex="00B2"/>
-  <outline>
-    <component base="two.dnom" yOffset="440"/>
-  </outline>
-  <lib>
-    <dict>
-      <key>public.markColor</key>
-      <string>1,0.8971,0.5018,1</string>
-      <key>tnScalarpolator</key>
-      <dict>
-        <key>scalarpolatorPrefs</key>
-        <dict>
-          <key>LSB</key>
-          <integer>0</integer>
-          <key>RSB</key>
-          <integer>0</integer>
-          <key>baseline</key>
-          <real>-169.7586669921875</real>
-          <key>glyphSource</key>
-          <string>n</string>
-          <key>interpolateX</key>
-          <real>139.87124633789062</real>
-          <key>interpolateY</key>
-          <real>139.87124633789062</real>
-          <key>lockInterpolationXY</key>
-          <integer>1</integer>
-          <key>lockScaleXY</key>
-          <integer>1</integer>
-          <key>scaleX</key>
-          <real>76.15612030029297</real>
-          <key>scaleY</key>
-          <real>76.15612030029297</real>
-        </dict>
-      </dict>
-    </dict>
-  </lib>
+	<advance width="320"/>
+	<unicode hex="00B2"/>
+	<outline>
+		<component base="two.dnom" yOffset="440"/>
+	</outline>
+	<lib>
+		<dict>
+			<key>public.markColor</key>
+			<string>1,0.9,0.5,1</string>
+			<key>tnScalarpolator</key>
+			<dict>
+				<key>scalarpolatorPrefs</key>
+				<dict>
+					<key>LSB</key>
+					<integer>0</integer>
+					<key>RSB</key>
+					<integer>0</integer>
+					<key>baseline</key>
+					<real>-169.759</real>
+					<key>glyphSource</key>
+					<string>n</string>
+					<key>interpolateX</key>
+					<real>139.871</real>
+					<key>interpolateY</key>
+					<real>139.871</real>
+					<key>lockInterpolationXY</key>
+					<integer>1</integer>
+					<key>lockScaleXY</key>
+					<integer>1</integer>
+					<key>scaleX</key>
+					<real>76.156</real>
+					<key>scaleY</key>
+					<real>76.156</real>
+				</dict>
+			</dict>
+		</dict>
+	</lib>
 </glyph>

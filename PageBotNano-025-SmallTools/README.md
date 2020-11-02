@@ -29,6 +29,17 @@ You can make a selection from the following exercises. And it is also possible t
 * Check component base glyphs to exist in the font
 * Check margins (using kerning groups as source)
 
+## To be done in workshop UI
+
+* Look vanilla sources
+* Make sample tool that uses all vanilla control
+* Make a tool that include the scripts of previous workshop
+* Make new vanilla class by inheriting existing classes 
+* Make a canvas/drawing board 
+* Possibly look into a spreadsheet
+* Connect to Glyphs (to RoboFont)
+* Implementation of dimensioneer: finding stems, bars, diagonals + UI to control + drawing in GlyphsApp
+
 ## Design knowledge
 * Check interpolation errors between masters (easy at start, complex with fixing)
 * Add anchors and position accents on anchors, check vertical position of anchors

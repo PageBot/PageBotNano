@@ -33,7 +33,6 @@ class CallBackTest( object ):
 		self.w.makeKey()
 		
 		# establish callbacks:
-		self.w.bind( "close", self.cleanUp )
 		
 		Glyphs.addCallback( self.drawforeground, DRAWFOREGROUND )
 		Glyphs.addCallback( self.drawbackground, DRAWBACKGROUND )

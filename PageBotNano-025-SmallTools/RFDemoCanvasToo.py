@@ -1,10 +1,10 @@
 
 from vanilla import Window, FloatingWindow, CheckBox, Button, Slider, RadioGroup
-from mojo.events import addObserver, removeObserver # Typical RoboFont Event handling
-from mojo.drawingTools import fill, stroke, rect, oval, text
-from mojo.UI import UpdateCurrentGlyphView
+#from mojo.events import addObserver, removeObserver # Typical RoboFont Event handling
+#from mojo.drawingTools import fill, stroke, rect, oval, text
+#from mojo.UI import UpdateCurrentGlyphView
 
-class DemoWindowTool:
+class DemoCanvasTool:
     def __init__(self):
         self.glyph = None # Typical RoboFont function
         self.updating = False
@@ -70,15 +70,6 @@ class DemoWindowTool:
             fill(0, 0, 1, 0.5)
             rect(0, 0, glyph.width, 50)
         
-    #def glyphChanged(self, info):
-    #    print('Glyph changed', info['glyph'])
-        
-    def currentGlyphChanged(self, info):
-        #if self.glyph is not None:
-        #    self.glyph.removeObserver(self, 'Glyph.Change')
-        self.glyph = info['glyph']
-        #self.glyph.addObserver(self, 'glyphChanged', 'Glyph.Change')
-        #print('Glyph', info['glyph'], 'changed')
-            
-DemoWindowTool()
+  
+DemoCanvasTool()
         

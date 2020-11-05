@@ -31,7 +31,6 @@ You can make a selection from the following exercises. And it is also possible t
 
 ## To be done in workshop UI
 
-* Look at vanilla sources
 * Make sample tool that uses all vanilla control
 * Make a tool that include the scripts of previous workshop
 * Make new vanilla class by inheriting existing classes 
@@ -46,6 +45,8 @@ You can make a selection from the following exercises. And it is also possible t
 * write glyph.angledLeftMargin and glyph.angleRightMargin for fontParts.Font
 
 ## Done
+
+* Look at vanilla sources
 
 * Check unicode (no doubles, relevant glyphs have unicode)
 * accentnamecmb --> width = 0

@@ -44,6 +44,21 @@ def path2FileName(path):
     """
     return path.split('/')[-1] or None
 
+def path2CoreFileName(path):
+    """Answer the file name part of the path, with removed extension
+
+    >>> path2CoreFileName('../../aFile.pdf')
+    'aFile'
+    >>> path2CoreFileName('../../fileName.With.Period.jpg')
+    'fileName.With.Period'
+    >>> path2CoreFileName('../../') is None # No file name
+    True
+    """
+    fileName = path2FileName(path)
+    if fileName is not None:
+        return '.'.join(fileName.split('.')[:-1])
+    return None
+
 def path2DirectoryName(path):
     """Answer the directory name part of the path.
 

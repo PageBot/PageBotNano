@@ -31,7 +31,7 @@ You can make a selection from the following exercises. And it is also possible t
 
 ## To be done in workshop UI
 
-* Look vanilla sources
+* Look at vanilla sources
 * Make sample tool that uses all vanilla control
 * Make a tool that include the scripts of previous workshop
 * Make new vanilla class by inheriting existing classes 

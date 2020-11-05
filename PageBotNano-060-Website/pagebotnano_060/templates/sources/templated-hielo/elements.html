@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>{{pageTitle}}</title>
+		<title>{{title}}</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -16,19 +16,12 @@
 		<!-- Header -->
 			<header id="header">
 				<div class="logo"><a href="index.html">{{logo}}</a></div>
-				<a href="#menu">Menu</a>
+				<a href="#menu">{{menuName}}</a>
 			</header>
 
 		<!-- Nav -->
 			<nav id="menu">
-				<ul class="links">
-					<li><a href="index.html">Home</a></li>
-					<li><a href="{{pageFile 1}}.html">{{pageName 1}}</a></li>
-					<li><a href="{{pageFile 2}}.html">{{pageName 2}}</a></li>
-					<li><a href="{{pageFile 3}}.html">{{pageName 3}}</a></li>
-					<li><a href="{{pageFile 4}}.html">{{pageName 4}}</a></li>
-					<li><a href="{{pageFile 5}}.html">{{pageName 5}}</a></li>
-				</ul>
+				{{menuLinks}}
 			</nav>
 
 		<!-- One -->

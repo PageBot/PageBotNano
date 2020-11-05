@@ -20,6 +20,7 @@ if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
  
 from pagebotnano_060.publications.publication import Publication
+from pagebotnano_060.toolbox.pagedata import ElementData
 
 class Website(Publication):
     """A Website publication takes a volume of text/imges source
@@ -34,12 +35,12 @@ class Website(Publication):
     >>> title = randomTitle()
     >>> author = randomName()
     >>> siteName = 'pagebotnano_demo'
-    >>> pageData = parseMarkdownFile('../../PublishingVariables.md')
+    >>> pageData = parseMarkdownFile('../../TestPageContent.md')
+    >>> #pageData = parseMarkdownFile('../../PublishingVariables.md')
     >>> templatePath = '../templates/sources/templated-hielo'
     >>> #templatePath = '../templates/sources/templated-interphase'
     >>> #templatePath = '../templates/sources/px-layered-html-cyan'
     >>> templates = Templated(templatePath)
-    >>> sorted(templates.getAnchors())
     >>> website = Website(theme=theme, templates=templates)
     >>> website.templates is templates
     True
@@ -50,12 +51,12 @@ class Website(Publication):
     >>> result = os.system(u'/usr/bin/open %s' % url)
 
     """  
-    # Mamp 6 assumes Apache sites in user Site/localhost
-    MAMP_PATH = '~/Sites/localhost/'  # MAMP v6
-    MAMP_PATH = '/Applications/MAMP/htdocs/' # MAMP v5 and earlier  
+    # Mamp 6 assumes Apache sites in user Sites/localhost
+    MAMP_PATH = os.path.expanduser('~/Sites/localhost/')  # MAMP v6
+    #MAMP_PATH = '/Applications/MAMP/htdocs/' # MAMP v5 and earlier  
 
-    PORT = 8888
-    #PORT = 80 # Default for self.port
+    #PORT = 8888
+    PORT = 80 # Default for self.port
 
     def __init__(self, url=None, domain=None, port=None, **kwargs):
         Publication.__init__(self, **kwargs)
@@ -68,7 +69,7 @@ class Website(Publication):
             url = 'http:%s' % domain 
         self.url = url
 
-    def compose(self, pages):
+    def compose(self, siteData):
         """This is the core of a publication, composing the specific
         content of the document. The compose method gets called
         before building and exporting the self.doc document.
@@ -81,23 +82,41 @@ class Website(Publication):
         and the available methods define in the self.templates instance.
 
         """
-        #print('Templates', self.templates.htmlTemplates.keys())
-        anchors = self.templates.getAnchors() # {{Anchors}} of the website to be filled.
-        for pageId, pageData in pages.items():
-            if not pageData.id in self.templates.htmlTemplates:
-                print('Cannot find page template', pageData.id)
-                pageData.id = 'index.html'
-            #print('==3=3=', pageData.elementData.get('logo'))
-            print('+++++++', pageData.md)
-            # Copy the template HTML into the page storage
-            html = self.templates.htmlTemplates[pageData.id]
-            #html = html.replace('{{logo}}', pageData.elementData['logo'])
-            # html contains {{anchorName}} patterns.
-            for anchorName in anchors:
-                print(path, anchorName)
-                pass
+        for pageData in siteData.pages:
+            # Copy the template HTML into the page html
+            html = self.templates.getTemplate(pageData.template)
 
-            self.templates.html[pageData.id] = html # Store the processed html
+            # Replace all remaining anchors by their data
+            for anchorSet in (pageData, siteData):
+                for anchor, anchorContent in anchorSet.data.items():
+                    if anchorContent:
+                        if isinstance(anchorContent, ElementData):
+                            anchorContent = '%s %s' % (anchorContent.title, anchorContent.content)
+                        html = html.replace('{{%s}}' % anchor, anchorContent.strip())
+
+            # Still unchanged anchors left that have implemented methods in the templates?
+            # In case self.templates._<anchor> is implenented, then call it, with siteData as attribute.
+            for anchor in self.templates.getAnchors(pageData.id):
+                methodName = '_'+anchor
+                if hasattr(self.templates, methodName): # Implemented as method?
+                    anchorContent = str(getattr(self.templates, methodName)(siteData, pageData))
+                    html = html.replace('{{%s}}' % anchor, anchorContent.strip())
+
+            self.templates.html[pageData.id] = html
+
+        # Convert the anchors in CSS and JS
+        for d in (self.templates.css, self.templates.js):
+            for path, src in d.items():
+                for anchor, anchorContent in siteData.data.items():
+                    if anchorContent:
+                        methodName = '_'+anchor
+                        if hasattr(self.templates, methodName): # Implemented as method?
+                            anchorContent = str(getattr(self.templates, methodName)(siteData))
+                        elif isinstance(anchorContent, ElementData):
+                            anchorContent = anchorContent.html
+                        src = src.replace('{{%s}}' % anchor, anchorContent.strip())
+
+                d[path] = src
 
     def build(self):
         pass

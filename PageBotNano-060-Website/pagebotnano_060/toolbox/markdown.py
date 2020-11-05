@@ -19,22 +19,27 @@
 #
 import re
 import codecs
+import sys
+
+if __name__ == "__main__":
+    sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+from pagebotnano_060.toolbox.pagedata import SiteData, PageData, ElementData
 
 def parseMarkdownFile(path):
     """Regular expression based markdown parser.
 
     >>> path = '../../PublishingVariables.md'
-    >>> pages = parseMarkdownFile(path)
-    >>> pages
-    {'index': <PageData id=index>, 'drawbot': <PageData id=drawbot>}
+    >>> siteData = parseMarkdownFile(path)
+    >>> siteData
+    <SiteData title="Publishing variables with PageBot" pages=2 data=0>
     """
     f = codecs.open(path, mode="r", encoding="utf-8") # Save the XML as unicode.
     md = f.read()
     f.close()
     md = md.replace('\r', '\n') # Just to be sure we have the right type of returns.
     md = parseMarkdown(md) # Now we have parsed html as result, parse again to split into pages and elements
-    pages = parseMarkdownPages(md)
-    return pages
+    return parseMarkdownData(md) # Answer the SiteData instance
 
 def parseMarkdown(md):
     """
@@ -51,6 +56,9 @@ def parseMarkdown(md):
     >>> md = '## H2\\n[^litSmith1994]: This is the literature text.\\n'
     >>> parseMarkdown(md)
     '<h2>H2</h2>\\n<literature id="Smith1994"> This is the literature text.</literature>\\n'
+    >>> md = '# H1\\n![](images/image.jpg)'
+    >>> parseMarkdown(md)
+    '<h1>H1</h1>\\n<img src="images/image.jpg" alt=""/>'
 
     """
     # Solve Python comments inside <code>...</code>
@@ -58,7 +66,7 @@ def parseMarkdown(md):
     # ~~~ ... ~~~ --> <code> ... </code>
     md = re.sub('\\~\\~\\~([^~]*).*$', '<python>\\1</python>', md, flags=re.MULTILINE)
     # ![text](src) --> <img src="src" alt="text" />
-    md = re.sub('\\!\\[([^\\[]+)\\]\\(([^\\)]+)\\)', '<img src="\\2" alt="\\1"/>', md, flags=re.MULTILINE)
+    md = re.sub('\\!\\[([^\\[]*)\\]\\(([^\\)]+)\\)', '<img src="\\2" alt="\\1"/>', md, flags=re.MULTILINE)
     # [text](link) --> <a href="link">text</a>
     md = re.sub('\\[([^\\[]+)\\]\\(([^\\)]+)\\)', '<a href="\\2">\\1</a>', md, flags=re.MULTILINE)
     # [^litSmith1994]: --> <literature id="Smith1994">...</literature> # XML-based content tags
@@ -98,8 +106,8 @@ def parseMarkdown(md):
     # ___ --> <hr /> 
     md = re.sub('^---(.*)', '<hr/>', md, flags=re.MULTILINE)
     # <p>...</p> 
-    md = re.sub('^([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
-    md = md.replace('<br/>\n<p>', '<br/>\n')
+    #md = re.sub('^([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
+    #md = md.replace('<br/>\n<p>', '<br/>\n')
     md = md.replace('</blockquote>\n</p>', '</blockquote>\n')
     # Restore the Python comment inside <code>...</code>
     md = md.replace('<<pythonComment>>', '#')
@@ -112,44 +120,62 @@ def parseMarkdown(md):
 
     return md
 
-TAGS = ('site', 'page', 'template', 'logo', 'content', 'copyright')
+TAGS = {'site', 'page', 
+    # Site & Page 
+    'template', 'logo', 'content', 'copyright',
+    'menuName', 
+    # Banner
+    'bannerImage', 'bannerTitle', 'bannerSubtitle', 
+    'head', 'subhead', 'article', 'footer',
+    # pullQuote
+    'pullQuote', 'pullQuoteImage', 'pullQuoteSubhead', 'pullQuoteHead',
+    # imageArticle
+    'imageArticles', 'article', 'articleImage', 'articleHead', 'articleSubhead', 'articleFooter'
+    # Gallery
+    'gallery', 'galleryHead', 'gallerySubhead', 'galleryImage', 'galleryCaption', 
+    # CSS
+    'fontFamily', 'logoFontFamily', 
+}
+def _content2Title(content):
+    contentLines = content.split('\n')
+    title = contentLines[0].strip()
+    if len(contentLines) > 1:
+        content = '\n'.join(contentLines[1:]).strip()
+    else:
+        content = ''
+    return title, content
+   
+def parseMarkdownData(md):
+    siteData = pageData = data = None
+    pattern = '^\\.([a-zA-Z0-9_-]*)[\\s]*([^\\.]*)\\.[\t ]*(.*?)[\\s]*(?=\\n\\.|\\Z)'
+    #pattern = '<([a-zA-Z0-9_-]*)([^>]*)>([^<]*)'
+    e = None # Running content element collecting
+    for tag, id, content in re.findall(pattern, md, flags=re.MULTILINE+re.DOTALL):
+        id = id.strip()
+        content = content.strip()
+        if tag == 'site':
+            title, _ = _content2Title(content)
+            siteData = data = SiteData(id, title)
+            e = None
+        elif tag == 'page':
+            if siteData is not None:
+                title, _ = _content2Title(content)
+                data = PageData(id, title, 'index')
+                siteData.pages.append(data)
+                e = None
+        elif tag == 'template':
+            data.template = id.strip()
+            e = None
+        elif tag in TAGS:
+            if data is not None:
+                title, content = _content2Title(content)
+                e = ElementData(id, title, content)
+                key = ('%s %s' % (tag, id)).strip()
+                data.data[key] = e
+        elif e is not None: # Normal HTML tag, restore the source and add to current element
+            e.content += '<%s %s>%s\n%s' % (tag, id, title, content)
 
-class PageData:
-    def __init__(self, md):
-        self.elementData = {}
-        self.md = md
-        # Find meta data about this page
-        self.name = self._find('name', 'Home')
-        self.id = self._find('id', 'index.html')
-        # Now split all other tags into elementData chunck of html code
-        for tag, html in re.findall('{{([^ ]*)}}([^{{]*)', md, flags=re.MULTILINE):
-            print('+++++++', tag, html)
-            self.elementData[tag] = html
-
-    def _find(self, tag, default):
-        found = re.findall('{{%s ([^}]*)}}' % tag, self.md)
-        if found:
-            return found[0]
-        return default
-
-    def __repr__(self):
-        return '<%s id=%s>' % (self.__class__.__name__, self.id)
-
-def parseMarkdownPages(md):
-    # Now convert into temporary template {{markers}} to easy split patterns
-    # <site> --> <page id="main"/> # Select the current page with this identifier
-    for tag in TAGS:
-        # <page index>  # Select the current page with this identifier
-        # <page contact> # Select the current page with this identifier
-        md = re.sub('<%s>\\ *$' % tag, '{{%s}}\\n' % tag, md, flags=re.MULTILINE)
-        md = re.sub('<%s>\\ *(.*$)' % tag, '{{%s}}{{name \\1}}\\n' % tag, md, flags=re.MULTILINE)
-        md = re.sub('<%s\\ *([a-zA-Z0-9]*)>\\ *(.*$)' % tag, '{{%s}}{{id \\1}}{{name \\2}}\\n' % tag, md, flags=re.MULTILINE)
-
-    pages = {}
-    for pageMd in md.split('{{page}}'):
-        pageData = PageData(pageMd)
-        pages[pageData.id] = pageData
-    return pages
+    return siteData
 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

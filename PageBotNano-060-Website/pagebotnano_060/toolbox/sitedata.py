@@ -18,27 +18,14 @@
 #
 class BaseData:
     def __init__(self, id, title):
-        self.id = (id or 'noname').strip()
-        self.title = (title or 'Untitled').strip()
+        self.id = id.strip()
+        self.title = title.strip()
 
 class SiteData(BaseData):
-    """Collect all global site attributes and the list of PageData pages.
-
-    >>> site = SiteData('domain', 'Site title')
-    >>> site
-    <SiteData id=domain title="Site title" pages=0 data=2>
-    >>> site.newPage('index')
-    <PageData id=index title="Untitled" elements=0 data=2>
-    """
     def __init__(self, id, title):
         BaseData.__init__(self, id, title)
-        self.id = id
-        self.title = title or 'Untitled site'
-        self._pages = [] # As list, to keep the order in menu and navigation
-
-    def _get_pages(self):
-        return self._pages
-    pages = property(_get_pages)
+        self.data = {}
+        self.pages = [] # As list, to keep the order in menu and navigation
 
     def __repr__(self):
         s = '<%s' % self.__class__.__name__
@@ -47,19 +34,16 @@ class SiteData(BaseData):
         if self.title:
             s += ' title="%s"' % self.title
         s += ' pages=%d' % len(self.pages)
-        s += ' data=%d' % (len(self.__dict__)-1)
+        s += ' data=%d' % len(self.data)
         s += '>'
         return s
-
-    def newPage(self, id=None, title=None, template=None):
-        page = PageData(id, title, template)
-        self._pages.append(page)
-        return page
 
 class PageData(BaseData):
     def __init__(self, id, title, template):
         BaseData.__init__(self, id, title)
         self.template = template
+        self.data = {}
+        self.elements = {}
 
     def __repr__(self):
         s = '<%s' % self.__class__.__name__
@@ -67,9 +51,32 @@ class PageData(BaseData):
             s += ' id=%s' % self.id
         if self.title:
             s += ' title="%s"' % self.title
-        s += ' data=%d' % (len(self.__dict__)-2)
+        s += ' elements=%d' % len(self.elements)
+        s += ' data=%d' % len(self.data)
         s += '>'
         return s
+
+class ElementData(BaseData):
+    def __init__(self, id, title, content):
+        BaseData.__init__(self, id, title)
+        self.content = content
+
+    def __repr__(self):
+        s = '<%s' % self.__class__.__name__
+        if self.id:
+            s += ' id=%s' % self.id
+        if self.title:
+            s += ' title="%s"' % self.title
+        if self.content:
+            s += ' content="%s">' % self.content[:40]
+        return s
+
+    def _get_html(self):
+        html = self.title
+        if self.content:
+            html += ' '+self.content
+        return html
+    html = property(_get_html)
 
     def _get_url(self):
         url = self.title # Plain url or <img src="path">?

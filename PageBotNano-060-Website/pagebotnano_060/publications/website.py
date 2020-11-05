@@ -63,7 +63,7 @@ class Website(Publication):
         self.port = port
         if domain is None:
             domain = 'localhost'
-            if port:
+            if port and port != 80:
                 domain += ':%d' % port
         if url is None:
             url = 'http:%s' % domain 

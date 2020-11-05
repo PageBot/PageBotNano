@@ -1,31 +1,40 @@
 #MenuTitle: CallBack Test
 # -*- coding: utf-8 -*-
 __doc__="""
-Test Script for Callbacks
+Do several adjustments to the font and current glypg.
 """
-
 import vanilla
+from vanilla import EditText, TextBox, Button, CheckBox, TextEditor
 
-class CallBackTest( object ):
+class DemoGlyphsEvents:
 	def __init__( self ):
 		# Window 'self.w':
-		windowWidth  = 250
-		windowHeight = 90
+		w  = 300
+		h = 300
 		windowWidthResize  = 200 # user can resize width by this value
-		windowHeightResize = 0   # user can resize height by this value
+		windowHeightResize = 500   # user can resize height by this value
 		self.w = vanilla.FloatingWindow(
-			( windowWidth, windowHeight ), # default window size
+			(w, h ), # default window size
 			"CallBack Test", # window title
-			minSize = ( windowWidth, windowHeight ), # minimum size (for resizing)
-			maxSize = ( windowWidth + windowWidthResize, windowHeight + windowHeightResize ), # maximum size (for resizing)
-			autosaveName = "com.mekkablue.CallBackTest.mainwindow" # stores last window position and size
+			minSize = ( w, h-100 ), # minimum size (for resizing)
+			maxSize = ( w + windowWidthResize, h + windowHeightResize ), # maximum size (for resizing)
+			autosaveName = "com.typetr.DemoGlyphsEvents.mainwindow" # stores last window position and size
 		)
-		
+		M = 10
+		y = 30
 		# UI elements:
-		self.w.text = vanilla.TextBox( (14, 14, -15, 14), "Watch output in Macro Window", sizeStyle='small' )
+		self.w.tabWidth = EditText( (M, y, w/4-M-M, 20), "650", sizeStyle='small' )
+		self.w.tabWidthLabel = TextBox( (w/4, y+4, w/2, 20), "Tab width", sizeStyle='small' )
 		
+		y += 30
 		# Run Button:
-		self.w.runButton = vanilla.Button((-200, -20-15, -15, -15), "Open Macro Window", sizeStyle='regular', callback=self.showWindow )
+		self.w.runButton = Button((w/2, y, -M, 24), "Check/fix tab widths", sizeStyle='regular', callback=self.runButtonCallback)
+		self.w.doFix = CheckBox((M, y, -M, 24), "Fix errors", value=False, sizeStyle='regular' )
+		
+		y += 40
+		self.w.reporter = TextEditor((M, y, -M, -M), readOnly=True)
+		
+	
 		self.w.setDefaultButton( self.w.runButton )
 				
 		# Open window and focus on it:
@@ -49,6 +58,30 @@ class CallBackTest( object ):
 		
 		print "Callbacks done."
 	
+	def runButtonCallback(self, sender):
+		s = 'Testing all widths'
+		if self.w.doFix.get():
+			s += ' and fix where needed\n'
+		
+		try:
+			tabWidth = int(self.w.tabWidth.get()) # Should be tested more
+		except ValueError:
+			self.w.reporter.set('Illegal width value: %s' % self.w.tabWidth.get())
+			return
+			
+		f = Glyphs.font # Returns the current that is open in GlyphsApp
+		for g in f.glyphs:
+			for gStyle in g.layers:
+				if '.tab' in g.name and gStyle.width != tabWidth:
+					if self.w.doFix.get():
+						s += 'Fixed: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
+						gStyle.width = tabWidth
+					else:
+						s += 'Not tab width: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
+						
+					
+		self.w.reporter.set(s)
+
 	def drawforeground(self, layer, info):
 		print "drawforeground"
 		print "   layer: %s" % layer
@@ -131,4 +164,4 @@ class CallBackTest( object ):
 		Glyphs.showMacroWindow()
 		print sender
 		
-CallBackTest()
+DemoGlyphsEvents()

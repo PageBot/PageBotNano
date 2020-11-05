@@ -31,8 +31,6 @@ def parseMarkdownFile(path):
 
     >>> path = '../../PublishingVariables.md'
     >>> siteData = parseMarkdownFile(path)
-    >>> siteData
-    <SiteData title="Publishing variables with PageBot" pages=2 data=0>
     """
     f = codecs.open(path, mode="r", encoding="utf-8") # Save the XML as unicode.
     md = f.read()
@@ -105,8 +103,10 @@ def parseMarkdown(md):
     md = re.sub('(`)(.*?)\\1', '<code>\\2</code>', md, flags=re.MULTILINE)
     # ___ --> <hr /> 
     md = re.sub('^---(.*)', '<hr/>', md, flags=re.MULTILINE)
-    # <p>...</p> 
-    #md = re.sub('^([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
+    # \n\n\n --> <br/>\n
+    #mb = re.sub('\\n\\n\\n', 'ZZZ<br/><br/>\\nAAA', md, flags=re.MULTILINE)
+    # <p>...</p> ,
+    md = re.sub('^[^\\.]([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
     #md = md.replace('<br/>\n<p>', '<br/>\n')
     md = md.replace('</blockquote>\n</p>', '</blockquote>\n')
     # Restore the Python comment inside <code>...</code>

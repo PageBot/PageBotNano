@@ -18,7 +18,7 @@ import os, codecs, shutil, re
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.templates.base import BaseTemplates
+from pagebotnano_060.templates.basetemplates import BaseTemplates
 from pagebotnano_060.toolbox import path2DirectoryName, path2CoreFileName
 from pagebotnano_060.toolbox.dating import now
 
@@ -34,24 +34,6 @@ class Templated(BaseTemplates):
     >>> wt
     <Templated templates=3 css=2 js=5 images=11 fonts=6>
     """
-    def __init__(self, path=None): # Standard API for all templates
-        if path is None:
-            path = 'sources/templated-hielo/'
-        if not path.endswith('/'):
-            path += '/'
-        self.path = path
-        self.pageName = None # Name key of current selected page
-        self.htmlTemplates = {} # Key is file path, value is file text content.
-        self.html = {} # Key is file path, value is file procesed page content.
-        self.css = {} # Anchor substitution directly on this file content.
-        self.js = {} # Anchor substitution directly on this file content.
-        self.images = []
-        self.pdf = []
-        self.fonts = []
-        self.otherFiles = [] # List with other files that need to be copied
-
-        self.read(path)
-
     def __repr__(self):
         return '<%s templates=%d css=%d js=%d images=%d fonts=%d>' % (self.__class__.__name__,
             len(self.htmlTemplates), len(self.css), len(self.js), len(self.images), len(self.fonts))

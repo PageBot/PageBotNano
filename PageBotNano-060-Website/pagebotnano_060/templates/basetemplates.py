@@ -18,7 +18,7 @@ import os, codecs, shutil, re
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.toolbox import path2DirectoryName
+from pagebotnano_060.toolbox import path2DirectoryName, path2DirectoryName
 
 class BaseTemplates:
     """    
@@ -27,18 +27,20 @@ class BaseTemplates:
     and queried.
 
     >>> wt = BaseTemplates()
-    >>> wt
-    <BaseTemplates html=3 css=2 js=5 images=10 fonts=6>
+    >>> len(wt.html) > 0
+    True
     """
     def __init__(self, path=None): # Standard API for all templates
-        if path is None:
-            path = 'sources/templated-hielo/'
+        # Find the template, otherwise select one in the local resources
+        path = self.locateTemplate(path)
         if not path.endswith('/'):
             path += '/'
         self.path = path
-        self.html = {} # Key is file path, value is file text content.
-        self.css = {} # Key is file path
-        self.js = {}
+        self.pageName = None # Name key of current selected page
+        self.htmlTemplates = {} # Key is file path, value is file text content.
+        self.html = {} # Key is file path, value is file procesed page content.
+        self.css = {} # Anchor substitution directly on this file content.
+        self.js = {} # Anchor substitution directly on this file content.
         self.images = []
         self.pdf = []
         self.fonts = []
@@ -49,6 +51,30 @@ class BaseTemplates:
     def __repr__(self):
         return '<%s html=%d css=%d js=%d images=%d fonts=%d>' % (self.__class__.__name__,
             len(self.html), len(self.css), len(self.js), len(self.images), len(self.fonts))
+
+    DEFAULT_TEMPLATE = 'templated-hielo/'
+    @classmethod
+    def locateTemplate(cls, path):
+        """Try to locate the template folder from path. If the template
+        cannot be found, then answer the path to a local default template.
+
+        >>> bt = BaseTemplates()
+        >>> bt.path
+        'sources/templated-hielo/'
+        """
+        if path is None:
+            path = cls.DEFAULT_TEMPLATE
+        tryPaths = (
+            path,
+            'sources/' + path,
+            'sources/' + cls.DEFAULT_TEMPLATE,
+            path2DirectoryName(__file__) + path,
+            path2DirectoryName(__file__) + 'sources/' + cls.DEFAULT_TEMPLATE,
+            )
+        for tryPath in tryPaths: 
+            if os.path.exists(tryPath):
+                return tryPath
+        return None
 
     def _readFile(self, path):
         f = codecs.open(path, 'r', encoding='utf-8')

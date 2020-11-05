@@ -72,6 +72,8 @@ class DemoGlyphsEvents:
 		f = Glyphs.font # Returns the current that is open in GlyphsApp
 		for g in f.glyphs:
 			for gStyle in g.layers:
+
+				# No need to check on negative width, as GlyphsApp keeps it a 0, when setting negative value.
 				if '.tab' in g.name and gStyle.width != tabWidth:
 					if self.w.doFix.get():
 						s += 'Fixed: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
@@ -80,55 +82,74 @@ class DemoGlyphsEvents:
 						gStyle.width = tabWidth
 					else:
 						s += 'Not tab width: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
-						
+
+				elif 'cmb' in g.name and gStyle.width > 0:
+					if self.w.doFix.get():
+						s += 'Fixed: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
+						diff = 0 - gStyle.width
+						gStyle.LSB += diff/2 # First set the margin
+						gStyle.width = 0
+					else:
+						s += 'Not zero cmb width: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
+							
 					
 		self.w.reporter.set(s)
 
 	def drawforeground(self, layer, info):
-		print "drawforeground"
-		print "   layer: %s" % layer
-		for dictKey in info.keys():
-			print "   info > %s: %s" % ( dictKey, info[dictKey] )
+		if 0:
+			print "drawforeground"
+			print "   layer: %s" % layer
+			for dictKey in info.keys():
+				print "   info > %s: %s" % ( dictKey, info[dictKey] )
 			
 	def drawbackground(self, layer, info):
-		print "drawbackground"
-		print "   layer: %s" % layer
-		for dictKey in info.keys():
-			print "   info > %s: %s" % ( dictKey, info[dictKey] )
+		if 0:
+			print "drawbackground"
+			print "   layer: %s" % layer
+			for dictKey in info.keys():
+				print "   info > %s: %s" % ( dictKey, info[dictKey] )
 			
 	def drawinactive(self, layer, info):
-		print "drawinactive"
-		print "   layer: %s" % layer
-		for dictKey in info.keys():
-			print "   info > %s: %s" % ( dictKey, info[dictKey] )
+		if 0:
+			print "drawinactive"
+			print "   layer: %s" % layer
+			for dictKey in info.keys():
+				print "   info > %s: %s" % ( dictKey, info[dictKey] )
 			
 	def documentopened(self, passedobject):
-		print "documentopened"
-		print "   passed object: %s" % repr(passedobject)
+		if 0:
+			print "documentopened"
+			print "   passed object: %s" % repr(passedobject)
 			
 	def documentactivated(self, passedobject):
-		print "documentactivated"
-		print "   passed object: %s" % repr(passedobject)
-			
+		if 0:
+			print "documentactivated"
+			print "   passed object: %s" % repr(passedobject)
+				
 	def documentwassaved(self, passedobject):
-		print "documentwassaved"
-		print "   passed object: %s" % repr(passedobject)
+		if 0:
+			print "documentwassaved"
+			print "   passed object: %s" % repr(passedobject)
 			
 	def documentexported(self, passedobject):
-		print "documentexported"
-		print "   passed object: %s" % repr(passedobject)
+		if 0:
+			print "documentexported"
+			print "   passed object: %s" % repr(passedobject)
 			
 	def documentclosed(self, passedobject):
-		print "documentclosed"
-		print "   passed object: %s" % repr(passedobject)
+		if 0:
+			print "documentclosed"
+			print "   passed object: %s" % repr(passedobject)
 			
 	def tabdidopen(self, tab):
-		print "tabdidopen"
-		print "   tab: %s" % repr(tab)
+		if 0:
+			print "tabdidopen"
+			print "   tab: %s" % repr(tab)
 			
 	def tabwillclose(self, tab):
-		print "tabwillclose"
-		print "   tab: %s" % repr(tab)
+		if 0:
+			print "tabwillclose"
+			print "   tab: %s" % repr(tab)
 			
 	def updateinterface(self, passedobject):
 		# brings macro window to front and clears its log:
@@ -136,14 +157,16 @@ class DemoGlyphsEvents:
 		Glyphs.showMacroWindow()
 		
 		
-		print "updateinterface"
-		print "   passed object: %s" % repr(passedobject)
+		if 0:
+			print "updateinterface"
+			print "   passed object: %s" % repr(passedobject)
 		
 			
 	def mousemoved(self, passedobject):
-		print "mousemoved"
-		print "   passed object: %s" % repr(passedobject)
-	
+		if 0:
+			print "mousemoved"
+			print "   passed object: %s" % repr(passedobject)
+		
 	def cleanUp(self, sender):
 		Glyphs.removeCallback( self.mousemoved, MOUSEMOVED )
 		Glyphs.removeCallback( self.drawforeground, DRAWFOREGROUND )

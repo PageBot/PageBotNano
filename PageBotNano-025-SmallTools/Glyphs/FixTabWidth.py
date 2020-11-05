@@ -75,6 +75,8 @@ class DemoGlyphsEvents:
 				if '.tab' in g.name and gStyle.width != tabWidth:
 					if self.w.doFix.get():
 						s += 'Fixed: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)
+						diff = tabWidth - gStyle.width
+						gStyle.LSB += diff/2 # First set the margin
 						gStyle.width = tabWidth
 					else:
 						s += 'Not tab width: %s-%s: %d\n' % (gStyle.name, g.name, gStyle.width)

@@ -61,12 +61,24 @@ class DimensionsTool:
 		#rect(50, 50, 300, 300)
 				
 	def drawbackground(self, layer, info):
+
+		radius = 30
 		
 		metrics = self.getMetrics(layer)
-		print('Verticals', metrics['verticals'])
-		print('Horizontals', metrics['horizontals'])
+		#print(metrics['stems'])
+		y = -300
+		for pair in metrics['stems']:
+			for x in pair:
+				point = NSPoint(x-radius, y-radius)
+				NSColor.redColor().set()
+				rect = NSRect(point, (radius*2, radius*2))
+				bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+				bezierPath.stroke()
+			
+		#print('Verticals', metrics['verticals'])
+		#print('Horizontals', metrics['horizontals'])
 		# Do something here to show the metrics in the EditorWindow
-		print(layer.parent.name, layer.name, layer.width, metrics)
+		#print(layer.parent.name, layer.name, layer.width, metrics)
 		if 0:
 			print("drawbackground")
 			print("   layer: %s" % layer)
@@ -121,8 +133,9 @@ class DimensionsTool:
 	def getMetrics(self, layer):
 		# Layer is a GlyphsApp glyph style
 		pcs = [] # List of point context tuples [(p_2, p_1, p, p1, p2), ...] 
-		verticals = []
-		horizontals = []
+		verticals = {} # Key is horizontal position, value is list [(p, p1), ...]
+		horizontals = {} # Key is vertical position, value is [(p, p1), ...]
+		#diagonals = []
 		for contour in layer.paths:
 			points = list(contour.nodes)
 			for i in range(len(points)):
@@ -131,13 +144,32 @@ class DimensionsTool:
 				p_2, p_1, p, p1, p2 = points[i-4], points[i-3], points[i-2], points[i-1], points[i]
 				pcs.append((p_2, p_1, p, p1, p2))
 				if p.x == p1.x:
-					verticals.append((p, p1))
+					if not p.x in verticals:
+						verticals[p.x] = []
+					verticals[p.x].append((p, p1))
 				if p.y == p1.y:
-					horizontals.append((p, p1))
-					#print(p.x, p.y, p.type)
-					#point = NSPoint(p.x-radius, p.y-radius)
-
-		metrics = dict(pcs=pcs, verticals=verticals, horizontals=horizontals)
+					if not p.y in horizontals:
+						horizontals[p.y] = []
+					horizontals[p.y].append((p, p1))
+				
+		# Looking for stems
+		stems = [] # Key (x1, x2), value is [p, p, p, ...]
+		stemx1 = stemx2 = None
+		for x, pairs in sorted(verticals.items()):
+			for p, p1 in pairs:
+				if stemx1 is None:
+					stemx1 = x
+				elif stemx2 is None:
+					stemx2 = x
+				if not None in (stemx1, stemx2):
+					stems.append((stemx1, stemx2))
+					stemx1 = stemx2 = None
+			
+		# Looking for bars
+		bars = {}
+		# Later: looking for diagonals
+		
+		metrics = dict(pcs=pcs, verticals=verticals, horizontals=horizontals, stems=stems, bars=bars)
 		return metrics
 				
 	

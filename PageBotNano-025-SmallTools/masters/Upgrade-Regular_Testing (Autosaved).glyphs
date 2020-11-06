@@ -3,7 +3,10 @@
 DisplayStrings = (
 "A/Aogonek/Eogonek ÌÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Idotaccent/Jcircumflex/Dcroat/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾/fraction %/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Aogonek.sc/Egrave.sc/Eogonek.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Idotaccent.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Dcroat.sc/Ldot.sc/germandbls.sc/ordfeminine.lc/ordmasculine.lc",
 "ÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Jcircumflex/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾%/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Egrave.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Ldot.sc/ordfeminine.lc/ordmasculine.lc",
-"/Gcommaaccent/Kcommaaccent/Lcommaaccent/Ncommaaccent/Rcommaaccent/Scommaaccent/Tcommaaccent"
+"/Gcommaaccent/Kcommaaccent/Lcommaaccent/Ncommaaccent/Rcommaaccent/Scommaaccent/Tcommaaccent",
+E,
+I,
+H
 );
 copyright = "(c) 2017 TYPETR Petr van Blokland (buro@petr.com) Original Design. ";
 customParameters = (
@@ -2322,6 +2325,7 @@ unicode = 01E6;
 {
 color = (255,255,0,255);
 glyphname = H;
+lastChange = "2020-11-06 19:38:34 +0000";
 layers = (
 {
 layerId = master01;
@@ -2329,8 +2333,8 @@ paths = (
 {
 closed = 1;
 nodes = (
-"156 0 LINE",
-"156 297 LINE",
+"254 0 LINE",
+"254 297 LINE",
 "528 297 LINE",
 "528 0 LINE",
 "612 0 LINE",
@@ -2388,6 +2392,7 @@ width = 652;
 leftKerningGroup = "@MMK_R_H";
 rightKerningGroup = "@MMK_L_H";
 unicode = 0048;
+changeCount = 6;
 },
 {
 color = (33,117,255,128);

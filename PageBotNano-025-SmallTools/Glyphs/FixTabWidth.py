@@ -3,6 +3,8 @@
 __doc__="""
 Do several adjustments to the font and current glypg.
 """
+from AppKit import *
+from drawBot import *
 import vanilla
 from vanilla import EditText, TextBox, Button, CheckBox, TextEditor
 
@@ -38,6 +40,7 @@ class DemoGlyphsEvents:
 		self.w.setDefaultButton( self.w.runButton )
 				
 		# Open window and focus on it:
+        self.w.bind('close', self.windowCloseCallback)
 		self.w.open()
 		self.w.makeKey()
 		
@@ -57,7 +60,11 @@ class DemoGlyphsEvents:
 		Glyphs.addCallback( self.mousemoved, MOUSEMOVED )
 		
 		print "Callbacks done."
-	
+
+    def windowCloseCallback(self, sender):
+        self.removeCallbacks()
+        print('removeObserver currentGlyphChanged')
+ 	
 	def runButtonCallback(self, sender):
 		s = 'Testing all widths'
 		if self.w.doFix.get():
@@ -101,7 +108,16 @@ class DemoGlyphsEvents:
 			print "   layer: %s" % layer
 			for dictKey in info.keys():
 				print "   info > %s: %s" % ( dictKey, info[dictKey] )
-			
+		"""
+		point = NSPoint(100, 100)
+		NSColor.redColor().set()
+		rect = NSRect(point, (200, 200))
+		bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+		bezierPath.stroke()
+		"""
+		fill(1, 1, 0)
+		rect(50, 50, 300, 300)
+				
 	def drawbackground(self, layer, info):
 		if 0:
 			print "drawbackground"
@@ -168,6 +184,10 @@ class DemoGlyphsEvents:
 			print "   passed object: %s" % repr(passedobject)
 		
 	def cleanUp(self, sender):
+		self.removeCallbacks()
+		print sender
+		
+	def removeCallbacks(self):
 		Glyphs.removeCallback( self.mousemoved, MOUSEMOVED )
 		Glyphs.removeCallback( self.drawforeground, DRAWFOREGROUND )
 		Glyphs.removeCallback( self.drawbackground, DRAWBACKGROUND )
@@ -181,7 +201,6 @@ class DemoGlyphsEvents:
 		Glyphs.removeCallback( self.tabwillclose, TABWILLCLOSE )
 		Glyphs.removeCallback( self.updateinterface, UPDATEINTERFACE )
 		Glyphs.removeCallback( self.mousemoved, MOUSEMOVED )
-		print sender
 	
 	def showWindow(self, sender):
 		# brings macro window to front and clears its log:

@@ -38,6 +38,11 @@ class SiteData(BaseData):
         s += '>'
         return s
 
+    def newPage(self, id, title, template):
+        page = PageData(id, title, template)
+        self.pages.append(page)
+        return page
+        
 class PageData(BaseData):
     def __init__(self, id, title, template):
         BaseData.__init__(self, id, title)

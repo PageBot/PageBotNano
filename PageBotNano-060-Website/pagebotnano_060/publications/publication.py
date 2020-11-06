@@ -20,7 +20,7 @@ if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_060.themes import HappyHolidays as DefaultTheme
-from pagebotnano_060.templates.templated import Templated
+from pagebotnano_060.templates.templated import *
 
 class Publication:
     """The Publication base class is a wrapper around a document.
@@ -35,7 +35,7 @@ class Publication:
     def __init__(self, theme=None, templates=None, context=None):       
         # In this approach there is no self.doc Document.
         if templates is None:
-            templates = Templated()
+            templates = TemplatedHielo() # Default template set.
         self.templates = templates
 
     def compose(self):

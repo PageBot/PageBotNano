@@ -18,19 +18,20 @@ import os, codecs, shutil, re
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.toolbox import path2DirectoryName, path2DirectoryName
+from pagebotnano_060.toolbox import path2DirectoryName, path2CoreFileName
 
 class BaseTemplates:
     """    
     The WebTemplates reads all templates sources, ending with .css,
     .js and .html, and keeps them as objects that can be altered
     and queried.
-
-    >>> wt = BaseTemplates()
-    >>> len(wt.html) > 0
-    True
     """
+    TEMPLATE_NAME = None # To be defined by inheriting template classes.
+
     def __init__(self, path=None): # Standard API for all templates
+        if path is None:
+            path = self.TEMPLATE_NAME # Use the default template name for this class.
+            assert path is not None
         # Find the template, otherwise select one in the local resources
         path = self.locateTemplate(path)
         if not path.endswith('/'):
@@ -52,29 +53,39 @@ class BaseTemplates:
         return '<%s html=%d css=%d js=%d images=%d fonts=%d>' % (self.__class__.__name__,
             len(self.html), len(self.css), len(self.js), len(self.images), len(self.fonts))
 
-    DEFAULT_TEMPLATE = 'templated-hielo/'
     @classmethod
     def locateTemplate(cls, path):
         """Try to locate the template folder from path. If the template
         cannot be found, then answer the path to a local default template.
-
-        >>> bt = BaseTemplates()
-        >>> bt.path
-        'sources/templated-hielo/'
         """
         if path is None:
-            path = cls.DEFAULT_TEMPLATE
+            path = cls.TEMPLATE_NAME
+        if not path.endswith('/'):
+            path += '/'
         tryPaths = (
             path,
             'sources/' + path,
-            'sources/' + cls.DEFAULT_TEMPLATE,
+            'sources/' + cls.TEMPLATE_NAME,
             path2DirectoryName(__file__) + path,
-            path2DirectoryName(__file__) + 'sources/' + cls.DEFAULT_TEMPLATE,
+            path2DirectoryName(__file__) + 'sources/' + path,
+            path2DirectoryName(__file__) + 'sources/' + cls.TEMPLATE_NAME,
             )
         for tryPath in tryPaths: 
             if os.path.exists(tryPath):
                 return tryPath
         return None
+
+    def getTemplate(self, templateId):
+        if not templateId in self.htmlTemplates:
+            print('Templated warning: Cannot find template "%s". Using "index" instead' % templateId)
+            templateId = 'index'
+        return self.htmlTemplates[templateId]
+
+    def keys(self):
+        return self.htmlTemplates.keys()
+
+    def __getitem__(self, templateId, pageData):
+        return self.htmlTemplates.get(templateId)
 
     def _readFile(self, path):
         f = codecs.open(path, 'r', encoding='utf-8')
@@ -103,7 +114,8 @@ class BaseTemplates:
             for fileName in os.listdir(path):
                 self.read(path + fileName)
         elif path.lower().endswith('.html'):
-            self.html[path] = self._readFile(path)
+            fileId = path2CoreFileName(path)
+            self.htmlTemplates[fileId] = self._readFile(path)
         elif path.lower().endswith('.css'):
             self.css[path] = self._readFile(path)
         elif path.lower().endswith('.js'):
@@ -123,8 +135,8 @@ class BaseTemplates:
         if not os.path.exists(path):
             os.makedirs(path)
         # Export the (possibly modified) file
-        for htmlPath, html in self.html.items():
-            filePath = path + htmlPath.split(self.path)[-1]
+        for pageId, html in self.html.items():
+            filePath = path + pageId.split(self.path)[-1] + '.html'
             self._writeFile(filePath, html)
         for cssPath, css in self.css.items():
             filePath = path + cssPath.split(self.path)[-1]

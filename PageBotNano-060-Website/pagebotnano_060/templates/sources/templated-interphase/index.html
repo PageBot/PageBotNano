@@ -28,6 +28,8 @@
 		<!-- Header -->
 			<header id="header">
 				<h1><a href="index.html">{{logo}}</a></h1>
+				{{menuLinks}}
+				<!--
 				<nav id="nav">
 					<ul>
 						<li><a href="index.html">Home</a></li>
@@ -38,8 +40,8 @@
 						<li><a href="{{pageFile 5}}.html">{{pageName 5}}</a></li>
 					</ul>
 				</nav>
+				-->
 			</header>
-
 		<!-- Banner -->
 			<section id="banner">
 				<h2>This is Interphase</h2>
@@ -163,9 +165,7 @@
 						</section>
 					</div>
 					<ul class="copyright">
-						<li>&copy; {{copyright}}. All rights reserved.</li>
-						<li>Design: <a href="http://templated.co">TEMPLATED</a></li>
-						<li>Images: <a href="http://unsplash.com">Unsplash</a></li>
+                	&copy; {{year}} {{copyright}} | All rights reserved.
 					</ul>
 				</div>
 			</footer>

@@ -20,7 +20,6 @@ if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
  
 from pagebotnano_060.publications.publication import Publication
-from pagebotnano_060.toolbox.pagedata import ElementData
 
 class Website(Publication):
     """A Website publication takes a volume of text/imges source
@@ -74,11 +73,11 @@ class Website(Publication):
         content of the document. The compose method gets called
         before building and exporting the self.doc document.
 
-        pages is a dictionary of PageData instance, key is pageData.id
+        siteData is an attributed container also contains a list of PageData instances.
         There are some directions how the content is distributed on the 
         template anchors.
 
-        Cross matching the pageData with the anchors in the template
+        Cross matching the siteData+pageData with the anchors in the template
         and the available methods define in the self.templates instance.
 
         """
@@ -87,36 +86,33 @@ class Website(Publication):
             html = self.templates.getTemplate(pageData.template)
 
             # Replace all remaining anchors by their data
-            for anchorSet in (pageData, siteData):
-                for anchor, anchorContent in anchorSet.data.items():
-                    if anchorContent:
-                        if isinstance(anchorContent, ElementData):
-                            anchorContent = '%s %s' % (anchorContent.title, anchorContent.content)
-                        html = html.replace('{{%s}}' % anchor, anchorContent.strip())
-
-            # Still unchanged anchors left that have implemented methods in the templates?
-            # In case self.templates._<anchor> is implenented, then call it, with siteData as attribute.
-            for anchor in self.templates.getAnchors(pageData.id):
-                methodName = '_'+anchor
-                if hasattr(self.templates, methodName): # Implemented as method?
-                    anchorContent = str(getattr(self.templates, methodName)(siteData, pageData))
-                    html = html.replace('{{%s}}' % anchor, anchorContent.strip())
-
+            html = self.replaceAnchors(html, siteData, pageData)
             self.templates.html[pageData.id] = html
 
         # Convert the anchors in CSS and JS
         for d in (self.templates.css, self.templates.js):
             for path, src in d.items():
-                for anchor, anchorContent in siteData.data.items():
-                    if anchorContent:
-                        methodName = '_'+anchor
-                        if hasattr(self.templates, methodName): # Implemented as method?
-                            anchorContent = str(getattr(self.templates, methodName)(siteData))
-                        elif isinstance(anchorContent, ElementData):
-                            anchorContent = anchorContent.html
-                        src = src.replace('{{%s}}' % anchor, anchorContent.strip())
-
+                src = self.replaceAnchors(src, siteData, clearAnchors=False)
                 d[path] = src
+
+    def replaceAnchors(self, src, siteData, pageData=None, clearAnchors=True):
+        for data in (siteData, pageData):
+            if data is None:
+                continue
+            for anchor, anchorContent in data.__dict__.items(): # Check on all attributes
+                if anchorContent: # Can be just boolean, check on existing method first
+                    # In case self.templates._<anchor> is implenented, then call it, with siteData as attribute.
+                    methodName = '_'+anchor
+                    if hasattr(self.templates, methodName): # Implemented as method?
+                        anchorContent = str(getattr(self.templates, methodName)(siteData, pageData))
+                        src = src.replace('{{%s}}' % anchor, anchorContent)
+                    else:
+                        # Otherwise, try to use the content to replace the template anchor?
+                        src = src.replace('{{%s}}' % anchor, str(anchorContent))
+                elif clearAnchors: # Content is set to False or None, remove all anchors.
+                    src = src.replace('{{%s}}' % anchor, '')
+
+        return src
 
     def build(self):
         pass

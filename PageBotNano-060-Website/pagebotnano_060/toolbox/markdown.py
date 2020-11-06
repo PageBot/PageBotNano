@@ -24,7 +24,7 @@ import sys
 if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.toolbox.pagedata import SiteData, PageData, ElementData
+from pagebotnano_060.toolbox.pagedata import SiteData, PageData
 
 def parseMarkdownFile(path):
     """Regular expression based markdown parser.
@@ -104,9 +104,9 @@ def parseMarkdown(md):
     # ___ --> <hr /> 
     md = re.sub('^---(.*)', '<hr/>', md, flags=re.MULTILINE)
     # \n\n\n --> <br/>\n
-    #mb = re.sub('\\n\\n\\n', 'ZZZ<br/><br/>\\nAAA', md, flags=re.MULTILINE)
+    mb = re.sub('\\n\\n\\n', '<br/><br/>\\nAAA', md, flags=re.MULTILINE)
     # <p>...</p> ,
-    md = re.sub('^[^\\.]([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
+    #md = re.sub('^[^\\.]([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
     #md = md.replace('<br/>\n<p>', '<br/>\n')
     md = md.replace('</blockquote>\n</p>', '</blockquote>\n')
     # Restore the Python comment inside <code>...</code>

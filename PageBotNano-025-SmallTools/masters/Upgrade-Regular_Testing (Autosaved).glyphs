@@ -1129,7 +1129,7 @@ unicode = 00A0;
 {
 color = (255,255,0,255);
 glyphname = A;
-lastChange = "2020-11-06 16:35:40 +0000";
+lastChange = "2020-11-06 17:43:28 +0000";
 layers = (
 {
 layerId = master01;
@@ -1143,7 +1143,7 @@ nodes = (
 "478 197 LINE",
 "457 197 LINE",
 "532 0 LINE",
-"623 149 LINE",
+"612 59 LINE",
 "361 664 LINE",
 "282 664 LINE",
 "20 0 LINE"
@@ -1229,7 +1229,7 @@ width = 663;
 leftKerningGroup = "@MMK_R_A";
 rightKerningGroup = "@MMK_L_A";
 unicode = 0041;
-changeCount = 2;
+changeCount = 6;
 },
 {
 color = (33,117,255,128);

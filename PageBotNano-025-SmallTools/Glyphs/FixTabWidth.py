@@ -109,14 +109,7 @@ class DemoGlyphsEvents:
             print "   layer: %s" % layer
             for dictKey in info.keys():
                 print "   info > %s: %s" % ( dictKey, info[dictKey] )
-                
-        for n in range(20):
-            point = NSPoint(500*random(), 500*random())
-            NSColor.redColor().set()
-            rect = NSRect(point, (100, 100))
-            bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
-            bezierPath.stroke()
-
+            
 
         #fill(1, 1, 0)
         #rect(50, 50, 300, 300)
@@ -127,7 +120,14 @@ class DemoGlyphsEvents:
             print "   layer: %s" % layer
             for dictKey in info.keys():
                 print "   info > %s: %s" % ( dictKey, info[dictKey] )
-            
+        """
+        for n in range(20):
+            point = NSPoint(500*random(), 500*random())
+            NSColor.redColor().set()
+            rect = NSRect(point, (100, 100))
+            bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+            bezierPath.fill()
+        """ 
     def drawinactive(self, layer, info):
         if 0:
             print "drawinactive"

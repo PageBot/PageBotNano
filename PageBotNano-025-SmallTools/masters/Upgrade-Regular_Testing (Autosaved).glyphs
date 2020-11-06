@@ -1,7 +1,7 @@
 {
 .appVersion = "1342";
 DisplayStrings = (
-"A/Aogonek/Eogonek ÌÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Idotaccent/Jcircumflex/Dcroat/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾%/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Aogonek.sc/Egrave.sc/Eogonek.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Idotaccent.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Dcroat.sc/Ldot.sc/germandbls.sc/ordfeminine.lc/ordmasculine.lc",
+"A/Aogonek/Eogonek ÌÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Idotaccent/Jcircumflex/Dcroat/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾/fraction %/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Aogonek.sc/Egrave.sc/Eogonek.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Idotaccent.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Dcroat.sc/Ldot.sc/germandbls.sc/ordfeminine.lc/ordmasculine.lc",
 "ÍÎÏ/Itilde/Imacron/Ibreve/Iogonek/Jcircumflex/Ldot à/aogonek/dcaron èìíîï/itilde/imacron/ibreve/iogonek/jcircumflex/lacute/lcaron/racute/rcaron/tcedilla/tcaron ù/uhungarumlaut/uogonek/ygrave/ldot ¼½¾%/perthousand/ellipsis ·/fi/fl/Jcircumflex.base/Jcircumflex.base_sc/Egrave.sc/Igrave.sc/Iacute.sc/Icircumflex.sc/Idieresis.sc/Itilde.sc/Imacron.sc/Ibreve.sc/Iogonek.sc/Jcircumflex.sc/Ugrave.sc/Ygrave.sc/Ldot.sc/ordfeminine.lc/ordmasculine.lc",
 "/Gcommaaccent/Kcommaaccent/Lcommaaccent/Ncommaaccent/Rcommaaccent/Scommaaccent/Tcommaaccent"
 );
@@ -1129,7 +1129,7 @@ unicode = 00A0;
 {
 color = (255,255,0,255);
 glyphname = A;
-lastChange = "2020-11-06 18:23:36 +0000";
+lastChange = "2020-11-06 18:30:38 +0000";
 layers = (
 {
 layerId = master01;
@@ -1137,8 +1137,8 @@ paths = (
 {
 closed = 1;
 nodes = (
-"106 0 LINE",
-"181 197 LINE",
+"161 -148 LINE",
+"306 37 LINE",
 "161 197 LINE",
 "478 197 LINE",
 "457 197 LINE",
@@ -1229,7 +1229,7 @@ width = 663;
 leftKerningGroup = "@MMK_R_A";
 rightKerningGroup = "@MMK_L_A";
 unicode = 0041;
-changeCount = 44;
+changeCount = 52;
 },
 {
 color = (33,117,255,128);
@@ -14035,6 +14035,7 @@ unicode = 005C;
 {
 color = (255,255,0,255);
 glyphname = fraction;
+lastChange = "2020-11-06 18:42:08 +0000";
 layers = (
 {
 layerId = master01;
@@ -14042,10 +14043,10 @@ paths = (
 {
 closed = 1;
 nodes = (
-"-38 0 LINE",
-"246 720 LINE",
-"177 720 LINE",
-"-108 0 LINE"
+"-17 273 LINE",
+"184 378 LINE",
+"123 567 LINE",
+"-179 394 LINE"
 );
 }
 );
@@ -14069,6 +14070,7 @@ width = 286;
 leftKerningGroup = "@MMK_R_fraction";
 rightKerningGroup = "@MMK_L_fraction";
 unicode = "2044,2215";
+changeCount = 14;
 },
 {
 color = (255,255,0,255);

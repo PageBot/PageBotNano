@@ -57,8 +57,8 @@ class DimensionsTool:
 				print "   info > %s: %s" % ( dictKey, info[dictKey] )
 			
 
-		#fill(1, 1, 0)
-		#rect(50, 50, 300, 300)
+		fill(1, 1, 0)
+		rect(50, 50, 300, 300)
 				
 	def drawbackground(self, layer, info):
 		if 1:
@@ -67,7 +67,7 @@ class DimensionsTool:
 			radius = 30
 			for contour in layer.paths:
 				for p in contour.nodes:
-					print(p.x, p.y, p.type)
+					#print(p.x, p.y, p.type)
 					point = NSPoint(p.x-radius, p.y-radius)
 					NSColor.redColor().set()
 					rect = NSRect(point, (radius*2, radius*2))
@@ -75,8 +75,19 @@ class DimensionsTool:
 					bezierPath.stroke()
 			#for dictKey in info.keys():
 			#    print("   info > %s: %s" % ( dictKey, info[dictKey] ))
-				
-			 
+
+		#Layer.completeBezierPath
+		#displayText = NSAttributedString.alloc().initWithString_attributes_(text, fontAttributes)
+		#displayText.drawAtPoint_((10,10))				
+
+		path = NSBezierPath.bezierPath()
+		path.moveToPoint_((100+random()*10, 100+random()*10))
+		path.lineToPoint_((500+random()*10, 100+random()*10))
+		path.lineToPoint_((300+random()*10, 400+random()*10))
+		path.closePath()
+		path.setLineWidth_(10)
+		NSColor.greenColor().set()
+		path.stroke()
 		"""
 		for n in range(20):
 			point = NSPoint(500*random(), 500*random())

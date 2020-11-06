@@ -14035,7 +14035,7 @@ unicode = 005C;
 {
 color = (255,255,0,255);
 glyphname = fraction;
-lastChange = "2020-11-06 18:42:08 +0000";
+lastChange = "2020-11-06 18:47:32 +0000";
 layers = (
 {
 layerId = master01;
@@ -14044,7 +14044,7 @@ paths = (
 closed = 1;
 nodes = (
 "-17 273 LINE",
-"184 378 LINE",
+"340 496 LINE",
 "123 567 LINE",
 "-179 394 LINE"
 );
@@ -14070,7 +14070,7 @@ width = 286;
 leftKerningGroup = "@MMK_R_fraction";
 rightKerningGroup = "@MMK_L_fraction";
 unicode = "2044,2215";
-changeCount = 14;
+changeCount = 16;
 },
 {
 color = (255,255,0,255);

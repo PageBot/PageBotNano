@@ -57,11 +57,17 @@ class DimensionsTool:
 				print "   info > %s: %s" % ( dictKey, info[dictKey] )
 			
 
-		fill(1, 1, 0)
-		rect(50, 50, 300, 300)
+		#fill(1, 1, 0)
+		#rect(50, 50, 300, 300)
 				
 	def drawbackground(self, layer, info):
-		if 1:
+		
+		metrics = self.getMetrics(layer)
+		print('Verticals', metrics['verticals'])
+		print('Horizontals', metrics['horizontals'])
+		# Do something here to show the metrics in the EditorWindow
+		print(layer.parent.name, layer.name, layer.width, metrics)
+		if 0:
 			print("drawbackground")
 			print("   layer: %s" % layer)
 			radius = 30
@@ -79,23 +85,23 @@ class DimensionsTool:
 		#Layer.completeBezierPath
 		#displayText = NSAttributedString.alloc().initWithString_attributes_(text, fontAttributes)
 		#displayText.drawAtPoint_((10,10))				
-
-		path = NSBezierPath.bezierPath()
-		path.moveToPoint_((100+random()*10, 100+random()*10))
-		path.lineToPoint_((500+random()*10, 100+random()*10))
-		path.lineToPoint_((300+random()*10, 400+random()*10))
-		path.closePath()
-		path.setLineWidth_(10)
-		NSColor.greenColor().set()
-		path.stroke()
-		"""
-		for n in range(20):
-			point = NSPoint(500*random(), 500*random())
-			NSColor.redColor().set()
-			rect = NSRect(point, (100, 100))
-			bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
-			bezierPath.fill()
-		""" 
+		if 0:
+			path = NSBezierPath.bezierPath()
+			path.moveToPoint_((100+random()*10, 100+random()*10))
+			path.lineToPoint_((500+random()*10, 100+random()*10))
+			path.lineToPoint_((300+random()*10, 400+random()*10))
+			path.closePath()
+			path.setLineWidth_(10)
+			NSColor.greenColor().set()
+			path.stroke()
+			"""
+			for n in range(20):
+				point = NSPoint(500*random(), 500*random())
+				NSColor.redColor().set()
+				rect = NSRect(point, (100, 100))
+				bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+				bezierPath.fill()
+			""" 
 	   
 	def cleanUp(self, sender):
 		self.removeCallbacks()
@@ -111,4 +117,28 @@ class DimensionsTool:
 		Glyphs.showMacroWindow()
 		print sender
 		
+	# Glyph analyser code starts
+	def getMetrics(self, layer):
+		# Layer is a GlyphsApp glyph style
+		pcs = [] # List of point context tuples [(p_2, p_1, p, p1, p2), ...] 
+		verticals = []
+		horizontals = []
+		for contour in layer.paths:
+			points = list(contour.nodes)
+			for i in range(len(points)):
+				# (p-2, p-1, p, p+1, p+2) <---- [p,   p, p, p, p, p, p, ..., p]
+				#                                i-1  i                      i-2
+				p_2, p_1, p, p1, p2 = points[i-4], points[i-3], points[i-2], points[i-1], points[i]
+				pcs.append((p_2, p_1, p, p1, p2))
+				if p.x == p1.x:
+					verticals.append((p, p1))
+				if p.y == p1.y:
+					horizontals.append((p, p1))
+					#print(p.x, p.y, p.type)
+					#point = NSPoint(p.x-radius, p.y-radius)
+
+		metrics = dict(pcs=pcs, verticals=verticals, horizontals=horizontals)
+		return metrics
+				
+	
 DimensionsTool()

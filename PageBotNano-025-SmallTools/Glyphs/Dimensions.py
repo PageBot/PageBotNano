@@ -75,13 +75,22 @@ class DimensionsTool:
 				bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
 				bezierPath.stroke()
 			
+		x = -300
+		for pair in metrics['bars']:
+			for y in pair:
+				point = NSPoint(x-radius, y-radius)
+				NSColor.redColor().set()
+				rect = NSRect(point, (radius*2, radius*2))
+				bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+				bezierPath.stroke()
+			
 		#print('Verticals', metrics['verticals'])
 		#print('Horizontals', metrics['horizontals'])
 		# Do something here to show the metrics in the EditorWindow
 		#print(layer.parent.name, layer.name, layer.width, metrics)
 		if 0:
 			print("drawbackground")
-			print("   layer: %s" % layer)
+			print("layer: %s" % layer)
 			radius = 30
 			for contour in layer.paths:
 				for p in contour.nodes:
@@ -130,8 +139,88 @@ class DimensionsTool:
 		print sender
 		
 	# Glyph analyser code starts
-	def getMetrics(self, layer):
-		# Layer is a GlyphsApp glyph style
+	def findDefaults(self, layer):
+		"""Try to guess the default stem and bar from the /H with the
+		following strategy:
+		- Find all verticals, then the smallest distance between
+		the longest verticals is likely to be a stem.
+		- Find all horizontals, then the distance between the 
+		longest horizontals is likely to be a bar.
+		With this approach we cancel out any verticals or horizontals
+		that are part of serifs.
+		Note that for now this approach only works with romans, as
+		we'll just compare x-values to decide if a line is vertical.
+
+		Once we have guessed the stem and bar for this layer, it is 
+		easier to detect them in all other glyphs.
+		"""
+		stem = bar = 0
+		if layer.parent.name != 'H':
+			layer = layer.parent.parent.glyphs['H'].layers[layer.name]
+			pcs, verticals, horizontals = self.findVerticalsHorizontals(layer)
+			# Find the smallest (x1, x2) for the longest two verticals
+			v1 = v2 = None # Keep track of longest verticals with the smallest x
+			x1 = x2 = 1000000
+			for x, pairs in verticals.items():
+				for p, p1 in pairs: # Multiple vertical can be on the same x position
+					v = abs(p.y - p1.y)
+					if v1 is None or v >= v1:
+						v1 = v
+						x1 = min(x, x1)
+					elif v2 is None or v >= v2:
+						v2 = v
+						x2 = min(x, x2)
+			stem = abs(x1 - x2)
+			
+			# Find the smallest (y1, y2) combination of horizontals
+			y1 = 0
+			y2 = 1000000
+			for y, pairs in horizontals.items():
+				if y1 is None:
+					y1 = y
+				elif y2 is None:
+					y2 = y
+				elif 0 < abs(y1 - y) < abs(y1 - y2):
+					y2 = y
+				elif 0 < abs(y2 - y) < abs(y1 - y2):
+					y1 = y
+			bar = abs(y1 - y2)
+		return stem, bar
+		
+	LO_MARGIN = 0.6
+	HI_MARGIN = 1.4
+	def findStems(self, verticals, defaultStem):
+		# Looking for stems
+		stems = [] # Key (x1, x2), value is [p, p, p, ...]
+		def1 = defaultStem * self.LO_MARGIN
+		def2 = defaultStem * self.HI_MARGIN
+		for x1 in sorted(verticals.keys()): # Just need to know the x values now
+			for x2 in sorted(verticals.keys()):
+				if x1 <= x2: # Skip mirrors and identical x values
+					continue
+				if def1 <= abs(x1 - x2) <= def2:
+					stems.append((x1, x2))
+		return stems
+
+	def findBars(self, horizontals, defaultBar):
+		# Looking for stems
+		bars = [] # Key (x1, x2), value is [p, p, p, ...]
+		def1 = defaultBar * self.LO_MARGIN
+		def2 = defaultBar * self.HI_MARGIN
+		for y1 in sorted(horizontals.keys()): # Just need to know the y values now
+			for y2 in sorted(horizontals.keys()):
+				if y1 <= y2: # Skip mirrors and identical y values
+					continue
+				if def1 <= abs(y1 - y2) <= def2:
+					bars.append((y1, y2))
+		return bars
+
+	def findVerticalsHorizontals(self, layer):
+		"""Answer the dictionary verticals and horizontals, where the key is respectively
+		the x and y position of the line and the value is a list of (p, p1) pairs
+		for the vertical or horizontal on that position (since, e.g. as in the /H there
+		can be multiple verticals on the same x position.
+		"""
 		pcs = [] # List of point context tuples [(p_2, p_1, p, p1, p2), ...] 
 		verticals = {} # Key is horizontal position, value is list [(p, p1), ...]
 		horizontals = {} # Key is vertical position, value is [(p, p1), ...]
@@ -151,22 +240,17 @@ class DimensionsTool:
 					if not p.y in horizontals:
 						horizontals[p.y] = []
 					horizontals[p.y].append((p, p1))
-				
-		# Looking for stems
-		stems = [] # Key (x1, x2), value is [p, p, p, ...]
-		stemx1 = stemx2 = None
-		for x, pairs in sorted(verticals.items()):
-			for p, p1 in pairs:
-				if stemx1 is None:
-					stemx1 = x
-				elif stemx2 is None:
-					stemx2 = x
-				if not None in (stemx1, stemx2):
-					stems.append((stemx1, stemx2))
-					stemx1 = stemx2 = None
-			
-		# Looking for bars
-		bars = {}
+		return pcs, verticals, horizontals
+		
+	def getMetrics(self, layer):
+		# Find the stem and bar in the /H glyph of the layer parent font.
+		defaultStem, defaultBar = self.findDefaults(layer)
+		# Layer is a GlyphsApp glyph style
+		pcs, verticals, horizontals = self.findVerticalsHorizontals(layer)
+		# Looking for stems, using the defaultStem, as found in /H as reference.
+		stems = self.findStems(verticals, defaultStem)	
+		# Looking for bars, using the defaultBar, as found in /H, as reference.
+		bars = self.findBars(horizontals, defaultBar)
 		# Later: looking for diagonals
 		
 		metrics = dict(pcs=pcs, verticals=verticals, horizontals=horizontals, stems=stems, bars=bars)

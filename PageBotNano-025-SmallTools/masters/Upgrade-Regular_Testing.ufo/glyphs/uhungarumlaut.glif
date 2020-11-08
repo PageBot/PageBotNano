@@ -4,7 +4,7 @@
 	<unicode hex="0171"/>
 	<outline>
 		<component base="u"/>
-		<component base="hungarumlautcmb" xOffset="250"/>
+		<component base="hungarumlautcomb" xOffset="250"/>
 	</outline>
 	<lib>
 		<dict>
@@ -17,14 +17,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>u</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>hungarumlautcmb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

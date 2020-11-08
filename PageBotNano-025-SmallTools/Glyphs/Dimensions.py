@@ -25,65 +25,113 @@ class DimensionsTool:
 		)
 		M = 10
 		y = 30
-		# UI elements:
+		# UI elements we'll use later
 		self.w.tabWidth = EditText( (M, y, w/4-M-M, 20), "650", sizeStyle='small' )
 		self.w.tabWidthLabel = TextBox( (w/4, y+4, w/2, 20), "Tab width", sizeStyle='small' )
 		
 		y += 30
-		# Run Button:
-		self.w.doFix = CheckBox((M, y, -M, 24), "Fix errors", value=False, sizeStyle='regular' )
-				
-				   
+		# Checkbox to flag if any drawing should be done by this tools
+		self.w.doDraw = CheckBox((M, y, -M, 24), "Fix errors", value=False, sizeStyle='regular' )
+					   
 		# Open window and focus on it:
-		self.w.bind('close', self.windowCloseCallback)
+		self.w.bind('close', self.windowCloseCallback) # Make bind in case the window is closed
 		self.w.open()
 		self.w.makeKey()
 		
-		# establish callbacks:
-		
+		# Establish callbacks that we need for this tool
 		Glyphs.addCallback( self.drawforeground, DRAWFOREGROUND )
 		Glyphs.addCallback( self.drawbackground, DRAWBACKGROUND )
 		
 
 	def windowCloseCallback(self, sender):
+		"""Called when window is closed, so we can unsubscribe from the GlyphsApp event.
+		"""
 		self.removeCallbacks()
-		print('removeObserver currentGlyphChanged')
+		#print('removeObserver currentGlyphChanged')
 	
-	def drawforeground(self, layer, info):
+	def drawbackground(self, layer, info):
+		"""Called if GlyphsApp is redrawing in the background of the window (under the glyph).
+		"""
+		# Currently we have nothing to draw on the background.
 		if 0:
 			print "drawforeground"
 			print "   layer: %s" % layer
 			for dictKey in info.keys():
 				print "   info > %s: %s" % ( dictKey, info[dictKey] )
 			
-
+		# RoboFont drawing at this moment works with DrawBot functions.
+		# Maybe GlyphsApp/DrawBot can do the same?
 		#fill(1, 1, 0)
 		#rect(50, 50, 300, 300)
-				
-	def drawbackground(self, layer, info):
-
-		radius = 30
+	
+	def drawLabel(self, label, x, y, sc):
+		textColor = NSColor.textColor()
+		point = NSPoint(x, y)
+		attributes = {
+			NSFontAttributeName: NSFont.labelFontOfSize_(10/sc),
+			NSForegroundColorAttributeName: textColor,
+		}
+		NSString.stringWithString_(label).drawAtPoint_withAttributes_(point, attributes)
 		
+	def drawforeground(self, layer, info):
+		"""Called if GlyphsApp is redrawing in the foreground of the window (over the glyph).
+		"""
+		# Current drawing scale, so we can reverse scale arrow heads and markers
+		# to keep them at constant size.
+		sc = info['Scale'] 
+		radius = 3 / sc # Reversed-scaled radius of the marker circles
+		
+		# Try to find a ranges of metrics, interpreting directly from the points.
+		# For this the metrics of the /H is searched first, so we can compare it 
+		# with raw verticals and horizontals of the current glyph. Stems/bars that
+		# in a 60% - 140% range (self.LO_MARGIN, self.HI_MARGIN factors) are assumed 
+		# to be stems or bars. Currently only
 		metrics = self.getMetrics(layer)
 		#print(metrics['stems'])
-		y = -300
-		for pair in metrics['stems']:
-			for x in pair:
+		y = -250 # Below baseline, could be related to the descender of the glyph
+ 		for x1, x2 in metrics['stems']:
+			path = NSBezierPath.bezierPath()
+			path.moveToPoint_((x1+radius, y))
+			path.lineToPoint_((x2-radius, y))
+			path.setLineWidth_(1/sc)
+			NSColor.darkGrayColor().set()
+			path.stroke()
+
+			label = str(int(round(x2 - x1)))
+			tx = x1 + (x2 - x1)/2 - len(label)/2*10
+			ty = y + 5/sc
+			self.drawLabel(label, tx, ty, sc)
+			
+			NSColor.darkGrayColor().set()
+			for x in (x1, x2):
 				point = NSPoint(x-radius, y-radius)
-				NSColor.redColor().set()
 				rect = NSRect(point, (radius*2, radius*2))
 				bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+				bezierPath.setLineWidth_(1/sc)
 				bezierPath.stroke()
+							
+		x = 0
+ 		for y1, y2 in metrics['bars']:
+			path = NSBezierPath.bezierPath()
+			path.moveToPoint_((x, y1+radius))
+			path.lineToPoint_((x, y2-radius))
+			path.setLineWidth_(1/sc)
+			NSColor.darkGrayColor().set()
+			path.stroke()
+
+			label = str(int(round(y2 - y1)))
+			tx = x + 5/sc
+			ty = y1 + (y2 - y1)/2 - 5/sc
+			self.drawLabel(label, tx, ty, sc)
 			
-		x = -300
-		for pair in metrics['bars']:
-			for y in pair:
+			NSColor.darkGrayColor().set()
+			for y in (y1, y2):
 				point = NSPoint(x-radius, y-radius)
-				NSColor.redColor().set()
 				rect = NSRect(point, (radius*2, radius*2))
 				bezierPath = NSBezierPath.bezierPathWithOvalInRect_(rect)
+				bezierPath.setLineWidth_(1/sc)
 				bezierPath.stroke()
-			
+		
 		#print('Verticals', metrics['verticals'])
 		#print('Horizontals', metrics['horizontals'])
 		# Do something here to show the metrics in the EditorWindow
@@ -126,7 +174,7 @@ class DimensionsTool:
 	   
 	def cleanUp(self, sender):
 		self.removeCallbacks()
-		print sender
+		#print sender
 		
 	def removeCallbacks(self):
 		Glyphs.removeCallback( self.drawforeground, DRAWFOREGROUND )
@@ -136,7 +184,7 @@ class DimensionsTool:
 		# brings macro window to front and clears its log:
 		Glyphs.clearLog()
 		Glyphs.showMacroWindow()
-		print sender
+		#print sender
 		
 	# Glyph analyser code starts
 	def findDefaults(self, layer):
@@ -199,7 +247,8 @@ class DimensionsTool:
 				if x1 <= x2: # Skip mirrors and identical x values
 					continue
 				if def1 <= abs(x1 - x2) <= def2:
-					stems.append((x1, x2))
+					stem = sorted((x1, x2)) # Make sure first is the smallest
+					stems.append(stem)
 		return stems
 
 	def findBars(self, horizontals, defaultBar):
@@ -212,7 +261,8 @@ class DimensionsTool:
 				if y1 <= y2: # Skip mirrors and identical y values
 					continue
 				if def1 <= abs(y1 - y2) <= def2:
-					bars.append((y1, y2))
+					bar = sorted((y1, y2)) # Make sure first is the smallest
+					bars.append(bar)
 		return bars
 
 	def findVerticalsHorizontals(self, layer):

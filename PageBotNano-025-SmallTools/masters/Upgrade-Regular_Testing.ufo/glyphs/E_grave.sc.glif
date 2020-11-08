@@ -3,7 +3,7 @@
 	<advance width="496"/>
 	<outline>
 		<component base="E.sc"/>
-		<component base="gravecmb" xOffset="222" yOffset="46"/>
+		<component base="gravecomb" xOffset="222" yOffset="46"/>
 	</outline>
 	<lib>
 		<dict>
@@ -16,14 +16,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>E.sc</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>gravecmb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

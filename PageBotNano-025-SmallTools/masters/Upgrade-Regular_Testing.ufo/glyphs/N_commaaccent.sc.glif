@@ -3,7 +3,7 @@
 	<advance width="567"/>
 	<outline>
 		<component base="N.sc"/>
-		<component base="commaaccentcmb" xOffset="305"/>
+		<component base="commaaccentcomb" xOffset="305"/>
 	</outline>
 	<lib>
 		<dict>

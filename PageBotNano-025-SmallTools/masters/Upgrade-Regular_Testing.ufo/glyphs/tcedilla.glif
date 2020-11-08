@@ -3,7 +3,7 @@
 	<advance width="329"/>
 	<outline>
 		<component base="t"/>
-		<component base="cedillacmb" xOffset="189" yOffset="-4"/>
+		<component base="cedillacomb" xOffset="189" yOffset="-4"/>
 	</outline>
 	<lib>
 		<dict>
@@ -16,14 +16,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>t</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>cedillacmb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

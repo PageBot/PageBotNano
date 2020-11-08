@@ -3,8 +3,8 @@
 	<advance width="266"/>
 	<unicode hex="00EF"/>
 	<outline>
-		<component base="dotlessi"/>
-		<component base="dieresiscmb" xOffset="105"/>
+		<component base="idotless"/>
+		<component base="dieresiscomb" xOffset="105"/>
 	</outline>
 	<lib>
 		<dict>
@@ -16,7 +16,7 @@
 					<key>index</key>
 					<integer>0</integer>
 					<key>name</key>
-					<string>dotlessi</string>
+					<string>idotless</string>
 				</dict>
 				<dict>
 					<key>alignment</key>
@@ -24,11 +24,11 @@
 					<key>index</key>
 					<integer>1</integer>
 					<key>name</key>
-					<string>dieresiscmb</string>
+					<string>dieresiscomb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>
-			<string>2020-10-30 15:15:53 +0000</string>
+			<string>2020-11-08 15:22:51 +0000</string>
 			<key>public.markColor</key>
 			<string>0.13,0.46,1,0.5</string>
 		</dict>

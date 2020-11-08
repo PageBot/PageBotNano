@@ -4,7 +4,7 @@
 	<unicode hex="0165"/>
 	<outline>
 		<component base="t"/>
-		<component base="caroncmb.vert" xOffset="309" yOffset="254"/>
+		<component base="caroncomb.vert" xOffset="309" yOffset="254"/>
 	</outline>
 	<lib>
 		<dict>
@@ -17,14 +17,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>t</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>caroncmb.vert</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

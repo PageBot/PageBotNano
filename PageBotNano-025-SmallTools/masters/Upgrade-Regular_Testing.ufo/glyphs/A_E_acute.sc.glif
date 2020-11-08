@@ -3,7 +3,7 @@
 	<advance width="714"/>
 	<outline>
 		<component base="AE.sc"/>
-		<component base="acutecmb" xOffset="433" yOffset="46"/>
+		<component base="acutecomb" xOffset="433" yOffset="46"/>
 	</outline>
 	<lib>
 		<dict>

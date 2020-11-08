@@ -3,7 +3,7 @@
 	<advance width="539"/>
 	<outline>
 		<component base="U.sc"/>
-		<component base="tildecmb" xOffset="286" yOffset="46"/>
+		<component base="tildecomb" xOffset="286" yOffset="46"/>
 	</outline>
 	<lib>
 		<dict>

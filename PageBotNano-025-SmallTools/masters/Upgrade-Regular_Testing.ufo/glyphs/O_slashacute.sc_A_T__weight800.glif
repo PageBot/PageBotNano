@@ -15,7 +15,7 @@
 			<point x="163" y="87" type="line"/>
 		</contour>
 		<component base="O.sc"/>
-		<component base="acutecmb.uc" xOffset="305" yOffset="-148"/>
+		<component base="acutecomb.uc" xOffset="305" yOffset="-148"/>
 	</outline>
 	<lib>
 		<dict>

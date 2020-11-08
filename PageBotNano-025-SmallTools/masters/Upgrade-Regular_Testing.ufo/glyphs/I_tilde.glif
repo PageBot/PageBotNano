@@ -4,7 +4,7 @@
 	<unicode hex="0128"/>
 	<outline>
 		<component base="I"/>
-		<component base="tildecmb.uc" xOffset="115"/>
+		<component base="tildecomb.uc" xOffset="115"/>
 	</outline>
 	<lib>
 		<dict>
@@ -17,14 +17,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>I</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>tildecmb.uc</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

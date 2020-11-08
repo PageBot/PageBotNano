@@ -3,7 +3,7 @@
 	<advance width="298"/>
 	<outline>
 		<component base="I.sc"/>
-		<component base="tildecmb" xOffset="107" yOffset="38"/>
+		<component base="tildecomb" xOffset="107" yOffset="38"/>
 	</outline>
 	<lib>
 		<dict>
@@ -16,14 +16,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>I.sc</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>tildecmb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

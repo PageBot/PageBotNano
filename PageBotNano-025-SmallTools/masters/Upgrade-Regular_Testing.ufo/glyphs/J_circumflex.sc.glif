@@ -3,7 +3,7 @@
 	<advance width="279"/>
 	<outline>
 		<component base="J.sc"/>
-		<component base="circumflexcmb" xOffset="105" yOffset="38"/>
+		<component base="circumflexcomb" xOffset="105" yOffset="38"/>
 	</outline>
 	<lib>
 		<dict>
@@ -16,14 +16,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>J.sc</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>circumflexcmb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

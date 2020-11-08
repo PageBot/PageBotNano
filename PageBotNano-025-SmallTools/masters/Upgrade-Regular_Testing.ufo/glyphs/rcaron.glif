@@ -4,7 +4,7 @@
 	<unicode hex="0159"/>
 	<outline>
 		<component base="r"/>
-		<component base="caroncmb" xOffset="184"/>
+		<component base="caroncomb" xOffset="184"/>
 	</outline>
 	<lib>
 		<dict>
@@ -17,14 +17,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>r</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>caroncmb</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

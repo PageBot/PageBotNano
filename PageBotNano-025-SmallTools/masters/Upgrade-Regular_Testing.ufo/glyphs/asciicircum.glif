@@ -3,7 +3,7 @@
 	<advance width="361"/>
 	<unicode hex="005E"/>
 	<outline>
-		<component base="circumflexcmb" xOffset="187"/>
+		<component base="circumflexcomb" xOffset="187"/>
 	</outline>
 	<lib>
 		<dict>

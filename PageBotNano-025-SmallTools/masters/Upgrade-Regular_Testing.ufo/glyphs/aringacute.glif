@@ -4,7 +4,7 @@
 	<unicode hex="01FB"/>
 	<outline>
 		<component base="a"/>
-		<component base="ringcmb_acutecmb" xOffset="220"/>
+		<component base="ringcomb_acutecomb" xOffset="220"/>
 	</outline>
 	<lib>
 		<dict>

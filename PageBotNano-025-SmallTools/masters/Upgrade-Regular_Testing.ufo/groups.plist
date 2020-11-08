@@ -94,15 +94,15 @@
 	</array>
 	<key>public.kern1.public.kern1.Euro</key>
 	<array>
-		<string>Euro</string>
+		<string>euro</string>
 	</array>
 	<key>public.kern1.public.kern1.Euro_lc</key>
 	<array>
-		<string>Euro.lc</string>
+		<string>euro.lc</string>
 	</array>
 	<key>public.kern1.public.kern1.Euro_sc</key>
 	<array>
-		<string>Euro.sc</string>
+		<string>euro.sc</string>
 	</array>
 	<key>public.kern1.public.kern1.F</key>
 	<array>
@@ -292,11 +292,12 @@
 	</array>
 	<key>public.kern1.public.kern1.Omega</key>
 	<array>
-		<string>Omega</string>
+		<string>Omega-latin</string>
 	</array>
 	<key>public.kern1.public.kern1.P</key>
 	<array>
 		<string>P</string>
+		<string>P.001</string>
 	</array>
 	<key>public.kern1.public.kern1.P_sc</key>
 	<array>
@@ -657,11 +658,11 @@
 	</array>
 	<key>public.kern1.public.kern1.dotlessi</key>
 	<array>
-		<string>dotlessi</string>
+		<string>idotless</string>
 	</array>
 	<key>public.kern1.public.kern1.dotlessj</key>
 	<array>
-		<string>dotlessj</string>
+		<string>jdotless</string>
 	</array>
 	<key>public.kern1.public.kern1.e</key>
 	<array>
@@ -873,22 +874,22 @@
 	<key>public.kern1.public.kern1.guillemotleft</key>
 	<array>
 		<string>guilsinglleft</string>
-		<string>guillemotleft</string>
+		<string>guillemetleft</string>
 	</array>
 	<key>public.kern1.public.kern1.guillemotleft_uc</key>
 	<array>
 		<string>guilsinglleft.uc</string>
-		<string>guillemotleft.uc</string>
+		<string>guillemetleft.uc</string>
 	</array>
 	<key>public.kern1.public.kern1.guillemotright</key>
 	<array>
 		<string>guilsinglright</string>
-		<string>guillemotright</string>
+		<string>guillemetright</string>
 	</array>
 	<key>public.kern1.public.kern1.guillemotright_uc</key>
 	<array>
 		<string>guilsinglright.uc</string>
-		<string>guillemotright.uc</string>
+		<string>guillemetright.uc</string>
 	</array>
 	<key>public.kern1.public.kern1.horizontalbar</key>
 	<array>
@@ -899,7 +900,7 @@
 		<string>hyphen</string>
 		<string>endash</string>
 		<string>emdash</string>
-		<string>sfthyphen</string>
+		<string>softhyphen</string>
 	</array>
 	<key>public.kern1.public.kern1.hyphen_uc</key>
 	<array>
@@ -1348,7 +1349,7 @@
 	<array>
 		<string>copyright</string>
 		<string>registered</string>
-		<string>copyrightsound</string>
+		<string>published</string>
 	</array>
 	<key>public.kern1.public.kern1.s</key>
 	<array>
@@ -1748,15 +1749,15 @@
 	</array>
 	<key>public.kern2.public.kern2.Euro</key>
 	<array>
-		<string>Euro</string>
+		<string>euro</string>
 	</array>
 	<key>public.kern2.public.kern2.Euro_lc</key>
 	<array>
-		<string>Euro.lc</string>
+		<string>euro.lc</string>
 	</array>
 	<key>public.kern2.public.kern2.Euro_sc</key>
 	<array>
-		<string>Euro.sc</string>
+		<string>euro.sc</string>
 	</array>
 	<key>public.kern2.public.kern2.H</key>
 	<array>
@@ -1794,6 +1795,7 @@
 		<string>Thorn</string>
 		<string>Ldot</string>
 		<string>Eng</string>
+		<string>P.001</string>
 	</array>
 	<key>public.kern2.public.kern2.H_sc</key>
 	<array>
@@ -1957,10 +1959,6 @@
 		<string>Oslash.sc</string>
 		<string>Oslashacute.sc</string>
 		<string>OE.sc</string>
-	</array>
-	<key>public.kern2.public.kern2.Omega</key>
-	<array>
-		<string>Omega</string>
 	</array>
 	<key>public.kern2.public.kern2.S</key>
 	<array>
@@ -2292,11 +2290,11 @@
 	</array>
 	<key>public.kern2.public.kern2.dotlessi</key>
 	<array>
-		<string>dotlessi</string>
+		<string>idotless</string>
 	</array>
 	<key>public.kern2.public.kern2.dotlessj</key>
 	<array>
-		<string>dotlessj</string>
+		<string>jdotless</string>
 	</array>
 	<key>public.kern2.public.kern2.eight</key>
 	<array>
@@ -2470,22 +2468,22 @@
 	<key>public.kern2.public.kern2.guillemotleft</key>
 	<array>
 		<string>guilsinglleft</string>
-		<string>guillemotleft</string>
+		<string>guillemetleft</string>
 	</array>
 	<key>public.kern2.public.kern2.guillemotleft_uc</key>
 	<array>
 		<string>guilsinglleft.uc</string>
-		<string>guillemotleft.uc</string>
+		<string>guillemetleft.uc</string>
 	</array>
 	<key>public.kern2.public.kern2.guillemotright</key>
 	<array>
 		<string>guilsinglright</string>
-		<string>guillemotright</string>
+		<string>guillemetright</string>
 	</array>
 	<key>public.kern2.public.kern2.guillemotright_uc</key>
 	<array>
 		<string>guilsinglright.uc</string>
-		<string>guillemotright.uc</string>
+		<string>guillemetright.uc</string>
 	</array>
 	<key>public.kern2.public.kern2.h</key>
 	<array>
@@ -2527,14 +2525,14 @@
 	</array>
 	<key>public.kern2.public.kern2.hungarumlautcmb</key>
 	<array>
-		<string>hungarumlautcmb</string>
+		<string>hungarumlautcomb</string>
 	</array>
 	<key>public.kern2.public.kern2.hyphen</key>
 	<array>
 		<string>hyphen</string>
 		<string>endash</string>
 		<string>emdash</string>
-		<string>sfthyphen</string>
+		<string>softhyphen</string>
 	</array>
 	<key>public.kern2.public.kern2.hyphen_uc</key>
 	<array>
@@ -2952,7 +2950,6 @@
 	<array>
 		<string>copyright</string>
 		<string>registered</string>
-		<string>copyrightsound</string>
 	</array>
 	<key>public.kern2.public.kern2.s</key>
 	<array>

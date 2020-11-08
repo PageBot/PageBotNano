@@ -4,7 +4,7 @@
 	<unicode hex="0134"/>
 	<outline>
 		<component base="J"/>
-		<component base="circumflexcmb.uc" xOffset="115"/>
+		<component base="circumflexcomb.uc" xOffset="115"/>
 	</outline>
 	<lib>
 		<dict>
@@ -17,14 +17,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>J</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>circumflexcmb.uc</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

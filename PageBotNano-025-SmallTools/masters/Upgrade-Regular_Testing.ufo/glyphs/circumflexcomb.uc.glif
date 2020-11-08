@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="circumflexcomb.uc" format="2">
+	<advance width="167"/>
+	<outline>
+		<contour>
+			<point x="-58" y="715" type="line"/>
+			<point x="10" y="800" type="line"/>
+			<point x="-8" y="800" type="line"/>
+			<point x="60" y="715" type="line"/>
+			<point x="127" y="715" type="line"/>
+			<point x="32" y="842" type="line"/>
+			<point x="-30" y="842" type="line"/>
+			<point x="-125" y="715" type="line"/>
+		</contour>
+	</outline>
+	<lib>
+		<dict>
+			<key>public.markColor</key>
+			<string>1,0.35,0.91,1</string>
+			<key>tnScalarpolator</key>
+			<dict>
+				<key>scalarpolatorPrefs</key>
+				<dict>
+					<key>LSB</key>
+					<string>4</string>
+					<key>RSB</key>
+					<integer>0</integer>
+					<key>baseline</key>
+					<real>-142.312</real>
+					<key>interpolateX</key>
+					<real>130.541</real>
+					<key>interpolateY</key>
+					<real>130.541</real>
+					<key>lockScaleXY</key>
+					<integer>1</integer>
+					<key>scaleX</key>
+					<real>72.537</real>
+					<key>scaleY</key>
+					<real>72.537</real>
+				</dict>
+			</dict>
+		</dict>
+	</lib>
+</glyph>

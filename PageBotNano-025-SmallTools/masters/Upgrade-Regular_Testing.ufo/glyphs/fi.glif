@@ -4,7 +4,7 @@
 	<unicode hex="FB01"/>
 	<outline>
 		<component base="f.salt_connect"/>
-		<component base="dotlessi" xOffset="262"/>
+		<component base="idotless" xOffset="262"/>
 	</outline>
 	<lib>
 		<dict>
@@ -17,14 +17,6 @@
 					<integer>0</integer>
 					<key>name</key>
 					<string>f.salt_connect</string>
-				</dict>
-				<dict>
-					<key>alignment</key>
-					<integer>-1</integer>
-					<key>index</key>
-					<integer>1</integer>
-					<key>name</key>
-					<string>dotlessi</string>
 				</dict>
 			</array>
 			<key>com.schriftgestaltung.Glyphs.lastChange</key>

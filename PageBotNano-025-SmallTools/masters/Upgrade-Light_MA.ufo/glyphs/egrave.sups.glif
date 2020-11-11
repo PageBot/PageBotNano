@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="egrave.sups" format="2">
+  <advance width="388"/>
+  <outline>
+    <contour>
+      <point x="195" y="845" type="line"/>
+      <point x="227" y="845" type="line"/>
+      <point x="141" y="955" type="line"/>
+      <point x="106" y="955" type="line"/>
+    </contour>
+    <component base="e.sups"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>0.1345,0.4642,0.9984,0.5</string>
+    </dict>
+  </lib>
+</glyph>

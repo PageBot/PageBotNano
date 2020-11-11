@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Odieresis.sc" format="2">
+  <advance width="612"/>
+  <outline>
+    <component base="O.sc"/>
+    <component base="dieresiscmb" xOffset="306" yOffset="38"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typenetwork.accentbuilder.locked</key>
+      <false/>
+      <key>public.markColor</key>
+      <string>0,0,0,0.5</string>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="A.sc" format="2">
+  <advance width="489"/>
+  <anchor x="245" y="492" name="top"/>
+  <anchor x="469" y="16" name="ogonek"/>
+  <outline>
+    <contour>
+      <point x="16.0" y="0.0" type="line"/>
+      <point x="47.0" y="0.0" type="line"/>
+      <point x="120.0" y="175.0" type="line"/>
+      <point x="106.0" y="175.0" type="line"/>
+      <point x="381.0" y="175.0" type="line"/>
+      <point x="366.0" y="175.0" type="line"/>
+      <point x="439.0" y="0.0" type="line"/>
+      <point x="473.0" y="0.0" type="line"/>
+      <point x="262.0" y="508.0" type="line"/>
+      <point x="227.0" y="508.0" type="line"/>
+    </contour>
+    <contour>
+      <point x="132.0" y="204.0" type="line"/>
+      <point x="228.0" y="436.0" type="line"/>
+      <point x="247.0" y="482.0" type="line"/>
+      <point x="239.0" y="482.0" type="line"/>
+      <point x="258.0" y="436.0" type="line"/>
+      <point x="354.0" y="204.0" type="line"/>
+      <point x="372.0" y="204.0" type="line"/>
+      <point x="118.0" y="204.0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+    </dict>
+  </lib>
+</glyph>

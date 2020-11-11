@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="seven.tab" format="2">
+  <advance width="650"/>
+  <outline>
+    <contour>
+      <point x="243" y="0" type="line"/>
+      <point x="275" y="0" type="line"/>
+      <point x="507" y="640" type="line"/>
+      <point x="507" y="658" type="line"/>
+      <point x="143" y="658" type="line"/>
+      <point x="143" y="626" type="line"/>
+      <point x="490" y="626" type="line"/>
+      <point x="476" y="641" type="line"/>
+    </contour>
+  </outline>
+</glyph>

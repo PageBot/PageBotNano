@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="d.sinf" format="2">
+  <advance width="407"/>
+  <anchor x="406" y="454" name="caron.vert"/>
+  <outline>
+    <contour>
+      <point x="161" y="-178" type="curve" smooth="yes"/>
+      <point x="202" y="-178"/>
+      <point x="237" y="-158"/>
+      <point x="255" y="-123" type="curve"/>
+      <point x="262" y="-170" type="line"/>
+      <point x="372" y="-170" type="line"/>
+      <point x="372" y="373" type="line"/>
+      <point x="254" y="373" type="line"/>
+      <point x="254" y="182" type="line"/>
+      <point x="234" y="192"/>
+      <point x="207" y="198"/>
+      <point x="187" y="198" type="curve" smooth="yes"/>
+      <point x="84" y="198"/>
+      <point x="20" y="120"/>
+      <point x="20" y="3" type="curve" smooth="yes"/>
+      <point x="20" y="-109"/>
+      <point x="78" y="-178"/>
+    </contour>
+    <contour>
+      <point x="200" y="-76" type="curve" smooth="yes"/>
+      <point x="163" y="-76"/>
+      <point x="139" y="-44"/>
+      <point x="139" y="7" type="curve" smooth="yes"/>
+      <point x="139" y="60"/>
+      <point x="166" y="95"/>
+      <point x="209" y="95" type="curve" smooth="yes"/>
+      <point x="223" y="95"/>
+      <point x="243" y="89"/>
+      <point x="254" y="81" type="curve"/>
+      <point x="254" y="-50" type="line"/>
+      <point x="241" y="-67"/>
+      <point x="221" y="-76"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <integer>0</integer>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-170.22955322265625</real>
+          <key>glyphSource</key>
+          <string>n</string>
+          <key>interpolateX</key>
+          <real>137.7875518798828</real>
+          <key>interpolateY</key>
+          <real>137.7875518798828</real>
+          <key>lockInterpolationXY</key>
+          <integer>1</integer>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>76.19363403320312</real>
+          <key>scaleY</key>
+          <real>76.19363403320312</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

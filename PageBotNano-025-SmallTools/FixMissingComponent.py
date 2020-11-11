@@ -30,14 +30,11 @@ REPLACE_BY = 'H'
 PATH = 'masters/' # Check all .ufo in this local folder
 REPORT_PATH = 'reports/' # Create folder if not exists, export report file there.
 
-report = [] # Collect errors and warnings in this list
+def fixMissingComponent(filePath):
+    report = [] # Collect errors and warnings in this list
 
-for fileName in os.listdir(PATH): # For all the files in the masters/ folder
-    if not fileName.endswith('.ufo'):
-        continue # Skip anything that is not a ufo file.
-    font = openFont(PATH+fileName) # Open the font as instance (not opening a window)
-
-    if TESTING: # Introduce an error, so we test the script
+    font = openFont(filePath)
+    if TESTING and 'Agrave' in font: # Introduce an error, so we test the script
         for component in font['Agrave'].components:
             if component.baseGlyph == 'A':
                 component.baseGlyph = 'HHH' # Does not exist
@@ -65,17 +62,26 @@ for fileName in os.listdir(PATH): # For all the files in the masters/ folder
     if not TESTING:
         font.save()
     font.close() # Does not do+anything in this script.
+    return report
 
-# If the report folder does not exist yet, create it
-if not os.path.exists(REPORT_PATH):
-    print('Creating', REPORT_PATH)
-    os.makedirs(REPORT_PATH)
-# Write the errors/warnings file, glueing the separate lines with '\n' newline
-print('Errors and warnings: %d' % len(report))
-#print('\n'.join(report))
-f = codecs.open(REPORT_PATH + 'fixmissingcomponent_fixed_sortof.txt', 'w', encoding='utf-8')
-f.write('\n'.join(report))
-f.close()
+if __name__ == "__main__":
+
+    for fileName in os.listdir(PATH): # For all the files in the masters/ folder
+        if not fileName.endswith('.ufo'):
+            continue # Skip anything that is not a ufo file.
+        report = fixMissingComponent(PATH+fileName)
+        # Open the font as instance (not opening a window)
+
+        # If the report folder does not exist yet, create it
+        if not os.path.exists(REPORT_PATH):
+            print('Creating', REPORT_PATH)
+            os.makedirs(REPORT_PATH)
+        # Write the errors/warnings file, glueing the separate lines with '\n' newline
+        print('Errors and warnings: %d' % len(report))
+        #print('\n'.join(report))
+        f = codecs.open(REPORT_PATH + 'fixmissingcomponent_fixed_sortof.txt', 'a', encoding='utf-8')
+        f.write('\n'.join(report))
+        f.close()
 
 print('Done')
 

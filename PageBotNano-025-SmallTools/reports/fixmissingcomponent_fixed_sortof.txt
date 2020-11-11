@@ -1,4 +1,17 @@
 --------------------------------------------------------------------------------
 Checking masters/Upgrade-Regular_Testing.ufo missing component references
 --------------------------------------------------------------------------------
-Checking masters/Upgrade-Regular_Italic_Testing.ufo missing component references
+Checking masters/Upgrade-Regular_Italic_Testing.ufo missing component references--------------------------------------------------------------------------------
+Checking masters/PageBot-Book.ufo missing component references--------------------------------------------------------------------------------
+Checking masters/PageBot-Bold.ufo missing component references--------------------------------------------------------------------------------
+Checking masters/PageBot-Light.ufo missing component references
+Warning: Component in glyph "percent" baseGlyph "zero.numr" should change to "H"
+Warning: Component in glyph "percent" baseGlyph "fraction" should change to "H"
+Warning: Component in glyph "percent" baseGlyph "zero.dnom" should change to "H"--------------------------------------------------------------------------------
+Checking masters/PageBot-Regular.ufo missing component references--------------------------------------------------------------------------------
+Checking masters/Upgrade-Semibold_MA.ufo missing component references
+Warning: Component in glyph "Agrave" baseGlyph "HHH" should change to "H"--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_MA.ufo missing component references
+Warning: Component in glyph "Agrave" baseGlyph "HHH" should change to "H"--------------------------------------------------------------------------------
+Checking masters/Upgrade-Light_MA.ufo missing component references
+Warning: Component in glyph "Agrave" baseGlyph "HHH" should change to "H"

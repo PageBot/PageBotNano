@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="gcircumflex.salt" format="2">
+  <advance width="479"/>
+  <outline>
+    <component base="g.salt"/>
+    <component base="circumflexcmb" xOffset="242" yOffset="16"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typenetwork.accentbuilder.locked</key>
+      <false/>
+      <key>public.markColor</key>
+      <string>0,0,0,0.5</string>
+    </dict>
+  </lib>
+</glyph>

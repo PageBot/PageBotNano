@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="bitcoin" format="2">
+  <advance width="500"/>
+  <unicode hex="20BF"/>
+  <outline>
+    <contour>
+      <point x="175" y="642" type="line"/>
+      <point x="203" y="642" type="line"/>
+      <point x="203" y="786" type="line"/>
+      <point x="175" y="786" type="line"/>
+    </contour>
+    <contour>
+      <point x="262" y="642" type="line"/>
+      <point x="290" y="642" type="line"/>
+      <point x="290" y="786" type="line"/>
+      <point x="262" y="786" type="line"/>
+    </contour>
+    <contour>
+      <point x="175" y="-124" type="line"/>
+      <point x="203" y="-124" type="line"/>
+      <point x="203" y="20" type="line"/>
+      <point x="175" y="20" type="line"/>
+    </contour>
+    <contour>
+      <point x="262" y="-124" type="line"/>
+      <point x="290" y="-124" type="line"/>
+      <point x="290" y="20" type="line"/>
+      <point x="262" y="20" type="line"/>
+    </contour>
+    <component base="B"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+    </dict>
+  </lib>
+</glyph>

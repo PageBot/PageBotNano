@@ -1,12 +1,16 @@
 --------------------------------------------------------------------------------
-Checking masters/Upgrade_CJK_Try-Thin.ufo Groups 474 Kerning 0
-Warning: Glyph H has DEFAULT_WIDTH (111)
-Warning: Glyph O has DEFAULT_WIDTH (111)
+Checking masters/PageBot-Book.ufo Groups 148 Kerning 934
 --------------------------------------------------------------------------------
-Checking masters/Upgrade_CJK_Try-Bold.ufo Groups 471 Kerning 9051
-Warning: Glyph H has DEFAULT_WIDTH (111)
-Warning: Glyph O has DEFAULT_WIDTH (111)
+Checking masters/PageBot-Bold.ufo Groups 148 Kerning 973
 --------------------------------------------------------------------------------
-Checking masters/Upgrade_CJK_Try-Regular82.ufo Groups 473 Kerning 0
-Warning: Glyph H has DEFAULT_WIDTH (111)
-Warning: Glyph O has DEFAULT_WIDTH (111)
+Checking masters/PageBot-Light.ufo Groups 197 Kerning 746
+--------------------------------------------------------------------------------
+Checking masters/PageBot-Regular.ufo Groups 148 Kerning 934--------------------------------------------------------------------------------
+Checking masters/PageBot-Book.ufo Groups 148 Kerning 934
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Bold.ufo Groups 148 Kerning 973
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Light.ufo Groups 197 Kerning 746
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Regular.ufo Groups 148 Kerning 934
+Saving font

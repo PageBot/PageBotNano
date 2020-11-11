@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="semicolon" format="2">
+  <advance width="161"/>
+  <unicode hex="003B"/>
+  <guideline x="92" y="340" angle="90.0" name="" identifier="kNABQIqFyE"/>
+  <outline>
+    <component base="comma"/>
+    <component base="period" xOffset="19" yOffset="316"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guideline.magnetic.kNABQIqFyE</key>
+      <integer>5</integer>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+    </dict>
+  </lib>
+</glyph>

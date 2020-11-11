@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="t.sups" format="2">
+  <advance width="224"/>
+  <anchor x="212" y="462" name="caron.vert"/>
+  <anchor x="106" y="0" name="bottom"/>
+  <outline>
+    <component base="t.sinf" yOffset="610"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,0.1518,0.2217,1</string>
+    </dict>
+  </lib>
+</glyph>

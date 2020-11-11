@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Oslashacute.sc_AT_weight800" format="2">
+  <advance width="612"/>
+  <outline>
+    <contour>
+      <point x="362" y="452" type="line"/>
+      <point x="451" y="398" type="line"/>
+      <point x="552" y="564" type="line"/>
+      <point x="430" y="564" type="line"/>
+    </contour>
+    <contour>
+      <point x="58" y="-48" type="line"/>
+      <point x="180" y="-48" type="line"/>
+      <point x="257" y="79" type="line"/>
+      <point x="164" y="127" type="line"/>
+    </contour>
+    <component base="O.sc"/>
+    <component base="acutecmb.uc" xOffset="296" yOffset="-137"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typenetwork.accentbuilder.locked</key>
+      <false/>
+      <key>public.markColor</key>
+      <string>0,0,0,0.5</string>
+    </dict>
+  </lib>
+</glyph>

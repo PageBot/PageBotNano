@@ -18,17 +18,15 @@ import os, codecs
 # script is not running inside the current folder.
 from pagebotnano_025 import openFont 
 
-TESTING = False
+TESTING = True
 DEFAULT_WIDTH = 111
 PATH = 'masters/' # Check all .ufo in this local folder
 REPORT_PATH = 'reports/' # Create folder if not exists, export report file there.
 
-report = [] # Collect errors and warnings in this list
 
-for fileName in os.listdir(PATH): # For all the files in the masters/ folder
-    if not fileName.endswith('.ufo'):
-        continue # Skip anything that is not a ufo file.
-    font = openFont(PATH+fileName) # Open the font as instance (not opening a window)
+def fixNegativeWidth(filePath):
+    report = [] # Collect errors and warnings in this list
+    font = openFont(filePath) # Open the font as instance (not opening a window)
 
     if TESTING: # Introduce an error, so we test the script
         font['H'].width = -200
@@ -46,18 +44,28 @@ for fileName in os.listdir(PATH): # For all the files in the masters/ folder
         elif g.width == DEFAULT_WIDTH:
             report.append('Warning: Glyph %s has DEFAULT_WIDTH (%d)' % (g.name, g.width))
 
+    report.append('Saving font')
     font.save()
     font.close() # Does not do+anything in this script.
+    return report
 
-# If the report folder does not exist yet, create it
-if not os.path.exists(REPORT_PATH):
-    print('Creating', REPORT_PATH)
-    os.makedirs(REPORT_PATH)
-# Write the errors/warnings file, glueing the separate lines with '\n' newline
-print('Errors and warnings: %d' % len(report))
-f = codecs.open(REPORT_PATH + 'negativeWidth_errors_warnings.txt', 'w', encoding='utf-8')
-f.write('\n'.join(report))
-f.close()
+#print('This is included as', __name__)
+if __name__ == "__main__":
+    for fileName in os.listdir(PATH):
+        if fileName.startswith('.') or not fileName.endswith('.ufo'):
+            continue
+        fontPath = PATH + fileName
+        report = fixNegativeWidth(fontPath)
 
-print('Done')
+        # If the report folder does not exist yet, create it
+        if not os.path.exists(REPORT_PATH):
+            print('Creating', REPORT_PATH)
+            os.makedirs(REPORT_PATH)
+        # Write the errors/warnings file, glueing the separate lines with '\n' newline
+        print('Errors and warnings: %d' % len(report))
+        f = codecs.open(REPORT_PATH + 'negativeWidth_errors_warnings.txt', 'a', encoding='utf-8')
+        f.write('\n'.join(report))
+        f.close()
+
+    print('Done')
 

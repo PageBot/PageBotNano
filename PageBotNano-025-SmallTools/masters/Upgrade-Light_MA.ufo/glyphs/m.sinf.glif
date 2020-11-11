@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="m.sinf" format="2">
+  <advance width="595"/>
+  <outline>
+    <contour>
+      <point x="52" y="-170" type="line"/>
+      <point x="83" y="-170" type="line"/>
+      <point x="83" y="109" type="line"/>
+      <point x="106" y="147"/>
+      <point x="145" y="171"/>
+      <point x="188" y="171" type="curve" smooth="yes"/>
+      <point x="249" y="171"/>
+      <point x="286" y="131"/>
+      <point x="286" y="67" type="curve" smooth="yes"/>
+      <point x="286" y="-170" type="line"/>
+      <point x="317" y="-170" type="line"/>
+      <point x="317" y="73" type="line" smooth="yes"/>
+      <point x="317" y="150"/>
+      <point x="269" y="199"/>
+      <point x="192" y="199" type="curve" smooth="yes"/>
+      <point x="148" y="199"/>
+      <point x="109" y="177"/>
+      <point x="83" y="142" type="curve"/>
+      <point x="83" y="190" type="line"/>
+      <point x="52" y="190" type="line"/>
+    </contour>
+    <contour>
+      <point x="519" y="-170" type="line"/>
+      <point x="551" y="-170" type="line"/>
+      <point x="551" y="73" type="line" smooth="yes"/>
+      <point x="551" y="150"/>
+      <point x="502" y="199"/>
+      <point x="426" y="199" type="curve" smooth="yes"/>
+      <point x="377" y="199"/>
+      <point x="329" y="173"/>
+      <point x="301" y="129" type="curve"/>
+      <point x="304" y="97" type="line"/>
+      <point x="330" y="142"/>
+      <point x="375" y="171"/>
+      <point x="422" y="171" type="curve" smooth="yes"/>
+      <point x="483" y="171"/>
+      <point x="519" y="131"/>
+      <point x="519" y="67" type="curve" smooth="yes"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>0</string>
+          <key>RSB</key>
+          <string>0</string>
+          <key>baseline</key>
+          <real>-170.10202026367188</real>
+          <key>glyphSource</key>
+          <string></string>
+          <key>interpolateX</key>
+          <real>38.80564880371094</real>
+          <key>interpolateY</key>
+          <real>38.80564880371094</real>
+          <key>lockInterpolationXY</key>
+          <integer>1</integer>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>77.74686431884766</real>
+          <key>scaleY</key>
+          <real>77.74686431884766</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

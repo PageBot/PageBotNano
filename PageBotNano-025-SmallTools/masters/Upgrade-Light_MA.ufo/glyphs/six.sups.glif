@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="six.sups" format="2">
+  <advance width="320"/>
+  <unicode hex="2076"/>
+  <outline>
+    <component base="six.dnom" yOffset="440"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,0.1518,0.2217,1</string>
+    </dict>
+  </lib>
+</glyph>

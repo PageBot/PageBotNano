@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="dotlessi" format="2">
+  <advance width="183"/>
+  <unicode hex="0131"/>
+  <anchor x="92" y="446" name="top"/>
+  <outline>
+    <contour>
+      <point x="76" y="0" type="line"/>
+      <point x="107" y="0" type="line"/>
+      <point x="107" y="462" type="line"/>
+      <point x="76" y="462" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict/>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

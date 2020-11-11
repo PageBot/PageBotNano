@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="w.sinf" format="2">
+  <advance width="552"/>
+  <anchor x="278" y="174" name="top"/>
+  <outline>
+    <contour>
+      <point x="136" y="-170" type="line"/>
+      <point x="167" y="-170" type="line"/>
+      <point x="257" y="92" type="line"/>
+      <point x="285" y="173" type="line"/>
+      <point x="268" y="173" type="line"/>
+      <point x="296" y="92" type="line"/>
+      <point x="384" y="-170" type="line"/>
+      <point x="416" y="-170" type="line"/>
+      <point x="540" y="190" type="line"/>
+      <point x="510" y="190" type="line"/>
+      <point x="437" y="-24" type="line"/>
+      <point x="393" y="-154" type="line"/>
+      <point x="411" y="-154" type="line"/>
+      <point x="367" y="-24" type="line"/>
+      <point x="294" y="190" type="line"/>
+      <point x="261" y="190" type="line"/>
+      <point x="188" y="-24" type="line"/>
+      <point x="144" y="-154" type="line"/>
+      <point x="162" y="-154" type="line"/>
+      <point x="118" y="-24" type="line"/>
+      <point x="45" y="190" type="line"/>
+      <point x="12" y="190" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>0</string>
+          <key>RSB</key>
+          <string>0</string>
+          <key>baseline</key>
+          <real>-170.10202026367188</real>
+          <key>glyphSource</key>
+          <string></string>
+          <key>interpolateX</key>
+          <real>38.80564880371094</real>
+          <key>interpolateY</key>
+          <real>38.80564880371094</real>
+          <key>lockInterpolationXY</key>
+          <integer>1</integer>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>77.74686431884766</real>
+          <key>scaleY</key>
+          <real>77.74686431884766</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

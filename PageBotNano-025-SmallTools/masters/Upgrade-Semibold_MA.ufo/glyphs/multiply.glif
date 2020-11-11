@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="multiply" format="2">
+  <advance width="538"/>
+  <unicode hex="00D7"/>
+  <guideline x="414" y="70" angle="0" name="" identifier="EBtnxtBYqz"/>
+  <outline>
+    <contour>
+      <point x="145" y="70" type="line"/>
+      <point x="269" y="194" type="line"/>
+      <point x="393" y="70" type="line"/>
+      <point x="483" y="160" type="line"/>
+      <point x="359" y="284" type="line"/>
+      <point x="483" y="408" type="line"/>
+      <point x="393" y="498" type="line"/>
+      <point x="269" y="374" type="line"/>
+      <point x="145" y="498" type="line"/>
+      <point x="55" y="407" type="line"/>
+      <point x="179" y="283" type="line"/>
+      <point x="55" y="160" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guideline.magnetic.EBtnxtBYqz</key>
+      <integer>5</integer>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>4</string>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-142.3125</real>
+          <key>interpolateX</key>
+          <real>130.54063415527344</real>
+          <key>interpolateY</key>
+          <real>130.54063415527344</real>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>72.5374984741211</real>
+          <key>scaleY</key>
+          <real>72.5374984741211</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

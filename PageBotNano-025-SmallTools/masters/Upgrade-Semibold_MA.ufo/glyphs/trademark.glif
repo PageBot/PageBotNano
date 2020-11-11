@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="trademark" format="2">
+  <advance width="678"/>
+  <unicode hex="2122"/>
+  <outline>
+    <contour>
+      <point x="108" y="453" type="line"/>
+      <point x="192" y="453" type="line"/>
+      <point x="192" y="646" type="line"/>
+      <point x="260" y="646" type="line"/>
+      <point x="260" y="716" type="line"/>
+      <point x="40" y="716" type="line"/>
+      <point x="40" y="646" type="line"/>
+      <point x="108" y="646" type="line"/>
+    </contour>
+    <contour>
+      <point x="289" y="453" type="line"/>
+      <point x="359" y="453" type="line"/>
+      <point x="359" y="713" type="line"/>
+      <point x="322" y="713" type="line"/>
+      <point x="424" y="490" type="line"/>
+      <point x="469" y="490" type="line"/>
+      <point x="571" y="713" type="line"/>
+      <point x="534" y="713" type="line"/>
+      <point x="534" y="453" type="line"/>
+      <point x="618" y="453" type="line"/>
+      <point x="618" y="716" type="line"/>
+      <point x="500" y="716" type="line"/>
+      <point x="429" y="558" type="line"/>
+      <point x="481" y="558" type="line"/>
+      <point x="412" y="716" type="line"/>
+      <point x="289" y="716" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>public.markColor</key>
+      <string>1,1,0,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>4</string>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-142.3125</real>
+          <key>interpolateX</key>
+          <real>130.54063415527344</real>
+          <key>interpolateY</key>
+          <real>130.54063415527344</real>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>72.5374984741211</real>
+          <key>scaleY</key>
+          <real>72.5374984741211</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

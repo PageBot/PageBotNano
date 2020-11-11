@@ -18,25 +18,32 @@ TAB_WIDTH = 630
 
 PATH = 'masters/'
 
-for fileName in os.listdir(PATH):
-    if fileName.startswith('.') or not fileName.endswith('.ufo'):
-        continue
-    font = openFont(PATH+fileName)
+def fixTabWidths(fontPath):
+    report = []
     #print('Family:', font.info.familyName, 'Style:', font.info.styleName, 'Path:', font.path)
-    print('Checking', font.path)
+    font = openFont(fontPath)
+    report.append('Checking %s' % font.path)
     for g in font: # Runs through the glyph, instead of glyph names
         if 'tab' in g.name:
             if abs(g.width - TAB_WIDTH) > 1:
                 diff = TAB_WIDTH - g.width
-                print('Set tab width', g, TAB_WIDTH, '-->', g.width)
+                report.append('Set tab width', g, TAB_WIDTH, '-->', g.width)
                 g.leftMargin += diff/2 # First set the margin
                 g.width = TAB_WIDTH # Then set the width
                 g.update() 
 
     font.save()
     font.close() # Does not do+anything in this script.
+    return report
 
-print('Done')
+#print('This is included as', __name__)
+if __name__ == "__main__":
+    for fileName in os.listdir(PATH):
+        if fileName.startswith('.') or not fileName.endswith('.ufo'):
+            continue
+        fontPath = PATH + fileName
+        fixTabWidths(fontPath)
+    print('Done')
 
 
 

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Euro.sc" format="2">
+  <advance width="569"/>
+  <outline>
+    <contour>
+      <point x="40" y="156" type="line"/>
+      <point x="372" y="156" type="line"/>
+      <point x="372" y="239" type="line"/>
+      <point x="40" y="239" type="line"/>
+    </contour>
+    <contour>
+      <point x="40" y="275" type="line"/>
+      <point x="372" y="275" type="line"/>
+      <point x="372" y="359" type="line"/>
+      <point x="40" y="359" type="line"/>
+    </contour>
+    <component base="C.sc" xOffset="58"/>
+  </outline>
+</glyph>

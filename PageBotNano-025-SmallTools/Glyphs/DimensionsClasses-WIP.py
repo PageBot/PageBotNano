@@ -10,33 +10,52 @@ from vanilla import EditText, TextBox, Button, CheckBox, TextEditor
 from random import random
 
 class Vertical:
-	def __init__(self, x1, y1, y2, x2=None):
-		assert y1 != y2
-		self.x1 = x1
-		self.y1 = y1
-		if x2 is None:
-			x2 = x1
-		self.x2 = x2
-		self.y2 = y2
+	def __init__(self, p, p1):
+		# abs(p.x - p1.x) <= TOLERANCE
+		assert p.y != p1.y
+		self.p = p
+		self.p1 = p1		
+
+	def _get_x(self):
+		return self.p.x
+	x = property(_get_x)
+			
+	def _get_y(self):
+		return self.p.y
+	y = property(_get_y)
+		
+	def _get_h(self):
+		# Answering the height of the vertical
+		return abs(self.p.y - self.p1.y)
+	h = property(_get_h)
 		
 class Horizontal:
-	def __init__(self, x1, x2, y1, y2=None):
-		assert x1 != x2
-		self.x1 = x1
-		self.y1 = y1
-		self.x2 = x2
-		if y2 is None:
-			y2 = y1
-		self.y2 = y2
+	def __init__(self, p, p1):
+		# abs(p.x - p1.x) <= TOLERANCE
+		self.p = p
+		self.p1 = p1
 		
+	def _get_x(self):
+		return self.p.x
+	x = property(_get_x)
+			
+	def _get_y(self):
+		return self.p.y
+	y = property(_get_y)
+		
+	def _get_w(self):
+		# Answering the width of the horizontal
+		return abs(self.p.x - self.p1.x)
+	w = property(_get_w)
+			
 class Stem:
 	def __init__(self, v1, v2):
-		self.v1 = v1 # Verticals
+		self.v1 = v1 # Vertical instances
 		self.v2 = v2
 		
 class Bar:
 	def __init__(self, h1, h2):
-		self.h1 = h1 # Horizontals
+		self.h1 = h1 # Horizontal instances
 		self.h2 = h2
 		
 class DimensionsTool:
@@ -243,23 +262,22 @@ class DimensionsTool:
 			layer = layer.parent.parent.glyphs['H'].layers[layer.name]
 			pcs, verticals, horizontals = self.findVerticalsHorizontals(layer)
 			# Find the smallest (x1, x2) for the longest two verticals
-			v1 = v2 = None # Keep track of longest verticals with the smallest x
+			h1 = h2 = None # Keep track of longest verticals with the smallest x
 			x1 = x2 = 1000000
-			for x, pairs in verticals.items():
-				for p, p1 in pairs: # Multiple vertical can be on the same x position
-					v = abs(p.y - p1.y)
-					if v1 is None or v >= v1:
-						v1 = v
+			for x, vs in verticals.items():
+				for v in vs: # List of verticals, sharing the same x
+					if h1 is None or v.h >= h1:
+						h1 = v.h
 						x1 = min(x, x1)
-					elif v2 is None or v >= v2:
-						v2 = v
+					elif h2 is None or v.h >= v2:
+						h2 = v.h
 						x2 = min(x, x2)
 			stem = abs(x1 - x2)
 			
 			# Find the smallest (y1, y2) combination of horizontals
 			y1 = 0
 			y2 = 1000000
-			for (y, _) in horizontals.keys():
+			for y, hs in horizontals.keys(): # List of horizontals, just need the y
 				if y1 is None:
 					y1 = y
 				elif y2 is None:
@@ -321,15 +339,15 @@ class DimensionsTool:
 				p_2, p_1, p, p1, p2 = points[i-4], points[i-3], points[i-2], points[i-1], points[i]
 				pcs.append((p_2, p_1, p, p1, p2))
 				if abs(p.x - p1.x) <= self.VH_TOLERANCE:
-					pair = tuple(sorted((p.x, p1.x))) # Make static tuple that can be a key in a dict
-					if not pair in verticals: # If it does not exist as vertical key
-						verticals[pair] = [] # Create storage of verticals that share the same x-pair
-					verticals[pair].append((p, p1))
+					v = Vertical(p, p1)
+					if not v.x in verticals: # If it does not exist as vertical key
+						verticals[v.x] = [] # Create storage of verticals that share the same x position
+					verticals[v.x].append(v)
 				if abs(p.y - p1.y) <= self.VH_TOLERANCE:
-					pair = tuple(sorted((p.y, p1.y)))
-					if not pair in horizontals:
-						horizontals[pair] = []
-					horizontals[pair].append((p, p1))
+					h = Horizontal(p, p1)
+					if not h.y in horizontals: # If it does not exist as vertical key
+						horizontals[h.y] = [] # Create storage of verticals that share the same x position
+					horizontals[pair].append(h)
 		return pcs, verticals, horizontals
 		
 	def getMetrics(self, layer):
@@ -337,6 +355,9 @@ class DimensionsTool:
 		defaultStem, defaultBar = self.findDefaults(layer)
 		print(defaultStem, defaultBar)
 		# Layer is a GlyphsApp glyph style
+		# pcs = list with [p_2, p_1, p, p1, p2] point contexts
+		# verticals = dictionary of Vertical instances, key = vertical.x
+		# horizontals = dictionary of Horizontal instances, key = horizontal.y
 		pcs, verticals, horizontals = self.findVerticalsHorizontals(layer)
 		#print(len(verticals), len(horizontals))
 		# Looking for stems, using the defaultStem, as found in /H as reference.

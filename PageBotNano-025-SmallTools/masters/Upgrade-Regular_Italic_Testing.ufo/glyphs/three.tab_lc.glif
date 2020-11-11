@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="three.tab_lc" format="2">
-  <advance width="650"/>
-  <outline>
-    <component base="three" xOffset="52" yOffset="-190"/>
-  </outline>
-</glyph>

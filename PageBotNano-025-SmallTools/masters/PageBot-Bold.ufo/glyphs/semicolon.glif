@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="semicolon" format="2">
+  <advance width="275"/>
+  <unicode hex="003B"/>
+  <outline>
+    <contour>
+      <point x="67" y="285" type="line"/>
+      <point x="227" y="285" type="line"/>
+      <point x="227" y="445" type="line"/>
+      <point x="67" y="445" type="line"/>
+    </contour>
+    <contour>
+      <point x="227" y="160" type="line"/>
+      <point x="67" y="160" type="line"/>
+      <point x="67" y="56" type="line" smooth="yes"/>
+      <point x="67" y="-36"/>
+      <point x="49" y="-88"/>
+      <point x="17" y="-152" type="curve"/>
+      <point x="137" y="-185" type="line"/>
+      <point x="181" y="-143"/>
+      <point x="227" y="-63"/>
+      <point x="227" y="61" type="curve" smooth="yes"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.typemytype.robofont.guideline.magnetic.J3mftK8KhH</key>
+      <integer>5</integer>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <string>4</string>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>-142.3125</real>
+          <key>interpolateX</key>
+          <real>130.54063415527344</real>
+          <key>interpolateY</key>
+          <real>130.54063415527344</real>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>72.5374984741211</real>
+          <key>scaleY</key>
+          <real>72.5374984741211</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

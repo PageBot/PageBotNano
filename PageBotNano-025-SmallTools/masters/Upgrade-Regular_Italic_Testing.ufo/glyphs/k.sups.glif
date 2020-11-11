@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="k.sups" format="2">
-  <advance width="361"/>
-  <anchor x="226" y="0" name="bottom"/>
-  <outline>
-    <component base="k.sinf" xOffset="86" yOffset="610"/>
-  </outline>
-</glyph>

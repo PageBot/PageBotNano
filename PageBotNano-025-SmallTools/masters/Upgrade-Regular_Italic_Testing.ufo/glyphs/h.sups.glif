@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="h.sups" format="2">
-  <advance width="386"/>
-  <anchor x="290" y="458" name="top"/>
-  <outline>
-    <component base="h.sinf" xOffset="86" yOffset="610"/>
-  </outline>
-</glyph>

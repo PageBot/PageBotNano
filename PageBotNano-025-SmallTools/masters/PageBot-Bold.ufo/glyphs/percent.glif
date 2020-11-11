@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="percent" format="2">
+  <advance width="903"/>
+  <unicode hex="0025"/>
+  <outline>
+    <contour>
+      <point x="212" y="351" type="curve" smooth="yes"/>
+      <point x="318" y="351"/>
+      <point x="389" y="427"/>
+      <point x="389" y="540" type="curve" smooth="yes"/>
+      <point x="389" y="654"/>
+      <point x="318" y="729"/>
+      <point x="212" y="729" type="curve" smooth="yes"/>
+      <point x="106" y="729"/>
+      <point x="35" y="654"/>
+      <point x="35" y="540" type="curve" smooth="yes"/>
+      <point x="35" y="427"/>
+      <point x="106" y="351"/>
+    </contour>
+    <contour>
+      <point x="226" y="0" type="line"/>
+      <point x="354" y="0" type="line"/>
+      <point x="674" y="716" type="line"/>
+      <point x="546" y="716" type="line"/>
+    </contour>
+    <contour>
+      <point x="212" y="467" type="curve" smooth="yes"/>
+      <point x="183" y="467"/>
+      <point x="161" y="495"/>
+      <point x="161" y="540" type="curve" smooth="yes"/>
+      <point x="161" y="586"/>
+      <point x="183" y="614"/>
+      <point x="212" y="614" type="curve" smooth="yes"/>
+      <point x="241" y="614"/>
+      <point x="263" y="585"/>
+      <point x="263" y="540" type="curve" smooth="yes"/>
+      <point x="263" y="495"/>
+      <point x="241" y="467"/>
+    </contour>
+    <contour>
+      <point x="693" y="-9" type="curve" smooth="yes"/>
+      <point x="799" y="-9"/>
+      <point x="870" y="67"/>
+      <point x="870" y="180" type="curve" smooth="yes"/>
+      <point x="870" y="294"/>
+      <point x="799" y="369"/>
+      <point x="693" y="369" type="curve" smooth="yes"/>
+      <point x="587" y="369"/>
+      <point x="516" y="294"/>
+      <point x="516" y="180" type="curve" smooth="yes"/>
+      <point x="516" y="67"/>
+      <point x="587" y="-9"/>
+    </contour>
+    <contour>
+      <point x="693" y="107" type="curve" smooth="yes"/>
+      <point x="664" y="107"/>
+      <point x="642" y="135"/>
+      <point x="642" y="180" type="curve" smooth="yes"/>
+      <point x="642" y="226"/>
+      <point x="664" y="254"/>
+      <point x="693" y="254" type="curve" smooth="yes"/>
+      <point x="722" y="254"/>
+      <point x="744" y="225"/>
+      <point x="744" y="180" type="curve" smooth="yes"/>
+      <point x="744" y="135"/>
+      <point x="722" y="107"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.petr.ptt</key>
+      <dict>
+        <key>winglabels</key>
+        <dict>
+        </dict>
+        <key>wings</key>
+        <dict>
+        </dict>
+      </dict>
+      <key>com.robofont.robohint</key>
+      <dict>
+        <key>wingcommands_json</key>
+        <string>{"aa": {"id": "aa", "name": "Anti-aliasing"}, "bw": {"id": "bw", "name": "Black &amp; white"}, "ct": {"id": "ct", "name": "Cleartype"}, "sp": {"id": "sp", "name": "Space constraint"}}</string>
+        <key>wingset_json</key>
+        <string>{"wings": {"78f4fa9b1aa5": {"id": "797ddac6bc8d", "name": "Testing IF-ELSE", "src": "/* Testing IF-ELSE */\nPUSHB[0] 1\nIF[] \nsrp0[] 24\nelse[]\nsrp0[] 11\neif[]\n"}, "78f4fa9b80d3": {}, "797d0c7721c2": {"id": "797d0c7721c2", "name": "(X) Horizontal hints for o", "src": "/* (X) Horizontal hints for o */\nSVTCA[X]\nSRP0[] 24\nMIRP[M&gt;RWh] 2 lsbRound\nMIRP[m&gt;rBl] 20 stemRound\nMDRP[M&gt;RGr] 8\nMIRP[m&gt;rBl] 14 stemRound\nSRP0[] 8\nMIRP[m&lt;RWh] 25 rsbRound\nIUP[X]\n/* (Y) Autohints for o */\nSVTCA[Y]\n/* ... */\nIUP[Y]"}, "797d108e34b0": {"id": "797d108e34b0", "name": "(X) Autohints for o", "src": "/* (X) Autohints for o */\nSVTCA[X]\nSRP0[] 24\nMIRP[M&gt;RWh] 2 lsbRound\nMIRP[m&gt;rBl] 20 stemRound\nMDRP[M&gt;RGr] 14\nMIRP[m&gt;rBl] 8 stemRound\nSRP0[] 8\nMIRP[m&lt;RWh] 25 rsbRound\n/* (Y) Autohints for o */\nSVTCA[Y]\n/* ... */\nIUP[X]\nIUP[Y]\n"}}}</string>
+      </dict>
+      <key>com.typemytype.roboFont.layerData</key>
+      <dict>
+      </dict>
+      <key>public.markColor</key>
+      <string>1,0.8971,0.5018,1</string>
+      <key>tnScalarpolator</key>
+      <dict>
+        <key>scalarpolatorPrefs</key>
+        <dict>
+          <key>LSB</key>
+          <integer>0</integer>
+          <key>RSB</key>
+          <integer>0</integer>
+          <key>baseline</key>
+          <real>0.0</real>
+          <key>glyphSource</key>
+          <string></string>
+          <key>interpolateX</key>
+          <real>100.0</real>
+          <key>interpolateY</key>
+          <real>100.0</real>
+          <key>lockInterpolationXY</key>
+          <integer>1</integer>
+          <key>lockScaleXY</key>
+          <integer>1</integer>
+          <key>scaleX</key>
+          <real>100.0</real>
+          <key>scaleY</key>
+          <real>100.0</real>
+        </dict>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

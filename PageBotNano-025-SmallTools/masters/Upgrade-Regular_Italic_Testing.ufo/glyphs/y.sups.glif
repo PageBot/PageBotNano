@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="y.sups" format="2">
-  <advance width="364"/>
-  <anchor x="286" y="458" name="top"/>
-  <outline>
-    <component base="y.sinf" xOffset="86" yOffset="610"/>
-  </outline>
-</glyph>

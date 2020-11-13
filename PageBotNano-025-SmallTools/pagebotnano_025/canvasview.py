@@ -12,7 +12,7 @@
 from AppKit import NSView, NSMakeRect, NSClipView, NSTrackingArea, \
     NSTrackingMouseEnteredAndExited , NSTrackingActiveWhenFirstResponder, \
     NSTrackingMouseMoved, NSTrackingInVisibleRect, NSTrackingActiveAlways
-from tnbits.base import future
+import future
 
 class CanvasView(NSView):
     """Drawable NSView. To be used by tnbits.canvas.Canvas class."""

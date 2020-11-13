@@ -9,10 +9,14 @@
 #
 #     canvas.py
 #
+import sys
+if __name__ == "__main__":
+    sys.path.insert(0, "..") # So we can import pagebotnano002 without installing.
+
 from vanilla import Group, ScrollView
-from canvasview import *
+from pagebotnano_025.canvasview import *
 from AppKit import NSColor
-from colors import *
+from pagebotnano_025.colors import *
 
 class Canvas(Group):
     """A Vanilla group that wraps the CanvasView in a ScrollView so it can be
@@ -51,7 +55,7 @@ class Canvas(Group):
     Example:
 
     from vanilla import Window
-    from tnbits.canvas import Canvas
+    from canvas import Canvas
     from AppKit import NSMakeRect, NSColor, NSBezierPath
 
     class ExampleWindow:

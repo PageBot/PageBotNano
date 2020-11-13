@@ -20,11 +20,20 @@ class Vertical:
 		return '<%s x=%d h=%d>' % (self.__class__.__name__, self.x, self.h)
 
 	def _get_x(self):
-		return self.p.x
+		"""Answer the smallest x-value of self.p and self.p1
+		(can be different within the TOLERANCE of a vertical.
+		
+		>>> x1 = vertical.x
+		"""
+		return min(self.p.x, self.p1.x)
 	x = property(_get_x)
 			
 	def _get_y(self):
-		return self.p.y
+		"""Answer rhe smallest y-value of self.p and self.p1.
+		
+		>>> y1 = vertical.y
+		"""
+		return min(self.p.y, self.p1.y)
 	y = property(_get_y)
 		
 	def _get_h(self):
@@ -33,6 +42,11 @@ class Vertical:
 	h = property(_get_h)
 	
 	def _get_isVertical(self):
+		"""Answer the boolean flag if the vertical points have 
+		exactly the same x-value.
+		
+		>>> flag = vertical.isVertical
+		"""
 		return self.p.x == self.p1.x
 	isVertical = property(_get_isVertical)
 		
@@ -46,11 +60,11 @@ class Horizontal:
 		return '<%s y=%d w=%d>' % (self.__class__.__name__, self.y, self.w)
 	
 	def _get_x(self):
-		return self.p.x
+		return min(self.p.x, self.p1.x)
 	x = property(_get_x)
 			
 	def _get_y(self):
-		return self.p.y
+		return min(self.p.y, self.p1.y)
 	y = property(_get_y)
 		
 	def _get_w(self):
@@ -82,6 +96,10 @@ class Stem:
 		return abs(self.v1.x - self.v2.x)
 	w = property(_get_w)
 		
+	def _get_h(self):
+		return abs(self.v1.y - self.v2.y)
+	h = property(_get_h)
+		
 class Bar:
 	def __init__(self, h1, h2):
 		self.h1 = h1 # Horizontal instance
@@ -101,6 +119,10 @@ class Bar:
 	def _get_h(self):
 		return abs(self.h1.y - self.h2.y)
 	h = property(_get_h)
+	
+	def _get_w(self):
+		return abs(self.h1.x - self.h2.x)
+	w = property(_get_w)
 	
 class DimensionsTool:
 	def __init__( self ):
@@ -124,7 +146,14 @@ class DimensionsTool:
 		
 		y += 30
 		# Checkbox to flag if any drawing should be done by this tools
-		self.w.doDraw = CheckBox((M, y, -M, 24), "Fix errors", value=False, sizeStyle='regular' )
+		self.w.doDraw = CheckBox((M, y, -M, 24), "Draw dimensions", value=True, 
+			callback=self.update, sizeStyle='regular' )
+		y += 24
+		self.w.showReferenceLines = CheckBox((M, y, -M, 24), "Draw reference lines", 
+			callback=self.update, value=True, sizeStyle='regular' )
+		y += 24
+		self.w.showArrows = CheckBox((M, y, -M, 24), "Draw arrows", value=True, 
+			callback=self.update, sizeStyle='regular' )
 					   
 		# Open window and focus on it:
 		self.w.bind('close', self.windowCloseCallback) # Make bind in case the window is closed
@@ -135,7 +164,13 @@ class DimensionsTool:
 		Glyphs.addCallback( self.drawforeground, DRAWFOREGROUND )
 		Glyphs.addCallback( self.drawbackground, DRAWBACKGROUND )
 		
-
+	def update(self, sender):
+		enable = self.w.doDraw.get()
+		self.w.showReferenceLines.enable(enable)
+		self.w.showArrows.enable(enable)
+		# Call GLyphs to refresh the screen, so it will draw our measures again
+		# with the updated settings.
+		
 	def windowCloseCallback(self, sender):
 		"""Called when window is closed, so we can unsubscribe from the GlyphsApp event.
 		"""
@@ -159,6 +194,9 @@ class DimensionsTool:
 	def drawforeground(self, layer, info):
 		"""Called if GlyphsApp is redrawing in the foreground of the window (over the glyph).
 		"""
+		if not self.w.doDraw.get():
+			return
+			
 		# Current drawing scale, so we can reverse scale arrow heads and markers
 		# to keep them at constant size.
 		sc = info['Scale'] 
@@ -180,35 +218,38 @@ class DimensionsTool:
  			# Horizontal measure line
 			path.moveToPoint_((x1, y))
 			path.lineToPoint_((x2, y))
-			# Arrow head left
-			path.moveToPoint_((x1+arrowSize*2, y+arrowSize))
-			path.lineToPoint_((x1, y))
-			path.lineToPoint_((x1+arrowSize*2, y-arrowSize))
-			# Arrow head right
-			path.moveToPoint_((x2-arrowSize*2, y+arrowSize))
-			path.lineToPoint_((x2, y))
-			path.lineToPoint_((x2-arrowSize*2, y-arrowSize))
+			
+			if self.w.showArrows.get():
+				# Arrow head left
+				path.moveToPoint_((x1+arrowSize*2, y+arrowSize))
+				path.lineToPoint_((x1, y))
+				path.lineToPoint_((x1+arrowSize*2, y-arrowSize))
+				# Arrow head right
+				path.moveToPoint_((x2-arrowSize*2, y+arrowSize))
+				path.lineToPoint_((x2, y))
+				path.lineToPoint_((x2-arrowSize*2, y-arrowSize))
 			
 			path.setLineWidth_(1/sc)
 			NSColor.darkGrayColor().set()
 			path.stroke()
 
-			# Vertical lines to points
-			path = NSBezierPath.bezierPath()
-			path.moveToPoint_((x1, y-8))
-			path.lineToPoint_((x1, stem.y))
-			path.moveToPoint_((x2, y-8))
-			path.lineToPoint_((x2, stem.y))
-
-			path.setLineWidth_(0.5/sc)
-			NSColor.lightGrayColor().set()
-			path.stroke()
+			if self.w.showReferenceLines.get():
+				# Vertical lines to points
+				path = NSBezierPath.bezierPath()
+				path.moveToPoint_((x1, y-8/sc))
+				path.lineToPoint_((x1, stem.y))
+				path.moveToPoint_((x2, y-8/sc))
+				path.lineToPoint_((x2, stem.y+stem.h))
+	
+				path.setLineWidth_(0.5/sc)
+				NSColor.lightGrayColor().set()
+				path.stroke()
 
 			if not stem.v1.isVertical or not stem.v2.isVertical:
 				label = '(%d)' % stem.w
 			else:
 				label = '%d' % stem.w
-			tx = x1 + (x2 - x1)/2 - len(label)/2*10
+			tx = x1 + (x2 - x1)/2 - len(label)/2*10/sc
 			ty = y + 5/sc
 			self.drawLabel(label, tx, ty, sc)
 
@@ -218,33 +259,37 @@ class DimensionsTool:
  		for y, bar in metrics['bars'].items():
  			y1 = bar.y
  			y2 = y1 + bar.h
+ 			
+ 			# Draw measure line
 			path = NSBezierPath.bezierPath()
 			path.moveToPoint_((x, y1))
 			path.lineToPoint_((x, y2))
 			
-			# Arrow head top
-			path.moveToPoint_((x-arrowSize, y2-arrowSize*2))
-			path.lineToPoint_((x, y2))
-			path.lineToPoint_((x+arrowSize, y2-arrowSize*2))
-			# Arrow head bottom
-			path.moveToPoint_((x-arrowSize, y1+arrowSize*2))
-			path.lineToPoint_((x, y1))
-			path.lineToPoint_((x+arrowSize, y1+arrowSize*2))
+			if self.w.showArrows.get():
+				# Arrow head top
+				path.moveToPoint_((x-arrowSize, y2-arrowSize*2))
+				path.lineToPoint_((x, y2))
+				path.lineToPoint_((x+arrowSize, y2-arrowSize*2))
+				# Arrow head bottom
+				path.moveToPoint_((x-arrowSize, y1+arrowSize*2))
+				path.lineToPoint_((x, y1))
+				path.lineToPoint_((x+arrowSize, y1+arrowSize*2))
 
-			path.setLineWidth_(0.5/sc)
+			path.setLineWidth_(1/sc)
 			NSColor.darkGrayColor().set()
 			path.stroke()
 			
-			# Horizontal lines to points
-			path = NSBezierPath.bezierPath()
-			path.moveToPoint_((x-8, y2))
-			path.lineToPoint_((bar.x, y2))
-			path.moveToPoint_((x-8, y1))
-			path.lineToPoint_((bar.x, y1))
-
-			path.setLineWidth_(0.5/sc)
-			NSColor.lightGrayColor().set()
-			path.stroke()
+			if self.w.showReferenceLines.get():
+				# Horizontal lines to points
+				path = NSBezierPath.bezierPath()
+				path.moveToPoint_((x-8, y2))
+				path.lineToPoint_((bar.x, y2))
+				path.moveToPoint_((x-8, y1))
+				path.lineToPoint_((bar.x+bar.w, y1))
+	
+				path.setLineWidth_(0.5/sc)
+				NSColor.lightGrayColor().set()
+				path.stroke()
 			
 			if not bar.h1.isHorizontal or not bar.h2.isHorizontal:
 				label = '(%d)' % bar.h
@@ -340,7 +385,7 @@ class DimensionsTool:
 				if v1 is None or v1.h < v.h:
 					v1 = v
 				elif v2 is None or v2.h < v.h:
-					v2  = v
+					v2 = v
 		stemSize = abs(v1.x - v2.x) # This should be the stem size of the /H
 		
 		layerH = layer.parent.parent.glyphs['H'].layers[layer.name]
@@ -371,6 +416,8 @@ class DimensionsTool:
 					for v1 in vs1: # For all the Vertical lines in this x1 position
 						for v2 in vs2: # For all the Vertical lines in this x2 position
 							stem = Stem(v1, v2) # Create a Stem instance with those two Verticals
+							# Theortically there can be stems above each other, but we can ignore
+							# them because they draw the same measure line
 							stems[stem.x] = stem # Add the instance to the export dictionary
 		return stems # Answer the result
 
@@ -435,7 +482,7 @@ class DimensionsTool:
 	def getMetrics(self, layer):
 		# Find the stem and bar in the /H glyph of the layer parent font.
 		defaultStem, defaultBar = self.findDefaults(layer)
-		print(defaultStem, defaultBar)
+		#print(defaultStem, defaultBar)
 		# Layer is a GlyphsApp glyph style
 		# pcs = list with [p_2, p_1, p, p1, p2] point contexts
 		# verticals = dictionary of Vertical instances, key = vertical.x

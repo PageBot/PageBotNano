@@ -1,4 +1,4 @@
-import importlib, os, codecs
+import importlib, os, codecs, traceback
 from vanilla import Window, CheckBox, Button, Slider, RadioGroup, EditText, List
 from vanilla.dialogs import getFolder
 
@@ -6,13 +6,25 @@ import FixTabWidths
 importlib.reload(FixTabWidths)
 from FixTabWidths import fixTabWidths
 
-import FixNegativeWidth
-importlib.reload(FixNegativeWidth)
-from FixNegativeWidth import fixNegativeWidth
+import FixNegativeWidths
+importlib.reload(FixNegativeWidths)
+from FixNegativeWidths import fixNegativeWidths
 
 import FixMissingComponent
 importlib.reload(FixMissingComponent)
 from FixMissingComponent import fixMissingComponent
+
+
+import os, codecs
+# Include the openFont function here, instead of the import, in case this
+# script is not running inside the current folder.
+from pagebotnano_025 import openFont 
+
+TESTING = False
+DEFAULT_WIDTH = 111
+PATH = 'masters/' # Check all .ufo in this local folder
+REPORT_PATH = 'reports/' # Create folder if not exists, export report file there.
+
 
 class DBFinalTool:
     def __init__(self):
@@ -31,19 +43,24 @@ class DBFinalTool:
         
         self.w = Window((100, 100, w, h), 'Final tool window',
             minSize=(w, h))
-        self.w.fontList = List((pad, pad, c2, -w/2), [])
+        self.w.fontList = List((pad, pad, c2, -w/2), [], 
+            doubleClickCallback=self.openFontCallback,
+            selectionCallback=self.update)
         
         y = pad
         self.w.fixTabWidths = Button((-c1-pad, y, c1, bh), 
             'Fix tab widths', callback=self.fixTabWidthsCallback)  
+        self.w.fixTabWidths.enable(False)
         
         y += leading            
         self.w.fixNegativeWidths = Button((-c1-pad, y, c1, bh), 
             'Fix negative widths', callback=self.fixNegativeWidthsCallback)  
-  
+        self.w.fixNegativeWidths.enable(False)
+
         y += leading            
         self.w.fixMissingComponentsWidths = Button((-c1-pad, y, c1, bh), 
             'Fix missing components', callback=self.fixMissingComponentCallback)  
+        self.w.fixMissingComponentsWidths.enable(False)
                      
         self.w.selectFolder = Button((-c1-pad, -pad-bh, c1, bh), 
             'Select fonts', callback=self.selectFontFolder)           
@@ -55,7 +72,25 @@ class DBFinalTool:
         self.w.open()
 
         self.dirPath = self.selectFontFolder()
-        
+    
+    def update(self, sender):
+        """Do some UI status update work"""
+        enable = len(self.w.fontList.getSelection()) > 0    
+        self.w.fixTabWidths.enable(enable)
+        self.w.fixMissingComponentsWidths.enable(enable)
+        self.w.fixNegativeWidths.enable(enable)
+    
+    def openFontCallback(self, sender):
+        selectedFonts = []
+        for index in self.w.fontList.getSelection():
+            selectedFonts.append(self.w.fontList.get()[index])
+        # Do something here with the fonts after double click
+        # Open in RoboFont of Glyphs
+        cmd = 'open'
+        for selectedFont in selectedFonts:
+            cmd += ' '+self.dirPath + selectedFont
+        os.system(cmd)
+    
     def selectFontFolder(self, sender=None):
         result = getFolder(
             messageText='Select fonts folder', 
@@ -85,9 +120,13 @@ class DBFinalTool:
         self.clearReport()
         for index in self.w.fontList.getSelection():
             fontFile = self.w.fontList.get()[index]
-            result = fixNegativeWidths(self.dirPath + fontFile )
-            self.report('\n'.join(result))
-            #self.report(self.dirPath )
+            try:
+                result = fixNegativeWidths(self.dirPath + fontFile )
+                self.report('\n'.join(result))
+            except:
+                f = open(self.dirPath+'error.txt', 'w')
+                traceback.print_exc(file=f)
+                f.close()           
             self.report('Done %s\n' % fontFile)
 
     def fixMissingComponentCallback(self, sender):
@@ -113,6 +152,6 @@ class DBFinalTool:
         #f = codecs.open('./report.txt', 'a', encoding='utf-8')
         #f.write(report+'\n')
         #f.close() 
-                   
+                 
 DBFinalTool()
         

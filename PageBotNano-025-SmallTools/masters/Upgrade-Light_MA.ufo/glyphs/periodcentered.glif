@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="periodcentered" format="2">
-  <advance width="152"/>
-  <unicode hex="00B7"/>
-  <unicode hex="2219"/>
-  <outline>
-    <component base="periodcmb" xOffset="76" yOffset="194"/>
-  </outline>
-</glyph>

@@ -13,4 +13,14 @@ Saving font---------------------------------------------------------------------
 Checking masters/PageBot-Light.ufo Groups 197 Kerning 746
 Saving font--------------------------------------------------------------------------------
 Checking masters/PageBot-Regular.ufo Groups 148 Kerning 934
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Book.ufo Groups 148 Kerning 934
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Bold.ufo Groups 148 Kerning 973
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Light.ufo Groups 197 Kerning 746
+Saving font--------------------------------------------------------------------------------
+Checking masters/PageBot-Regular.ufo Groups 148 Kerning 934
+Saving font--------------------------------------------------------------------------------
+Checking masters/Upgrade-Regular_MA.ufo Groups 642 Kerning 9483
 Saving font

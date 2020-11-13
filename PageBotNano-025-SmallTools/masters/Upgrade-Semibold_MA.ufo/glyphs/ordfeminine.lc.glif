@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="ordfeminine.lc" format="2">
-  <advance width="408"/>
-  <outline>
-    <component base="ordfeminine" yOffset="-48"/>
-  </outline>
-</glyph>

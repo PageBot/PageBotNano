@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="Dcroat.sc" format="2">
-  <advance width="551"/>
-  <outline>
-    <component base="Eth.sc" xOffset="-7"/>
-  </outline>
-</glyph>

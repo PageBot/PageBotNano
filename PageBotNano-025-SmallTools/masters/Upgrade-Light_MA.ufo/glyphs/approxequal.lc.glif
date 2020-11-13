@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<glyph name="approxequal.lc" format="2">
-  <advance width="378"/>
-  <outline>
-    <component base="approxequal" yOffset="-56"/>
-  </outline>
-</glyph>

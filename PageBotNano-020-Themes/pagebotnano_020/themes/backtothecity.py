@@ -23,13 +23,16 @@ class BackToTheCity(BaseTheme):
     """The BackToTheCity theme is ..."""
 
     NAME = 'Back to the City'
-    BASE_COLORS = dict(
-        base0=spotColor(476),
-        base1=spotColor(1405),
-        base2=spotColor(139),
-        base3=spotColor(480),
-        base4=spotColor(421), # Supporter1
-        base5=spotColor(157),
+    THEME_COLORS = dict(
+        #logo1
+        #logo2
+        #logo3
+        main=spotColor(476),
+        accent=spotColor(1405),
+        alt1=spotColor(139), 
+        alt2=spotColor(480), 
+        support1=spotColor(421),
+        support2=spotColor(157),
     )
 
 if __name__ == "__main__":

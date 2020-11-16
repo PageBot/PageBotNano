@@ -21,12 +21,14 @@ import os # Import standard Python library to create the _export directory
 import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
+# Should be identical to pagebotnano_020-Themes
 from pagebotnano_020.toolbox.color import color
 from pagebotnano_020.constants import (EN, CENTER, LEFT, RIGHT, 
     DEFAULT_FONT, DEFAULT_BODYSIZE, LIGHT, DARK)
 
 class BaseTheme:
     def __init__(self, mood=LIGHT, name=None, fonts=None, styles=None):
+        self.name = name or self.NAME
         self.colors = self.makeColorMatrix(mood)
         # Defines the relation between typographic functions and font names.
         if fonts is None:
@@ -38,156 +40,234 @@ class BaseTheme:
         if styles is None:
             styles = self.getDefaultStyles(self.fonts, self.colors) # To have basic set installed. 
         self.styles = styles
-        self.name = name or self.NAME
 
     def getStyle(self, name):
         return self.styles.get(name)
 
+    # Optional coordinate as in chessboard (except for 9 rows and 9 cols :)
+    # We need a "middle" shade, so the cols need to be uneven.
+    # 9 base colors is just a coincidence to make the matrix square.
+    CELL2ROW = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6, '8': 7, '9': 8}
+    ROW2CELL = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6', 6: '7', 7: '8', 8: '9'}
+    CELL2COL = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8}
+    COL2CELL = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I'}
+
+    LOGO1, LOGO2, LOGO3 = LOGO_NAMES = 'logo1', 'logo2', 'logo3'
+    MAIN = 'main'
+    ACCENT = 'accent'
+    ALT1, ALT2 = 'alt1', 'alt2'
+    SUPPORT1, SUPPORT2 = 'support1', 'support2'
+
     # Optional conversion of color base names to matrix row index number
-    NAME2BASE = dict(
-        main=5,
-        accent=4,
-        alt1=3,
-        alt2=2,
-        support1=1,
-        support2=0,
-    )
+    BASE2ROW = {
+        LOGO1:8, LOGO2:7, LOGO3: 6, # Optional 
+        MAIN:5,
+        ACCENT:4, 
+        ALT1:3, ALT2:2,
+        SUPPORT1:1, SUPPORT2:0,
+    }
+    ROW2BASE = {} # Make x-ref
+    for key, value in BASE2ROW.items():
+        ROW2BASE[value] = key
+
     # Optional conversion of color shade names to matrix col index number
     # Note that we cannot use names as "darkest" and "lightest" since
     # those depend if the theme is "dark" or "light"
     # Instead we call them "background" and "foreground" and other layer names.
-    NAME2SHADE = dict(
-        back=0,
-        background=1,
-        middle=4,
-        foreground=7, hover=7,
-        front=8, text=8,
-    )
-    # Optional cell coordinate as in chessboard (except for 6 rows and 9 cols :)
-    ROW2BASE = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5}
-    COL2SHADE = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8}
+    BACK, BACKGROUND, BACKWARD,BEHIND = 'back', 'background', 'backward', 'behind',
+    MIDDLE = 'middle'
+    AHEAD, FORWARD, FOREGROUND, FRONT = 'ahead', 'forward', 'foreground', 'front'
+    # Alias names
+    HOVER = 'hover'
+    TEXT = 'text'
 
-    def getColor(self, shade, base=None):
-        """Answer the color, at position (shade=x, base=y).
-        If base is None, then try to split shade into two values.
+    SHADE2COL = {
+        BACK:0,
+        BACKGROUND:1,
+        BACKWARD:2,
+        BEHIND:3,
+        MIDDLE:4,
+        AHEAD:5,
+        FORWARD:6,
+        FOREGROUND:7, #HOVER:7,
+        FRONT:8, #TEXT:8,
+    }
+    COL2SHADE = {} # Make x-ref
+    for key, value in SHADE2COL.items():
+        COL2SHADE[value] = key
+    
+    # Add aliases later, because they don't fit in the x-ref
+    SHADE2COL[HOVER] = 7
+    SHADE2COL[TEXT] = 8
 
-        >>> from pagebotnano_020.themes import BackToTheCity
+    # Make the list of all possible color name (base + shade) combinations in the matrix
+    COLOR_NAMES = []
+    for base in BASE2ROW.keys():
+        for shade in SHADE2COL.keys():
+            colorName = base + ' ' + shade
+            COLOR_NAMES.append(colorName)
+            COLOR_NAMES.append(colorName + ' diap') # Add modifiers
+
+    @classmethod
+    def _getBaseShade2RowCol(cls, base, shade):
+        mod = None # Optional modifier color filter name
+        if isinstance(base, str) and len(base) == 2: # base = 'C4'?
+            col = cls.CELL2COL.get(base[0])
+            row = cls.CELL2ROW.get(base[1])
+            if None not in (row, col):
+                base, shade = col, row
+        if shade is None:
+            if isinstance(base, (list, tuple)):
+                try:
+                    base, shade = base
+                except IndexError: 
+                    shade = 'middle' # Take middle shade color column on error
+                    base = 'main' # Main color row
+            elif isinstance(base, str):
+                nameParts = base.split(' ')
+                base = nameParts[0]
+                shade = nameParts[1]
+                if len(nameParts) == 3:
+                    mod = nameParts[2]
+
+        row = cls.BASE2ROW.get(base, base) # Translate name to number if defined.
+        col = cls.SHADE2COL.get(shade, shade) # Translate name to number if defined.
+        assert isinstance(row, int) and isinstance(col, int), ("Error in (base, shade): (%s, %s)" % (row, col))
+        if mod == 'diap': # Flip the col
+            col = -col + 8
+        return row, col
+
+    def getColor(self, base, shade=None):
+        """Answer the color, at position (base=y, shade=x).
+        If shade is None, then try to split shade into two values.
+
+        >>> from pagebotnano_060.themes import BackToTheCity
         >>> theme = BackToTheCity()
         >>> theme.getColor(0, 0).hex # Color index at matrix left-bottom
-        'DED8D5'
-        >>> theme.getColor('B2').hex # Color as in "chessboard" coordinate from bottom left
-        'C4B5A1'
+        'FBECDC'
+        >>> theme.getColor('B2').hex # Color as in "chessboard" coordinate
+        'E5E3DF'
         >>> theme.getColor('C3') == theme.getColor(2, 2)
         True
-        >>> theme.getColor(4, -1).hex # (shade, base) olor index from left-top
-        'EDA04F'
-        >>> theme.getColor(-2, -2).hex # (shade, base) color index from right-top
+        >>> theme.getColor(-1, 4).hex # 'logo1 middle' color by index from left-top
+        '808080'
+        >>> theme.getColor(-2, -2).hex # 'logo2 foreground' color by index from right-top
+        '202020'
+        >>> theme.getColor('main back').hex
+        'DED8D5'
+        >>> theme.getColor('support2 front').hex
+        '2F2010'
+        >>> theme.getColor('support1', 'hover').hex # Equals 'support1 foreground'
         '4C4A46'
-        >>> theme.getColor('back main').hex
-        'FBECDC'
-        >>> theme.getColor('front support2').hex
+        >>> theme.getColor(-4, 'text').hex # Equivalent to 'main front'
         '120C09'
-        >>> theme.getColor('hover', 'support1').hex
-        '2B1C08'
-        >>> theme.getColor('text', -3).hex
-        '2A2521'
+        >>> theme.getColor('main hover').hex # Equivalent to 'main foreground'
+        '241811'
+        >>> theme.getColor('alt1 text').hex # Equivalent to 'alt1 front'
+        '231701'
+        >>> theme.getColor('accent front diap').hex # 'accent front' + 'diap' --> equivalent to 'accent back'
+        'E1DAD0'
+        >>> theme.getColor('main back diap').hex # 'main back' + 'diap' --> equivalent to 'main front'
+        '120C09'
         """
-        if isinstance(shade, str) and len(shade) == 2:
-            col = self.COL2SHADE.get(shade[0])
-            row = self.ROW2BASE.get(shade[1])
-            if not None in (row, col):
-                shade, base = row, col
-        if base is None:
-            if isinstance(shade, (list, tuple)):
-                try:
-                    shade, base = shade
-                except IndexError: 
-                    shade = 4 # Take middle shade color on error
-                    base = 0 # 
-            elif isinstance(shade, str):
-                shade, base = shade.split(' ')
-        if base in self.NAME2BASE:
-            base = self.NAME2BASE.get(base, base) # Translate name to number if defined.
-        if shade in self.NAME2SHADE:
-            shade = self.NAME2SHADE.get(shade, shade) # Translate name to number if defined.
-        # Clip to size of matrix
-        return self.colors[base][shade]
+        row, col = self._getBaseShade2RowCol(base, shade)
+        return self.colors[row][col]
 
+    @classmethod
+    def getCell(cls, base, shade=None):
+        """Answer the chess-like cell name for this (base, shade) name
+
+        >>> from pagebotnano_060.themes import BackToTheCity
+        >>> theme = BackToTheCity()
+        >>> theme.getCell('main front diap') 
+        'A6'
+        >>> theme.getCell('alt1 middle') 
+        'E4'
+        """
+        row, col = cls._getBaseShade2RowCol(base, shade)
+        return '%s%s' % (cls.COL2CELL[col], cls.ROW2CELL[row]) # Reversed order: "C4"
+
+    @classmethod
+    def getBaseShade(cls, row, col):
+        """Answer the base-shade name, as defined by row and col
+
+        >>> from pagebotnano_060.themes import BackToTheCity
+        >>> theme = BackToTheCity()
+        >>> theme.getBaseShade(2, 2) 
+        'alt2 backward'
+        """
+        return '%s %s' % (cls.ROW2BASE[row], cls.COL2SHADE[col]) # Reversed order: "C4"
+
+    # Recipe tables for dark/middle/light color transformation of base colors
+    # This is the default behvior. Can be redefined by inheriting Theme classes.
     #              Darkest --------- self --------- Lightest 
-    MATRIX_RECIPE = [0.8, 0.6, 0.4, 0.2, 0, 0.8, 0.6, 0.4, 0.2]
-    
+    SHADE_RECIPE = (0.2, 0.4, 0.6, 0.8, 0, 0.2, 0.4, 0.6, 0.8) # Dark/middle/right recipe for main colors
+    LOGO_RECIPE = (0, 0.25, 0.5, 0.75, 0, 0.25, 0.5, 0.75, 1) # Black/logo color/white recipe for logo colors
+    # Standard recipes for conversion. Separate rows be altered by inhering Them classes
+    RECIPES = { 
+        8: LOGO_RECIPE,
+        7: LOGO_RECIPE,
+        6: LOGO_RECIPE,
+        5: SHADE_RECIPE,
+        4: SHADE_RECIPE,
+        3: SHADE_RECIPE,
+        2: SHADE_RECIPE,
+        1: SHADE_RECIPE,
+        0: SHADE_RECIPE,
+    }
+    THEME_COLORS = {} # To be redefined by the inherting Theme classes.
+
     def makeColorMatrix(self, mood):
-        """Create a 9 (shades) x 6 (base color) table, as source for theme styles.
+        """Create a 9 (base color) x 9 (shades) table, as source for theme styles.
         (white <--) lightest <-- light <-- lighter <-- base
         base --> darker --> dark --> darkest (--> black)
 
-        self.colors[base][shade] In matrix is that self.colors[y][x]
+        self.colors[base][shade] In the matrix that self.colors[y][x]
         (Note the reverse order of (x, y))
 
-        >>> # Sample below, see also ColorSpeciment.py
-        >>> from pagebotnano_020.document import Document
-        >>> from pagebotnano_020.themes import AllThemes, BackToTheCity
-        >>> from pagebotnano_020.constants import *
-        >>> from pagebotnano_020.elements import Rect, Text
-        >>> from pagebotnano_020.babelstring import BabelString
-        >>> theme = BackToTheCity()
-        >>> len(theme.colors)
-        6
-        >>> len(theme.colors[0])
-        9
-        >>> w = h = 800
-        >>> doc = Document(w=w, h=h)
-        >>> for Theme in AllThemes:
-        ...     for mood in (DARK, LIGHT):
-        ...         theme = Theme(mood=mood)
-        ...         page = doc.newPage()
-        ...         page.padding = 80
-        ...         cw = page.pw/len(theme.colors[0]) # Column width
-        ...         ch = page.ph/len(theme.colors) # Column height
-        ...         for shade in range(len(theme.colors[0])):
-        ...             for base in range(len(theme.colors)):
-        ...                 c = theme.colors[base][shade]
-        ...                 e = Rect(x=page.pl+shade*cw, y=page.pb+base*ch, w=cw, h=ch, fill=c)
-        ...                 page.addElement(e)
-        ...         # Add background rectangle on top with theme name and mood. getColor(shade, base)
-        ...         e = Rect(x=page.pl, y=page.h-page.pt, w=page.pw, h=page.pt, fill=theme.getColor(0,2))
-        ...         page.addElement(e)
-        ...         style = dict(font='Georgia', fontSize=24, fill=theme.getColor(-2,2), indent=20)
-        ...         bs = BabelString('%s – %s' % (theme.name, mood), style)
-        ...         tw, th = bs.textSize
-        ...         e = Text(bs, x=page.pl, y=page.h-page.pt*3/5)
-        ...         page.addElement(e)
-        >>> doc.export('_export/ThemeColors.pdf')
         """
         if mood is None:
             mood = LIGHT
-        r = self.MATRIX_RECIPE # Defined by the inheriting class
-        matrix = []
-        for baseName, c in sorted(self.BASE_COLORS.items()):
-            if mood == LIGHT:
-                matrix.append(
-                    (c.lighter(r[0]), 
-                    c.lighter(r[1]), 
-                    c.lighter(r[2]), 
-                    c.lighter(r[3]), 
-                    c, 
-                    c.darker(r[5]), 
-                    c.darker(r[6]), 
-                    c.darker(r[7]), 
-                    c.darker(r[8]),
-                ))
-            else: # mood == DARK:
-                matrix.append(
-                    (c.darker(r[8]), 
-                    c.darker(r[7]), 
-                    c.darker(r[6]), 
-                    c.darker(r[5]), 
-                    c, 
-                    c.lighter(r[3]), 
-                    c.lighter(r[2]), 
-                    c.lighter(r[1]),
-                    c.lighter(r[0]),
-                ))
+        # Make default matrix
+        c = color(0.5) # Default is middle gray color
+        matrix = [ # Matrix of 9 x 9
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+            [c, c, c, c, c, c, c, c, c],
+        ] 
+        # Now fill with the base colors and calculate the shade of the 
+        # inheriting Theme clase
+        for base, row in self.BASE2ROW.items():
+            if base in self.THEME_COLORS: # Defined by inheriting Theme class?
+                bc = self.THEME_COLORS[base] # Get that base color
+            else: # Use middle gray as default.
+                bc = c
+            # Select the shading recipe table.
+            # This way the logo colors run all the way from black to white,
+            # where the darkest and lightest shades keep a fraction of the base color
+            # using self.SHADE_RECIPE or self.LOGO_RECIPE
+            # These recipes can be redefined by the inheriting Theme class
+            r = self.RECIPES[row]
+            baseRow = [
+                bc.lighter(r[8]), 
+                bc.lighter(r[7]), 
+                bc.lighter(r[6]), 
+                bc.lighter(r[5]), 
+                bc, 
+                bc.darker(r[3]), 
+                bc.darker(r[2]), 
+                bc.darker(r[1]), 
+                bc.darker(r[0]),
+            ]
+            if mood == DARK: # Mood decides if the colom shades should be flipped
+                baseRow.reverse()
+            matrix[row] = baseRow
         return matrix
 
     def getDefaultFonts(self):
@@ -204,16 +284,16 @@ class BaseTheme:
             boldItalic=boldItalic,
             monospaced='Courier-Regular'
         )
-    def textColor(self, base, shade):
+    def textColor(self, shade, base=3):
         """Answer the shade of base color that words best as text foreground
         on the `shade` color.
 
-        >>> from pagebotnano_020.themes import BackToTheCity
+        >>> from pagebotnano_060.themes import BackToTheCity
         >>> theme = BackToTheCity()
-        >>> theme.textColor(3, 0).name
+        >>> theme.textColor(0, 3).name
         'black'
         """
-        c = self.colors[base][shade]
+        c = self.getColor(shade, base)
         if c.averageRgb < 0.4:
             return color(1)
         return color(0)
@@ -232,8 +312,8 @@ class BaseTheme:
         lh13 = 1.3*ps
         lh14 = 1.4*ps
 
-        textColor = self.textColor(4, 2)
-        accentColor = self.getColor(3, 4)
+        textColor = self.textColor(2, 4) # shade, base
+        accentColor = self.getColor(4, 3)
 
         regular = fonts['regular']
         bold = fonts['bold']

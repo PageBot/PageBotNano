@@ -23,13 +23,16 @@ class SeasoningTheDish(BaseTheme):
     """The SeasoningTheDish theme is ..."""
 
     NAME = 'Seasoning the Dish'
-    BASE_COLORS = dict(
-        base0=spotColor(412),
-        base1=spotColor(214),
-        base2=spotColor(369),
-        base3=spotColor(389),
-        base4=spotColor(401), # Supporter1
-        base5=spotColor(103),
+    THEME_COLORS = dict(
+        #logo1
+        #logo2
+        #logo3
+        main=spotColor(412),
+        accent=spotColor(214),
+        alt1=spotColor(369),
+        alt2=spotColor(389),
+        support1=spotColor(401), 
+        support2=spotColor(103),
     )
     BASE_TYPE = dict(
         familyName='Georgia',

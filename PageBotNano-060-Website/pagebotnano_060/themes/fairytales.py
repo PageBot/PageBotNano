@@ -23,13 +23,16 @@ class FairyTales(BaseTheme):
     """The FairyTales theme is ..."""
 
     NAME = 'Fairy Tales'
-    BASE_COLORS = dict(
-        base0=spotColor(425),
-        base1=spotColor(237),
-        base2=spotColor(278),
-        base3=spotColor(373),
-        base4=spotColor(422), # Supporter1
-        base5=spotColor(473),
+    THEME_COLORS = dict(
+        #logo1
+        #logo2
+        #logo3
+        main=spotColor(425),
+        accent=spotColor(237),
+        alt1=spotColor(278),
+        alt2=spotColor(373),
+        support1=spotColor(422),
+        support2=spotColor(473),
     )
 
 if __name__ == "__main__":

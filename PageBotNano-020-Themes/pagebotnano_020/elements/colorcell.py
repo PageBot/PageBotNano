@@ -26,6 +26,7 @@ from pagebotnano_020.elements import Element, Rect, Text
 from pagebotnano_020.babelstring import BabelString
 from pagebotnano_020.toolbox.color import noColor, color
 from pagebotnano_020.constants import CENTER
+from pagebotnano_020.themes.theme import BaseTheme
 
 FONT_NAME = 'Verdana'
 LABEL_SIZE = 10
@@ -43,8 +44,10 @@ SPOT = 'spot' # Show approximated closest spot color recipe
 CMYK = 'cmyk' # Show CMYK color recipce
 NAME = 'name' # Show approximated name
 RAL = 'ral' # Show approximated closest RAL recipe.
-THEME = 'theme' # (x=shade, y=base) Show theme position, if defined.
-COLOR_LABELS = (HEX, RGB, NAME, CMYK, SPOT, RAL, THEME)
+ROWCOL = 'rowCol' # (row=base, col=shade) Show theme position, if defined.
+CELL = 'cell' # 'C4' Show as theme cell name, if ROWCOL is defined.
+BASE = 'base' # 'base shade' names
+COLOR_LABELS = (HEX, RGB, NAME, CMYK, SPOT, RAL, ROWCOL, CELL, BASE)
 
 class ColorCell(Element):
     """The ColorCell offers various options to display the recipe of a color.
@@ -74,14 +77,14 @@ class ColorCell(Element):
     >>> page.addElement(e)
     >>> doc.export('_export/ColorCell.pdf')
     """
-    def __init__(self, c, style=None, themePosition=None, layout=None, labels=None, **kwargs):
+    def __init__(self, c, style=None, rowCol=None, layout=None, labels=None, **kwargs):
         Element.__init__(self, **kwargs)
         self.c = c
         if style is None:
             style = dict(font=FONT_NAME, fontSize=LABEL_SIZE, lineHeight=LEADING, 
                 fill=0, align=CENTER)
         self.style = style
-        self.themePosition = themePosition
+        self.rowCol = rowCol
         assert layout in COLOR_LAYOUTS
         self.layout = layout # Default layout is OVERLAY
         # The labels define which color recipe(s) will be shown 
@@ -126,9 +129,17 @@ class ColorCell(Element):
                 if not self.c.isRal: # In case abbreviation
                     recipe = '(%s)' % recipe # then add parenthesis
                 recipes.append(recipe)
-            elif label == THEME:
-                if self.themePosition:
-                    recipes.append('Theme %d %d' % self.themePosition) # shade, base (x, y)
+            # Labels based on position in a theme matrix of self.rowCol is defined.
+            elif label == ROWCOL:
+                if self.rowCol:
+                    recipes.append('Theme %d %d' % self.rowCol) # shade, base (x, y)
+            elif label == CELL:
+                if self.rowCol:
+                    recipes.append('Cell %s' % BaseTheme.getCell(self.rowCol)) # 'C4' cell name
+            elif label == BASE: # Base-shade name in Theme
+                if self.rowCol:
+                    row, col = self.rowCol
+                    recipes.append(BaseTheme.getBaseShade(row, col)) # 'alt1 ahead' cell name
         return '\n'.join(recipes)
 
     def compose(self, doc, page, parent=None):
@@ -144,14 +155,14 @@ class ColorCell(Element):
             # They are not an exact match, but closest known value for this color.
 
             # Used padding-bottom (self.pb) also as gutter between color rectangle and labels
-            e = Rect(x=0, y=th+self.pb, w=self.w, h=self.h-th-self.pb, fill=self.c)
+            e = Rect(x=0, y=th+self.pb, w=self.w, h=self.h-th-self.pb, fill=self.c.rgb)
             self.addElement(e)
 
             e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0) + self.pb, w=self.w, h=self.h)
             self.addElement(e)
 
         else: # Default layout is OVERLAY
-            e = Rect(x=0, y=0, w=self.w, h=self.h, fill=self.c)
+            e = Rect(x=0, y=0, w=self.w, h=self.h, fill=self.c.rgb)
             self.addElement(e)
 
             e = Text(bs, x=self.w/2, y=th-self.style.get('lineHeight', 0) + self.pb, w=self.w, h=self.h)

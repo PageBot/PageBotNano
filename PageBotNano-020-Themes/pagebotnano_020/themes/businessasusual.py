@@ -25,13 +25,16 @@ class BusinessAsUsual(BaseTheme):
     appearance."""
 
     NAME = 'Business as Usual'
-    BASE_COLORS = dict(
-        base0=spotColor('blacku'),
-        base1=spotColor(404),
-        base2=spotColor(541),
-        base3=spotColor(542),
-        base4=spotColor(139), # Supporter1
-        base5=spotColor(877),
+    THEME_COLORS = dict(
+        #logo1
+        #logo2
+        #logo3
+        main=spotColor('blacku'),
+        accent=spotColor(404),
+        alt1=spotColor(541),
+        alt2=spotColor(542),
+        support1=spotColor(139), 
+        support2=spotColor(877),
     )
 
 if __name__ == "__main__":

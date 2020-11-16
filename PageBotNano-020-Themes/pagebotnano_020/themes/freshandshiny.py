@@ -33,13 +33,16 @@ class FreshAndShiny(BaseTheme):
     'hilite2'
     """
     NAME = 'Fresh and Shiny'
-    BASE_COLORS = dict(
-        base0=spotColor('coolgray11u'),
-        base1=spotColor('rhodamineredu'),
-        base2=spotColor(265),
-        base3=spotColor(3005),
-        base4=spotColor(375), # Supporter1
-        base5=rgbColor('red'),#spotColor('red032u'),
+    THEME_COLORS = dict(
+        #logo1
+        #logo2
+        #logo3
+        main=spotColor('coolgray11u'),
+        accent=spotColor('rhodamineredu'),
+        alt1=spotColor(265),
+        alt2=spotColor(3005),
+        support1=spotColor(375), 
+        support2=spotColor('red032u'),
     )
 
 if __name__ == "__main__":

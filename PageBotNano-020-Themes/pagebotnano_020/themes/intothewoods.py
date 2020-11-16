@@ -17,22 +17,27 @@ import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_020.themes.theme import BaseTheme
-from pagebotnano_020.toolbox.color import spotColor, rgbColor
+from pagebotnano_020.toolbox.color import spotColor, rgbColor, color
 
 class IntoTheWoods(BaseTheme):
     """The IntoTheWoods theme is ...
 
-    >>> theme = IntoTheWoods
+    >>> theme = IntoTheWoods()
     """
 
     NAME = 'Into the Woods'
-    BASE_COLORS = dict(
-        base0=spotColor('gray10u'),
-        base1=spotColor(348),
-        base2=spotColor(376),
-        base3=spotColor(381),
-        base4=spotColor(392), # Supporter1
-        base5=spotColor(398),
+    THEME_COLORS = dict(
+        # Example logo colors, to be modified by an inheriting class.
+        logo1=spotColor(300),
+        logo2=color(1, 0, 0),
+        logo3=color(0, 1, 0),
+        # Theme colors
+        main=spotColor('gray10u'),
+        accent=spotColor(348),
+        alt1=spotColor(376),
+        alt2=spotColor(381),
+        support1=spotColor(392), 
+        support2=spotColor(398),
     )
 
 if __name__ == "__main__":

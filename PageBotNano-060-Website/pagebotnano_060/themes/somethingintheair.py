@@ -23,13 +23,16 @@ class SomethingInTheAir(BaseTheme):
     """The SomethingInTheAir theme is ..."""
 
     NAME = 'Something in the Air'
-    BASE_COLORS = dict(
-        base0=spotColor('reflexblueu'),
-        base1=spotColor(540),
-        base2=spotColor(542),
-        base3=spotColor(306),
-        base4=spotColor(245), # Supporter1
-        base5=spotColor(190),
+    THEME_COLORS = dict(
+        #logo1
+        #logo2
+        #logo3
+        main=spotColor('reflexblueu'),
+        accent=spotColor(540),
+        alt1=spotColor(542),
+        alt2=spotColor(306),
+        support1=spotColor(245),
+        support2=spotColor(190),
     )
 
 if __name__ == "__main__":

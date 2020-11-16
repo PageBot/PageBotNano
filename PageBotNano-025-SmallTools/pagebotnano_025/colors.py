@@ -25,6 +25,12 @@ def getRGBA(r, g, b, a=1.0):
     b = b / 255.0
     return NSColor.colorWithCalibratedRed_green_blue_alpha_(r, g, b, a)
 
+def rgba(r, g, b, a=1.0):
+    """rgb values between 0 and 1"""
+    return getRGBA(r*255, b*255, g*255, a)
+
+rgb = rgba
+
 # Preset colors.
 
 blackColor = NSColor.blackColor()

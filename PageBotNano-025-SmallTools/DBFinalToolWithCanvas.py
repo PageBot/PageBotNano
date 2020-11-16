@@ -2,6 +2,10 @@ import importlib, os, codecs, traceback
 from vanilla import Window, CheckBox, Button, Slider, RadioGroup, EditText, List
 from vanilla.dialogs import getFolder
 
+from pagebotnano_025.canvas import Canvas
+from AppKit import NSMakeRect, NSColor, NSBezierPath
+from pagebotnano_025.colors import rgba
+
 import FixTabWidths
 importlib.reload(FixTabWidths)
 from FixTabWidths import fixTabWidths
@@ -65,14 +69,25 @@ class DBFinalTool:
         self.w.selectFolder = Button((-c1-pad, -pad-bh, c1, bh), 
             'Select fonts', callback=self.selectFontFolder)           
 
-        self.w.report = EditText((pad, -w/2+pad, -pad, -pad),
+        self.w.canvas = Canvas((pad, -w/2-pad, -pad, -w/4), delegate=self)
+
+        self.w.report = EditText((pad, -w/4+pad, -pad, -pad),
             readOnly=False)
         
         self.w.bind('close', self.windowCloseCallback)
         self.w.open()
 
         self.dirPath = self.selectFontFolder()
+
+    # Handle events from the Canvas
+    def draw(self, rect): # Drawing delegate from the Canvas drawing evening
+        for n in range(50):
+            rgba(random(), random(), random()).set()
+            rect = NSMakeRect(random()*400+M, random()*400+M, M, M)
+            path = NSBezierPath.bezierPathWithRect_(rect)
+            path.fill()
     
+    # Callback from controls in our own window.
     def update(self, sender):
         """Do some UI status update work"""
         enable = len(self.w.fontList.getSelection()) > 0    
@@ -89,8 +104,8 @@ class DBFinalTool:
         cmd = 'open'
         for selectedFont in selectedFonts:
             cmd += ' '+self.dirPath + selectedFont
-        #self.report(cmd)
-        os.system(cmd)
+        self.report(cmd)
+        #os.system(cmd)
     
     def selectFontFolder(self, sender=None):
         result = getFolder(

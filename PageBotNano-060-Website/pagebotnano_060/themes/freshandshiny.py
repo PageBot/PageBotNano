@@ -22,11 +22,8 @@ from pagebotnano_060.toolbox.color import spotColor, rgbColor
 class FreshAndShiny(BaseTheme):
     """The FreshAndShiny theme is ...
 
-    """
-    """
-
     >>> theme = FreshAndShiny()
-    >>> theme.mood['h1.color']
+    >>> theme.getColor('main')
     'hilite2'
     >>> theme.selectMood('dark') # Select another mode
     >>> theme.mood['h1.color']

@@ -14,7 +14,7 @@
 #   Hielo by TEMPLATED
 #   templated.co @templatedco
 #   Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
-#   Adapted to be used with PageBotNano
+#   Modified to be used with PageBotNano
 # -----------------------------------------------------------------------------
 #
 #   Templates are functions with a standard attribute interface, that
@@ -71,7 +71,7 @@ class TemplatedHielo(TemplatedBase):
     .js and .html, and keeps them as strings that can be altered
     and queried.
     The Templated class is based on the structure of the https://templated.co
-    template structure, adapted to be used with PageBotNano.
+    template structure, Modified to be used with PageBotNano.
 
     >>> wt = TemplatedHielo()
     >>> len(wt.htmlTemplates) > 0

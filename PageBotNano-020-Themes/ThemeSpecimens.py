@@ -33,7 +33,7 @@ TITLE_SIZE = 20
 LEADING = 1.2
 
 def makeColorSpecimen(layoutData):
-    pageSize, fontSize, labelSize, fileName, layout, textColor, labels, extension = layoutData
+    pageSize, fontSize, labelSize, fileName, layout, textColor, labels, extensions = layoutData
     labelLeading = labelSize * LEADING
 
     w, h, = pageSize
@@ -41,7 +41,7 @@ def makeColorSpecimen(layoutData):
 
     doc = Document(w=w, h=h)
     for Theme in AllThemes:
-        for mood in (DARK, LIGHT):
+        for mood in (LIGHT, DARK):
             theme = Theme(mood=mood)
             page = doc.newPage()
             page.padding = padding
@@ -94,9 +94,12 @@ def makeColorSpecimen(layoutData):
             e = Text(bs, x=page.pl+page.pw, y=page.pb-th, w=page.pw)
             page.addElement(e)
 
-    filePath = '_export/ThemeSpecimen-%s.%s' % (fileName, extension)
-    print('Exporting', filePath)
-    doc.export(filePath, multipage=True)
+    if not isinstance(extensions, (list, tuple)):
+        extensions = [extensions]
+    for extension in extensions:
+        filePath = '_export/ThemeSpecimen-%s.%s' % (fileName, extension)
+        print('Exporting', filePath)
+        doc.export(filePath, multipage=True)
 
 layoutDatas = (
     # Page size, filename, layout, labelColor, labels
@@ -104,7 +107,7 @@ layoutDatas = (
     ((W, W), TITLE_SIZE, TITLE_SIZE*0.4, SPOTSAMPLE+'1', SPOTSAMPLE, color(0), (HEX, NAME, SPOT, ROWCOL, CELL, BASE), 'pdf'),
     ((A5[1], A5[0]), TITLE_SIZE, TITLE_SIZE*0.2, SPOTSAMPLE+'-A5', SPOTSAMPLE, color(0), (HEX, BASE), 'pdf'),
     ((A5[1], A5[0]*2/3), TITLE_SIZE, TITLE_SIZE*0.2, OVERLAY+'-A5ish', SPOTSAMPLE, color(0), (HEX, BASE), 'pdf'),
-    ((2160, 2160), TITLE_SIZE*3.6, TITLE_SIZE*3.6*0.3, OVERLAY+'-Instagram', SPOTSAMPLE, color(0), (HEX, BASE), 'jpg'),
+    ((2160, 2160), TITLE_SIZE*3.6, TITLE_SIZE*3.6*0.3, OVERLAY+'-Instagram', SPOTSAMPLE, color(0), (HEX, BASE), ('jpg', 'pdf')),
 )
 
 for layoutData in layoutDatas:

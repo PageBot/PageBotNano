@@ -14,7 +14,7 @@
 #   Templates by TEMPLATED
 #   templated.co @templatedco
 #   Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
-#   Adapted to be used with PageBotNano
+#   Modified to be used with PageBotNano
 # -----------------------------------------------------------------------------
 #
 from pagebotnano_060.templates.templated.templatedbinary import TemplatedBinary

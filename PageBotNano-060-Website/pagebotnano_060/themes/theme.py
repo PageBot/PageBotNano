@@ -27,6 +27,9 @@ from pagebotnano_060.constants import (EN, CENTER, LEFT, RIGHT,
     DEFAULT_FONT, DEFAULT_BODYSIZE, LIGHT, DARK)
 
 class BaseTheme:
+
+    NAME = 'BaseTheme'
+
     def __init__(self, mood=LIGHT, name=None, fonts=None, styles=None):
         self.name = name or self.NAME
         self.colors = self.makeColorMatrix(mood)
@@ -109,7 +112,19 @@ class BaseTheme:
             COLOR_NAMES.append(colorName + ' diap') # Add modifiers
 
     @classmethod
-    def _getBaseShade2RowCol(cls, base, shade):
+    def _getBaseShade2RowCol(cls, base, shade=None):
+        """Answer the (row, col) from interpreted (base, shade)
+
+        >>> theme = BaseTheme()
+        >>> theme._getBaseShade2RowCol('main', 'middle')
+        (5, 4)
+        >>> theme._getBaseShade2RowCol('main', -2)
+        (5, -2)
+        >>> theme._getBaseShade2RowCol('logo2 background')
+        (7, 1)
+        >>> theme._getBaseShade2RowCol('logo2 background diap')
+        (7, 7)
+        """
         mod = None # Optional modifier color filter name
         if isinstance(base, str) and len(base) == 2: # base = 'C4'?
             col = cls.CELL2COL.get(base[0])
@@ -121,17 +136,21 @@ class BaseTheme:
                 try:
                     base, shade = base
                 except IndexError: 
-                    shade = 'middle' # Take middle shade color column on error
-                    base = 'main' # Main color row
+                    shade = self.MIDDLE # Take middle shade color column on error
+                    base = self.MAIN # Main color row
             elif isinstance(base, str):
                 nameParts = base.split(' ')
-                base = nameParts[0]
-                shade = nameParts[1]
-                if len(nameParts) == 3:
-                    mod = nameParts[2]
+                if len(nameParts) == 1: # Assume to be base, shade = MIDDLE
+                    shade = self.MIDDLE
+                elif len(nameParts) == 2:
+                    base, shade = nameParts
+                elif len(nameParts) == 3:
+                    base, shade, mod = nameParts
+                else:
+                    raise ValueError('Theme base "%s" wrong format' % base)
 
-        row = cls.BASE2ROW.get(base, base) # Translate name to number if defined.
-        col = cls.SHADE2COL.get(shade, shade) # Translate name to number if defined.
+        row = cls.BASE2ROW.get(base, base) # Translate name to row number if defined.
+        col = cls.SHADE2COL.get(shade, shade) # Translate name to col number if defined.
         assert isinstance(row, int) and isinstance(col, int), ("Error in (base, shade): (%s, %s)" % (row, col))
         if mod == 'diap': # Flip the col
             col = -col + 8
@@ -270,6 +289,7 @@ class BaseTheme:
             matrix[row] = baseRow
         return matrix
 
+    
     def getDefaultFonts(self):
         regular = DEFAULT_FONT
         bold = DEFAULT_FONT+'-Bold'
@@ -301,6 +321,10 @@ class BaseTheme:
     def getDefaultStyles(self, fonts, colors):
         """Answer the default set of styles, to get any theme started.
         At least, implement the tags defined in HTML_TEXT_TAGS
+
+        >>> theme = BaseTheme()
+        >>> styles = theme.getDefaultStyles()
+
         """
         ps = DEFAULT_BODYSIZE
         ps5 = 3*ps
@@ -312,8 +336,8 @@ class BaseTheme:
         lh13 = 1.3*ps
         lh14 = 1.4*ps
 
-        textColor = self.textColor(2, 4) # shade, base
-        accentColor = self.getColor(4, 3)
+        textColor = self.textColor('main text') # base, shade
+        accentColor = self.getColor('accent text')
 
         regular = fonts['regular']
         bold = fonts['bold']

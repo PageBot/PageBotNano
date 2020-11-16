@@ -11,20 +11,26 @@
 #   Supporting DrawBot, www.drawbot.com
 # -----------------------------------------------------------------------------
 #
-#   pagedata.py
+#   sitedata.py
 #
-#   PageData is the container of parsed data reading from a markdown file
-#   to be matched and substituting in the template {{anchorName}} anchors.
+#   SiteData and PageData are the containers of parsed data, defined from a Python
+#   content file for a sizes. The attributes of SiteData and PageData instances
+#   are matched matched and substituting in the template {{anchorName}} anchors.
 #
+import sys
+sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
+
+from pagebotnano_060.themes import DefaultTheme
+
 class BaseData:
-    def __init__(self, id, title):
-        self.id = id.strip()
-        self.title = title.strip()
+    def __init__(self, id=None, title=None):
+        self.id = id or 'untitledSiteId'
+        self.title = title or 'untitledPageName'
 
 class SiteData(BaseData):
-    def __init__(self, id, title):
+    def __init__(self, id=None, title=None, theme=None):
         BaseData.__init__(self, id, title)
-        self.data = {}
+        self.theme = theme or DefaultTheme()
         self.pages = [] # As list, to keep the order in menu and navigation
 
     def __repr__(self):
@@ -34,20 +40,18 @@ class SiteData(BaseData):
         if self.title:
             s += ' title="%s"' % self.title
         s += ' pages=%d' % len(self.pages)
-        s += ' data=%d' % len(self.data)
         s += '>'
         return s
 
-    def newPage(self, id, title, template):
+    def newPage(self, id=None, title=None, template=None):
         page = PageData(id, title, template)
         self.pages.append(page)
         return page
         
 class PageData(BaseData):
-    def __init__(self, id, title, template):
+    def __init__(self, id=None, title=None, template=None):
         BaseData.__init__(self, id, title)
-        self.template = template
-        self.data = {}
+        self.template = template or 'index'
         self.elements = {}
 
     def __repr__(self):
@@ -57,14 +61,13 @@ class PageData(BaseData):
         if self.title:
             s += ' title="%s"' % self.title
         s += ' elements=%d' % len(self.elements)
-        s += ' data=%d' % len(self.data)
         s += '>'
         return s
 
 class ElementData(BaseData):
-    def __init__(self, id, title, content):
+    def __init__(self, id=None, title=None, content=None):
         BaseData.__init__(self, id, title)
-        self.content = content
+        self.content = content or ''
 
     def __repr__(self):
         s = '<%s' % self.__class__.__name__

@@ -63,42 +63,96 @@ class BaseTheme:
         foreground=7, hover=7,
         front=8, text=8,
     )
-    def getColor(self, shade, base=None):
-        """Answer the color, at position (shade=x, base=y).
-        If base is None, then try to split shade into two values.
+    COLOR_NAMES = []
+    for base in NAME2BASE.keys():
+        for shade in NAME2SHADE.keys():
+            colorName = base + ' ' + shade
+            COLOR_NAMES.append(colorName)
+            COLOR_NAMES.append(colorName + ' diap') # Add modifiers
+
+    # Optional coordinate as in chessboard (except for 6 rows and 9 cols :)
+    ROW2BASE = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5}
+    BASE2ROW = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6'}
+    COL2SHADE = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8}
+    SHADE2COL = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H', 8: 'I'}
+
+    def _getBaseShade(self, base, shade):
+        mod = None # Optional modifier color filter name
+        if isinstance(base, str) and len(base) == 2:
+            col = self.COL2SHADE.get(base[0])
+            row = self.ROW2BASE.get(base[1])
+            if None not in (row, col):
+                base, shade = col, row
+        if shade is None:
+            if isinstance(base, (list, tuple)):
+                try:
+                    base, shade = base
+                except IndexError: 
+                    shade = 4 # Take middle shade color column on error
+                    base = -1 # Main color row
+            elif isinstance(base, str):
+                nameParts = base.split(' ')
+                base = nameParts[0]
+                shade = nameParts[1]
+                if len(nameParts) == 3:
+                    mod = nameParts[2]
+
+        base = self.NAME2BASE.get(base, base) # Translate name to number if defined.
+        shade = self.NAME2SHADE.get(shade, shade) # Translate name to number if defined.
+        assert isinstance(base, int) and isinstance(shade, int), ("Error in (base, shade): (%s, %s)" % (base, shade))
+        if mod == 'diap': # Flip the shade
+            shade = -shade + len(self.COL2SHADE) - 1
+        return base, shade
+
+    def getColor(self, base, shade=None):
+        """Answer the color, at position (base=y, shade=x).
+        If shade is None, then try to split shade into two values.
 
         >>> from pagebotnano_060.themes import BackToTheCity
         >>> theme = BackToTheCity()
         >>> theme.getColor(0, 0).hex # Color index at matrix left-bottom
         'DED8D5'
-        >>> theme.getColor(4, -1).hex # Color index from left-top
+        >>> theme.getColor('B2').hex # Color as in "chessboard" coordinate
+        'C4B5A1'
+        >>> theme.getColor('C3') == theme.getColor(2, 2)
+        True
+        >>> theme.getColor(-1, 4).hex # Color index from left-top
         'EDA04F'
         >>> theme.getColor(-2, -2).hex # Color index from right-top
         '4C4A46'
-        >>> theme.getColor('back main').hex
+        >>> theme.getColor('main back').hex
         'FBECDC'
-        >>> theme.getColor('front support2').hex
+        >>> theme.getColor('support2 front').hex
         '120C09'
-        >>> theme.getColor('hover', 'support1').hex
+        >>> theme.getColor('support1', 'hover').hex
         '2B1C08'
-        >>> theme.getColor('text', -3).hex
+        >>> theme.getColor(-3, 'text').hex
         '2A2521'
+        >>> theme.getColor('main hover').hex # By name/shade related as function name
+        '5F4020'
+        >>> theme.getColor('alt1 text').hex
+        '2A2521'
+        >>> theme.getColor('accent front diap').hex # Make diap
+        'F2F1EF'
+        >>> theme.getColor('main back diap').hex
+        '2F2010'
         """
-        if base is None:
-            if isinstance(shade, (list, tuple)):
-                try:
-                    shade, base = shade
-                except IndexError: 
-                    shade = 4 # Take middle shade color on error
-                    base = 0 # 
-            elif isinstance(shade, str):
-                shade, base = shade.split(' ')
-        if base in self.NAME2BASE:
-            base = self.NAME2BASE.get(base, base) # Translate name to number if defined.
-        if shade in self.NAME2SHADE:
-            shade = self.NAME2SHADE.get(shade, shade) # Translate name to number if defined.
+        base, shade = self._getBaseShade(base, shade)
         # Clip to size of matrix
         return self.colors[base][shade]
+
+    def getCell(self, base, shade=None):
+        """Answer the chess-like cell name for this (base, shade) name
+
+        >>> from pagebotnano_060.themes import BackToTheCity
+        >>> theme = BackToTheCity()
+        >>> theme.getCell('main front diap') 
+        'A6'
+        >>> theme.getCell('alt1 middle') 
+        'E4'
+        """
+        base, shade = self._getBaseShade(base, shade)
+        return '%s%s' % (self.SHADE2COL[shade], self.BASE2ROW[base]) # Reversed order: "C4"
 
     #              Darkest --------- self --------- Lightest 
     MATRIX_RECIPE = [0.8, 0.6, 0.4, 0.2, 0, 0.8, 0.6, 0.4, 0.2]
@@ -111,40 +165,6 @@ class BaseTheme:
         self.colors[base][shade] In matrix is that self.colors[y][x]
         (Note the reverse order of (x, y))
 
-        >>> # Sample below, see also ColorSpeciment.py
-        >>> from pagebotnano_060.document import Document
-        >>> from pagebotnano_060.themes import AllThemes, BackToTheCity
-        >>> from pagebotnano_060.constants import *
-        >>> from pagebotnano_060.elements import Rect, Text
-        >>> from pagebotnano_060.babelstring import BabelString
-        >>> theme = BackToTheCity()
-        >>> len(theme.colors)
-        6
-        >>> len(theme.colors[0])
-        9
-        >>> w = h = 800
-        >>> doc = Document(w=w, h=h)
-        >>> for Theme in AllThemes:
-        ...     for mood in (DARK, LIGHT):
-        ...         theme = Theme(mood=mood)
-        ...         page = doc.newPage()
-        ...         page.padding = 80
-        ...         cw = page.pw/len(theme.colors[0]) # Column width
-        ...         ch = page.ph/len(theme.colors) # Column height
-        ...         for shade in range(len(theme.colors[0])):
-        ...             for base in range(len(theme.colors)):
-        ...                 c = theme.colors[base][shade]
-        ...                 e = Rect(x=page.pl+shade*cw, y=page.pb+base*ch, w=cw, h=ch, fill=c)
-        ...                 page.addElement(e)
-        ...         # Add background rectangle on top with theme name and mood. getColor(shade, base)
-        ...         e = Rect(x=page.pl, y=page.h-page.pt, w=page.pw, h=page.pt, fill=theme.getColor(0,2))
-        ...         page.addElement(e)
-        ...         style = dict(font='Georgia', fontSize=24, fill=theme.getColor(-2,2), indent=20)
-        ...         bs = BabelString('%s – %s' % (theme.name, mood), style)
-        ...         tw, th = bs.textSize
-        ...         e = Text(bs, x=page.pl, y=page.h-page.pt*3/5)
-        ...         page.addElement(e)
-        >>> doc.export('_export/ThemeColors.pdf')
         """
         if mood is None:
             mood = LIGHT
@@ -191,16 +211,16 @@ class BaseTheme:
             boldItalic=boldItalic,
             monospaced='Courier-Regular'
         )
-    def textColor(self, base, shade):
+    def textColor(self, shade, base=3):
         """Answer the shade of base color that words best as text foreground
         on the `shade` color.
 
         >>> from pagebotnano_060.themes import BackToTheCity
         >>> theme = BackToTheCity()
-        >>> theme.textColor(3, 0).name
+        >>> theme.textColor(0, 3).name
         'black'
         """
-        c = self.colors[base][shade]
+        c = self.getColor(shade, base)
         if c.averageRgb < 0.4:
             return color(1)
         return color(0)
@@ -219,8 +239,8 @@ class BaseTheme:
         lh13 = 1.3*ps
         lh14 = 1.4*ps
 
-        textColor = self.textColor(4, 2)
-        accentColor = self.getColor(3, 4)
+        textColor = self.textColor(2, 4) # shade, base
+        accentColor = self.getColor(4, 3)
 
         regular = fonts['regular']
         bold = fonts['bold']

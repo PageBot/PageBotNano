@@ -3859,7 +3859,7 @@
 	}
 
 	#header {
-		height: 44px;
+		height: 54px; /* Accommodate the height of the logo in scroll mode. */
 		line-height: 44px;
 	}
 
@@ -3893,9 +3893,9 @@
 		-ms-transition: -ms-transform 0.5s ease, box-shadow 0.5s ease, visibility 0.5s;
 		transition: transform 0.5s ease, box-shadow 0.5s ease, visibility 0.5s;
 		-webkit-overflow-scrolling: touch;
-		background: rgba(0, 0, 0, 0.95);
+		background: {{main back diap}}; /* rgba(0, 0, 0, 0.95); */
 		box-shadow: none;
-		color: #000;
+		color: {{main front diap}};
 		height: 100%;
 		max-width: 80%;
 		overflow-y: auto;
@@ -3924,7 +3924,7 @@
 					#menu > ul.links > li > a:not(.button) {
 						border: 0;
 						border-top: solid 1px rgba(255, 255, 255, 0.125);
-						color: rgba(255, 255, 255, 0.5);
+						color: red rgba(255, 255, 255, 0.5) /* Text color of menu page name */;
 						display: block;
 						line-height: 3.5rem;
 						text-decoration: none;

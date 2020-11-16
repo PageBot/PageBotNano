@@ -1,10 +1,11 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
-#    TnBits
-#    (c) 2010+ buro@petr.com, www.petr.com
 #
-#    T N  B I T S
-#    No distribution without permission.
+#   P A G E B O T  N A N O
+#
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
 # -----------------------------------------------------------------------------
 #

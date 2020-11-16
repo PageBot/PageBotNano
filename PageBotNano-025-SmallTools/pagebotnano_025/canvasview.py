@@ -1,9 +1,11 @@
 # -*- coding: UTF-8 -*-
 # -----------------------------------------------------------------------------
-#     Copyright (c) 2014+ Type Network
 #
-#     T N  B I T S
-#     No distribution without permission.
+#   P A G E B O T  N A N O
+#
+#   Copyright (c) 2020+ Buro Petr van Blokland + Claudia Mens
+#   www.pagebot.io
+#   Licensed under MIT conditions
 #
 # -----------------------------------------------------------------------------
 #
@@ -12,7 +14,7 @@
 from AppKit import NSView, NSMakeRect, NSClipView, NSTrackingArea, \
     NSTrackingMouseEnteredAndExited , NSTrackingActiveWhenFirstResponder, \
     NSTrackingMouseMoved, NSTrackingInVisibleRect, NSTrackingActiveAlways
-from tnbits.base import future
+from future
 
 class CanvasView(NSView):
     """Drawable NSView. To be used by tnbits.canvas.Canvas class."""

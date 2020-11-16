@@ -20,6 +20,7 @@ if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
  
 from pagebotnano_060.publications.publication import Publication
+from pagebotnano_060.toolbox.color import Color
 
 class Website(Publication):
     """A Website publication takes a volume of text/imges source
@@ -111,6 +112,13 @@ class Website(Publication):
                         src = src.replace('{{%s}}' % anchor, str(anchorContent))
                 elif clearAnchors: # Content is set to False or None, remove all anchors.
                     src = src.replace('{{%s}}' % anchor, '')
+
+        # Now try the remaining anchors to be replaced from the theme colors
+        for colorName in siteData.theme.COLOR_NAMES: # Check on all theme attributes
+            color = siteData.theme.getColor(colorName)
+            cell = siteData.theme.getCell(colorName) # Chess-like color code
+            src = src.replace('{{%s}}' % colorName, '#%s /* Theme: (%s) %s */' % (color.hex, cell, colorName))
+
 
         return src
 

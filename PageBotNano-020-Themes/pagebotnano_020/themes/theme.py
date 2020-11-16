@@ -63,6 +63,10 @@ class BaseTheme:
         foreground=7, hover=7,
         front=8, text=8,
     )
+    # Optional cell coordinate as in chessboard (except for 6 rows and 9 cols :)
+    ROW2BASE = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5}
+    COL2SHADE = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8}
+
     def getColor(self, shade, base=None):
         """Answer the color, at position (shade=x, base=y).
         If base is None, then try to split shade into two values.
@@ -71,9 +75,13 @@ class BaseTheme:
         >>> theme = BackToTheCity()
         >>> theme.getColor(0, 0).hex # Color index at matrix left-bottom
         'DED8D5'
-        >>> theme.getColor(4, -1).hex # Color index from left-top
+        >>> theme.getColor('B2').hex # Color as in "chessboard" coordinate from bottom left
+        'C4B5A1'
+        >>> theme.getColor('C3') == theme.getColor(2, 2)
+        True
+        >>> theme.getColor(4, -1).hex # (shade, base) olor index from left-top
         'EDA04F'
-        >>> theme.getColor(-2, -2).hex # Color index from right-top
+        >>> theme.getColor(-2, -2).hex # (shade, base) color index from right-top
         '4C4A46'
         >>> theme.getColor('back main').hex
         'FBECDC'
@@ -84,6 +92,11 @@ class BaseTheme:
         >>> theme.getColor('text', -3).hex
         '2A2521'
         """
+        if isinstance(shade, str) and len(shade) == 2:
+            col = self.COL2SHADE.get(shade[0])
+            row = self.ROW2BASE.get(shade[1])
+            if not None in (row, col):
+                shade, base = row, col
         if base is None:
             if isinstance(shade, (list, tuple)):
                 try:

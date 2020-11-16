@@ -24,13 +24,9 @@ import sys
 if __name__ == "__main__":
     sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
-from pagebotnano_060.toolbox.pagedata import SiteData, PageData
-
 def parseMarkdownFile(path):
     """Regular expression based markdown parser.
 
-    >>> path = '../../PublishingVariables.md'
-    >>> siteData = parseMarkdownFile(path)
     """
     f = codecs.open(path, mode="r", encoding="utf-8") # Save the XML as unicode.
     md = f.read()
@@ -44,10 +40,10 @@ def parseMarkdown(md):
     '<h2>H2</h2>\\n<template type="tableOfContent"/>\\n'
     >>> md = '## H2\\nText with[^12] a footnote reference.\\n'
     >>> parseMarkdown(md)
-    '<h2>H2</h2>\\n<p>Text with<footnote ref="12"/> a footnote reference.\\n</p>'
+    '<h2>H2</h2>\\nText with<footnote ref="12"/> a footnote reference.\\n'
     >>> md = '## H2\\nText with[^litSmith1994] a literature reference.\\n'
     >>> parseMarkdown(md)
-    '<h2>H2</h2>\\n<p>Text with<literature ref="Smith1994"/> a literature reference.\\n</p>'
+    '<h2>H2</h2>\\nText with<literature ref="Smith1994"/> a literature reference.\\n'
     >>> md = '## H2\\n[^123]: This is the footnote text.\\n'
     >>> parseMarkdown(md)
     '<h2>H2</h2>\\n<footnote id="123"> This is the footnote text.</footnote>\\n'
@@ -144,7 +140,8 @@ def _content2Title(content):
     else:
         content = ''
     return title, content
-   
+
+""" 
 def parseMarkdownData(md):
     siteData = pageData = data = None
     pattern = '^\\.([a-zA-Z0-9_-]*)[\\s]*([^\\.]*)\\.[\t ]*(.*?)[\\s]*(?=\\n\\.|\\Z)'
@@ -176,7 +173,7 @@ def parseMarkdownData(md):
             e.content += '<%s %s>%s\n%s' % (tag, id, title, content)
 
     return siteData
-
+"""
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest

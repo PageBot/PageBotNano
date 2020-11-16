@@ -8,6 +8,15 @@
 	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 */
 
+/* Supported color names by the Theme class.
+	Names: main, accent, alt1, alt2, support1, support2
+    # Optional conversion of color shade names to matrix col index number
+    # Note that we cannot use names as "darkest" and "lightest" since
+    # those depend if the theme is "dark" or "light" mode.
+    # Instead we call them "background" and "foreground" and other layer names.
+    Shade layers: back, background, middle, foreground=hover, front=text
+*/
+
 /* Reset */
 
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
@@ -1568,7 +1577,7 @@
 	}
 
 	body {
-		background: #fff;
+		background: {{mainBack}};
 	}
 
 		body.is-loading *, body.is-loading *:before, body.is-loading *:after {
@@ -1585,8 +1594,8 @@
 /* Type */
 
 	body {
-		background-color: #fff;
-		color: #444;
+		background-color: {{mainBack}};
+		color: {{mainText}};
 	}
 
 	body, input, select, textarea {
@@ -1747,16 +1756,16 @@
 	}
 
 	blockquote {
-		border-left-color: rgba(144, 144, 144, 0.25);
+		border-left-color: {{accentForeground}}; /* rgba(144, 144, 144, 0.25); */
 	}
 
 	code {
-		background: rgba(144, 144, 144, 0.075);
-		border-color: rgba(144, 144, 144, 0.25);
+		background: {{accentText}}; /* rgba(144, 144, 144, 0.075); */
+		border-color: {{accentText}}; /* rgba(144, 144, 144, 0.25); */
 	}
 
 	hr {
-		border-bottom-color: rgba(144, 144, 144, 0.25);
+		border-bottom-color: {{accentText}}; /* rgba(144, 144, 144, 0.25); */
 	}
 
 /* Box */
@@ -1895,8 +1904,8 @@
 	input[type="button"],
 	button,
 	.button {
-		background-color: #1abc9c;
-		color: #fff !important;
+		background-color: {{support1Back}}; /* #1abc9c; */
+		color: {{support1Foreground}} !important; /* #fff */
 	}
 
 		input[type="submit"]:hover,
@@ -1904,7 +1913,7 @@
 		input[type="button"]:hover,
 		button:hover,
 		.button:hover {
-			background-color: #1dd2af;
+			background-color: {{support1Background}}; /* #1dd2af; */
 		}
 
 		input[type="submit"]:active,
@@ -1912,7 +1921,7 @@
 		input[type="button"]:active,
 		button:active,
 		.button:active {
-			background-color: #17a689;
+			background-color: {{support1Middle}}; /* #17a689; */
 		}
 
 		input[type="submit"].alt,
@@ -1922,7 +1931,7 @@
 		.button.alt {
 			background-color: transparent;
 			box-shadow: inset 0 0 0 2px rgba(144, 144, 144, 0.25);
-			color: #555 !important;
+			color: {{support2Middle}} !important; /* #555 */
 		}
 
 			input[type="submit"].alt:hover,
@@ -2829,8 +2838,8 @@
 			}
 
 		.wrapper.style2 {
-			background-color: #fff;
-			color: #444;
+			background-color: {{mainBack}}; /* #fff; */
+			color: red; /*{{mainText}};*/ /* #444; */
 		}
 
 			.wrapper.style2 input, .wrapper.style2 select, .wrapper.style2 textarea {

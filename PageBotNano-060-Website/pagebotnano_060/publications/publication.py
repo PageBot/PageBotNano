@@ -32,11 +32,12 @@ class Publication:
     >>> pub = Publication() # Default size A4
     >>> pub.export('_export/website')
     """
-    def __init__(self, theme=None, templates=None, context=None):       
+    def __init__(self, templates=None, context=None):       
         # In this approach there is no self.doc Document.
         if templates is None:
             templates = TemplatedHielo() # Default template set.
         self.templates = templates
+        self.context = context
 
     def compose(self):
         """Composing the publication allows inheriting class

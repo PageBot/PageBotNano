@@ -4175,10 +4175,11 @@
 				}
 
 			.banner > article h2 {
-				font-size: 7rem;
+				font-size: {{bannerSlideShowHeadSize}}; /* 7rem */
 				margin-bottom: 0;
-				color: #FFF;
+				color: {{bannerSlideShowHeadSizeColor}};
 				font-weight: 300;
+				line-height: 1em;
 			}
 
 				.banner > article h2:after {

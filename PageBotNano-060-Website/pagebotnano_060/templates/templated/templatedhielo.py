@@ -286,6 +286,49 @@ class TemplatedHielo(TemplatedBase):
             html += """\n\t\t</header>\n\t</div>\n</section>"""
         return html
 
+    def _deck(self, siteData, pageData, index):
+        """Add numbered deck with background images
+        <section id="two" class="wrapper style3" style="background-image: url({{deckImage 1}});">
+            <div class="inner">
+                <header class="align-center">
+                    <h1>{{deckHead}}</h1>
+                </header>
+            </div>
+        </section>
+        """
+        html = ''
+        deckImage = self._indexed('deckImage', index)
+        deckHead = self._indexed('deckHead', index)
+        if (hasattr(pageData, deckImage) or 
+            hasattr(pageData, deckHead)):
+            html +=  """\n\t<section class="wrapper style3" """
+            if hasattr(pageData, deckImage):
+                url = getattr(pageData, deckImage)
+                html += """ style="background-image: url(%s);" """ % url
+            html += '>'
+            if hasattr(pageData, deckHead):
+                html += """\n\t\t<div class="inner">\n\t\t<header class="align-center">"""
+                if hasattr(pageData, deckHead):
+                    parsed = parseMarkdown(getattr(pageData, deckHead))
+                    html += """\n\t\t\t<h1>%s</h1>""" % parsed
+                html += """\n\t\t</header>\n\t</div>"""
+            html += """\n\t</section>"""
+        return html
+
+    def _articlePageHeader(self, siteData, pageData, index):
+        html = ''
+        articlePageHeaderTitle = self._indexed('articlePageHeaderTitle', index)
+        articlePageHeaderSubhead = self._indexed('articlePageHeaderSubhead', index)
+        if (hasattr(pageData, articlePageHeaderTitle) or 
+            hasattr(pageData, articlePageHeaderSubhead)):
+            html += """<section id="articlePageHeader%d" class="wrapper style3">\n\t<div class="inner">\n\t\t<header class="align-center">""" % index
+            if hasattr(pageData, articlePageHeaderSubhead):
+                html += """\n\t\t\t<p>%s</p>""" % getattr(pageData, articlePageHeaderSubhead)
+            if hasattr(pageData, articlePageHeaderTitle):
+                html += """\n\t\t\t<h2>%s</h2>""" % getattr(pageData, articlePageHeaderSubhead)
+            html += """\n\t\t</header>\n\t</div>\n</section>"""
+        return html
+
     def _article(self, siteData, pageData, index):
         html = ''
         articleSubhead = self._indexed('articleSubhead', index) # Add index to anchor name if index > 0

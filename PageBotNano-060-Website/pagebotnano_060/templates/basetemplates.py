@@ -162,41 +162,44 @@ class BaseTemplates:
     # Generic anchor replacements for all templates
 
     def _fontsCss(self, siteData, pageData, index):
+        """Build the fonts css, based on what which parameters are
+        defined in siteData.
+        """
         css = ''
-        """
-        logoFontFamily = self._indexed('imagesArticle', index) # Double indexed achor name
+        logoFontFamily = self._indexed('logoFontFamily', index) # Add index to anchor name if index > 0
         if hasattr(siteData, logoFontFamily):
-            css +=
-        """
-        css = """
- @font-face {
-    font-family: '{{logoFontFamily}}';
-    src: url('../fonts/{{logoFontFamily}}-Regular.eot') format('embedded-opentype'),
-         url('../fonts/{{logoFontFamily}}-Regular.woff2') format('woff2'),
-         url('../fonts/{{logoFontFamily}}-Regular.woff') format('woff'),
-         url('../fonts/{{logoFontFamily}}-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal
- }
- @font-face {
-    font-family: '{{fontFamily}}';
-    src: url('../fonts/{{fontFamily}}-Regular.eot?v=4.6.3');
-    src: url('../fonts/{{fontFamily}}-Regular.eot?#iefix&v=4.6.3') format('embedded-opentype'),
-         url('../fonts/{{fontFamily}}-Regular.woff2?v=4.6.3') format('woff2'),
-         url('../fonts/{{fontFamily}}-Regular.woff?v=4.6.3') format('woff');
-    font-weight: normal;
-    font-style: normal
- }
+            css += """
 @font-face {
-    font-family: '{{fontFamily}}';
-    src: url('../fonts/{{fontFamily}}-Bold.eot?v=4.6.3');
-    src: url('../fonts/{{fontFamily}}-Bold.eot?#iefix&v=4.6.3') format('embedded-opentype'),
-         url('../fonts/{{fontFamily}}-Bold.woff2?v=4.6.3') format('woff2'),
-         url('../fonts/{{fontFamily}}-Bold.woff?v=4.6.3') format('woff');
+    font-family: '%(ff)s';
+    src: url('../fonts/%(ff)s-Regular.eot') format('embedded-opentype'),
+         url('../fonts/%(ff)s-Regular.woff2') format('woff2'),
+         url('../fonts/%(ff)s-Regular.woff') format('woff'),
+         url('../fonts/%(ff)s-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal
+ }""" % dict(ff=getattr(siteData, logoFontFamily))
+        fontFamily = self._indexed('fontFamily', index)
+        if hasattr(siteData, fontFamily):
+            css += """
+@font-face {
+    font-family: '%(ff)s';
+    src: url('../fonts/%(ff)s-Regular.eot?v=4.6.3');
+    src: url('../fonts/%(ff)s-Regular.eot?#iefix&v=4.6.3') format('embedded-opentype'),
+         url('../fonts/%(ff)s-Regular.woff2?v=4.6.3') format('woff2'),
+         url('../fonts/%(ff)s-Regular.woff?v=4.6.3') format('woff');
+    font-weight: normal;
+    font-style: normal
+}
+@font-face {
+    font-family: '%(ff)s';
+    src: url('../fonts/%(ff)s-Bold.eot?v=4.6.3');
+    src: url('../fonts/%(ff)s-Bold.eot?#iefix&v=4.6.3') format('embedded-opentype'),
+         url('../fonts/%(ff)s-Bold.woff2?v=4.6.3') format('woff2'),
+         url('../fonts/%(ff)s-Bold.woff?v=4.6.3') format('woff');
     font-weight: bold;
     font-style: normal;
- }
-        """
+}
+        """ % dict(ff=getattr(siteData, fontFamily))
         return css
 
 

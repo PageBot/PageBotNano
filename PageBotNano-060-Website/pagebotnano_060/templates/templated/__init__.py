@@ -26,3 +26,6 @@ from pagebotnano_060.templates.templated.templatedhielo import TemplatedHielo
 from pagebotnano_060.templates.templated.templatedinterphase import TemplatedInterphase
 from pagebotnano_060.templates.templated.templatedintrospect import TemplatedIntrospect
 from pagebotnano_060.templates.templated.templatedroadtrip import TemplatedRoadtrip
+from pagebotnano_060.templates.templated.templatedradius import TemplatedRadius
+from pagebotnano_060.templates.templated.templatedsnapshot import TemplatedSnapshot
+from pagebotnano_060.templates.templated.templatedtheory import TemplatedTheory

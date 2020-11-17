@@ -33,4 +33,13 @@ class TemplatedBase(BaseTemplates):
     classes for each of the supported https://templated.co template structure, 
     Modified to be used with PageBotNano.
     """
+    def _indexed(self, anchor, index1, index2=None):
+    	"""Constructed an indexed anchor name, for testing if it is defined
+    	in the SiteData and PageData.
+    	If index == 0 or undefined, then don't add it as extension to the anchor name.
+    	"""
+    	for index in (index1, index2):
+	    	if index:
+    			anchor += '_%d' % index
+    	return anchor
 

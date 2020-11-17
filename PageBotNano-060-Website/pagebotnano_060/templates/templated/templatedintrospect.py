@@ -53,7 +53,7 @@ class TemplatedIntrospect(TemplatedBase):
     """
     TEMPLATE_NAME = 'templated-introspect' # This class is optimised for this set of templates.
 
-    def _menuLinks(self, siteData, pageData=None):
+    def _menuLinks(self, siteData, pageData, index):
         """Answer the html chunk as menu to all pages of the site.
         """
         html = """\n<nav id="menu">\n\t<ul class="links">"""

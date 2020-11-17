@@ -23,22 +23,23 @@ class IntoTheWoods(BaseTheme):
     """The IntoTheWoods theme is ...
 
     >>> theme = IntoTheWoods()
+    >>> theme.getColor('main').hex
+    '000000'
     """
 
     NAME = 'Into the Woods'
-    THEME_COLORS = dict(
-        # Example logo colors, to be modified by an inheriting class.
-        logo1=spotColor(300),
-        logo2=color(1, 0, 0),
-        logo3=color(0, 1, 0),
-        # Theme colors
-        main=spotColor('gray10u'),
-        accent=spotColor(348),
-        alt1=spotColor(376),
-        alt2=spotColor(381),
-        support1=spotColor(392), 
-        support2=spotColor(398),
-    )
+    
+    # Example logo colors, to be modified by an inheriting class.
+    baseLogo1=spotColor(300)
+    baseLogo2=color(1, 0, 0)
+    vaseLogo3=color(0, 1, 0)
+    # Theme colors
+    baseMain=spotColor('gray10u')
+    baseAccent=spotColor(348)
+    baseAlt1=spotColor(376)
+    baseAlt2=spotColor(381)
+    baseSupport1=spotColor(392)
+    baseSupport2=spotColor(398)
 
 if __name__ == "__main__":
     import doctest

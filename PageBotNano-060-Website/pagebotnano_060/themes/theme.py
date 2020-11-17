@@ -40,8 +40,8 @@ class BaseTheme:
         # Collection of typographic style dictionaries
         # At least implementing the set of tag names that come from the 
         # Typesetter parsing a markdown file.
-        if styles is None:
-            styles = self.getDefaultStyles(self.fonts, self.colors) # To have basic set installed. 
+        #if styles is None:
+        #    styles = self.getDefaultStyles(self.fonts, self.colors) # To have basic set installed. 
         self.styles = styles
 
     def getStyle(self, name):
@@ -112,7 +112,7 @@ class BaseTheme:
             COLOR_NAMES.append(colorName + ' diap') # Add modifiers
 
     @classmethod
-    def _getBaseShade2RowCol(cls, base, shade=None):
+    def _getBaseShade2RowCol(cls, base, shade=None, diap=False):
         """Answer the (row, col) from interpreted (base, shade)
 
         >>> theme = BaseTheme()
@@ -141,22 +141,24 @@ class BaseTheme:
             elif isinstance(base, str):
                 nameParts = base.split(' ')
                 if len(nameParts) == 1: # Assume to be base, shade = MIDDLE
-                    shade = self.MIDDLE
+                    shade = cls.MIDDLE
                 elif len(nameParts) == 2:
                     base, shade = nameParts
                 elif len(nameParts) == 3:
-                    base, shade, mod = nameParts
+                    base = nameParts[0]
+                    shade = nameParts[1]
+                    diap = nameParts[2] == 'diap' # Overwriting @diap attribute
                 else:
                     raise ValueError('Theme base "%s" wrong format' % base)
 
         row = cls.BASE2ROW.get(base, base) # Translate name to row number if defined.
         col = cls.SHADE2COL.get(shade, shade) # Translate name to col number if defined.
         assert isinstance(row, int) and isinstance(col, int), ("Error in (base, shade): (%s, %s)" % (row, col))
-        if mod == 'diap': # Flip the col
+        if diap: # Flip the col for diapositive.
             col = -col + 8
         return row, col
 
-    def getColor(self, base, shade=None):
+    def getColor(self, base, shade=None, diap=None):
         """Answer the color, at position (base=y, shade=x).
         If shade is None, then try to split shade into two values.
 
@@ -189,7 +191,7 @@ class BaseTheme:
         >>> theme.getColor('main back diap').hex # 'main back' + 'diap' --> equivalent to 'main front'
         '120C09'
         """
-        row, col = self._getBaseShade2RowCol(base, shade)
+        row, col = self._getBaseShade2RowCol(base, shade, diap)
         return self.colors[row][col]
 
     @classmethod
@@ -234,7 +236,29 @@ class BaseTheme:
         1: SHADE_RECIPE,
         0: SHADE_RECIPE,
     }
-    THEME_COLORS = {} # To be redefined by the inherting Theme classes.
+    # Base class colors, to be redefined by inheriting Theme classes
+    baseLogo1 = baseLogo2 = baseLogo3 = baseMain = baseAccent = \
+    baseAlt1 = baseAlt2 = baseSupport1 = baseSupport2 = color(0.5)
+
+    def getThemeBase(self):
+        """Answer the dictionary of base colors, unique for this Theme,
+        using the class colors.
+
+        >>> theme = BaseTheme()
+        >>> theme.getThemeBase()['main']
+        Color(r=0.5, g=0.5, b=0.5)
+        """
+        return dict(
+            logo1=self.baseLogo1,
+            logo2=self.baseLogo2,
+            logo3=self.baseLogo3,
+            main=self.baseMain,
+            accent=self.baseAccent,
+            alt1=self.baseAlt1,
+            alt2=self.baseAlt2,
+            support1=self.baseSupport1,
+            support2=self.baseSupport2,
+        )
 
     def makeColorMatrix(self, mood):
         """Create a 9 (base color) x 9 (shades) table, as source for theme styles.
@@ -248,7 +272,7 @@ class BaseTheme:
         if mood is None:
             mood = LIGHT
         # Make default matrix
-        c = color(0.5) # Default is middle gray color
+        c = self.baseMain # Default is middle gray color
         matrix = [ # Matrix of 9 x 9
             [c, c, c, c, c, c, c, c, c],
             [c, c, c, c, c, c, c, c, c],
@@ -262,11 +286,9 @@ class BaseTheme:
         ] 
         # Now fill with the base colors and calculate the shade of the 
         # inheriting Theme clase
+        themeBase = self.getThemeBase() # Re-defined by the inheriting Theme class
         for base, row in self.BASE2ROW.items():
-            if base in self.THEME_COLORS: # Defined by inheriting Theme class?
-                bc = self.THEME_COLORS[base] # Get that base color
-            else: # Use middle gray as default.
-                bc = c
+            bc = themeBase.get(base, c) # Get base if defined, otherwise use c.
             # Select the shading recipe table.
             # This way the logo colors run all the way from black to white,
             # where the darkest and lightest shades keep a fraction of the base color
@@ -289,7 +311,6 @@ class BaseTheme:
             matrix[row] = baseRow
         return matrix
 
-    
     def getDefaultFonts(self):
         regular = DEFAULT_FONT
         bold = DEFAULT_FONT+'-Bold'
@@ -304,21 +325,22 @@ class BaseTheme:
             boldItalic=boldItalic,
             monospaced='Courier-Regular'
         )
-    def textColor(self, shade, base=3):
-        """Answer the shade of base color that words best as text foreground
+
+    def textColor(self, base, shade=None):
+        """Answer the shade of base color that words best as text front or back
         on the `shade` color.
 
         >>> from pagebotnano_060.themes import BackToTheCity
         >>> theme = BackToTheCity()
-        >>> theme.textColor(0, 3).name
-        'black'
+        >>> theme.textColor('logo1 front').name
+        'white'
         """
-        c = self.getColor(shade, base)
-        if c.averageRgb < 0.4:
-            return color(1)
-        return color(0)
+        c = self.getColor(base, shade)
+        if c.averageRgb >= 0.4:
+            return c
+        return self.getColor(base, shade, diap=True)
 
-    def getDefaultStyles(self, fonts, colors):
+    def getDefaultStyles(self, fonts=None, colors=None):
         """Answer the default set of styles, to get any theme started.
         At least, implement the tags defined in HTML_TEXT_TAGS
 
@@ -338,6 +360,9 @@ class BaseTheme:
 
         textColor = self.textColor('main text') # base, shade
         accentColor = self.getColor('accent text')
+
+        if fonts is None:
+            fonts = self.getDefaultFonts()
 
         regular = fonts['regular']
         bold = fonts['bold']

@@ -79,11 +79,9 @@ class TemplatedHielo(TemplatedBase):
     """
     TEMPLATE_NAME = 'templated-hielo' # This class is optimised for this set of templates.
 
-    def _menuLinks(self, siteData, pageData=None):
+    def _menuLinks(self, siteData, pageData, index):
         """Answer the html chunk as menu to all pages of the site.
-         <nav id="menu">
-                {{menuLinks}}
-        </nav>
+         {{menuLinks}}
         """
         html = """\n<nav id="menu">\n\t<ul class="links">"""
         for pageData in siteData.pages:
@@ -91,7 +89,7 @@ class TemplatedHielo(TemplatedBase):
         html += """\n\t</ul>\n</nav>"""
         return html
 
-    def _bannerSlideShow(self, siteData, pageData):
+    def _bannerSlideShow(self, siteData, pageData, index):
         """Answer a list of <article> html chunks, as slides in the slide show
         <section class="banner full">
             <article>
@@ -109,9 +107,9 @@ class TemplatedHielo(TemplatedBase):
         """
         html = '\n<section class="banner full">'
         for n in range(1, 100): # Practical maximum amount of slides possible:
-            bannerImage = 'bannerImage_%d' % n
-            bannerTitle = 'bannerTitle_%d' % n
-            bannerSubtitle = 'bannerSubtitle_%d' % n
+            bannerImage = self._indexed('bannerImage', index, n)
+            bannerTitle = self._indexed('bannerTitle', index, n)
+            bannerSubtitle = self._indexed('bannerSubtitle', index, n)
             if (hasattr(pageData, bannerImage) or 
                 hasattr(pageData, bannerTitle) or 
                 hasattr(pageData, bannerSubtitle)):
@@ -130,8 +128,8 @@ class TemplatedHielo(TemplatedBase):
         html += '\n</section>'
         return html
 
-    def _imageArticles(self, siteData, pageData):
-        """Answer the html chunk of imageArticles "One" (style 2) in index.html template
+    def _imagesArticle(self, siteData, pageData, index):
+        """Answer the html chunk of imagesArticle "One" (style 2) in index.html template
 
         <section id="one" class="wrapper style2">
             <div class="inner">
@@ -160,12 +158,12 @@ class TemplatedHielo(TemplatedBase):
         </section>
         """
         html = """\n<section id="one" class="wrapper style2">\n\t<div class="inner">\n\t\t\t<div class="grid-style">"""
-        for n in range(1, 100): # Partical maximum amount of imageArticles possible
-            article = 'article_%d' % n
-            articleImage = 'articleImage_%d' % n
-            articleHead = 'articleHead_%d' % n
-            articleSubhead = 'articleSubhead_%d' % n
-            articleFooter = 'articleFooter_%d' %n
+        for n in range(1, 21): # Partical maximum amount of images in an imageArticle possible
+            article = self._indexed('imagesArticle', index, n) # Double indexed achor name
+            articleImage = self._indexed('articleImage', index, n)
+            articleHead = self._indexed('articleHead', index, n)
+            articleSubhead = self._indexed('articleSubhead', index, n)
+            articleFooter = self._indexed('articleFooter', index, n)
             if (hasattr(pageData, articleImage) or 
                 hasattr(pageData, articleHead) or
                 hasattr(pageData, articleSubhead) or
@@ -190,11 +188,11 @@ class TemplatedHielo(TemplatedBase):
                 if hasattr(pageData, articleFooter):
                     parsed = parseMarkdown(getattr(pageData, articleFooter))
                     html += """\n\t\t\t\t\t\t\t<footer class="align-center">%s</footer>""" % parsed
-                html += """\n\t\t\t\t\t</div>\n\t\t\t\t</div>"""
+                html += """\n\t\t\t\t\t</div><!-- class=content -->\n\t\t\t\t\t</div><!-- class=box -->\n\t\t\t\t</div>"""
         html += """\n\t</div>\n</section>"""
         return html
 
-    def _gallery(self, siteData, pageData=None):
+    def _gallery(self, siteData, pageData, index):
         """
         <div class="inner">
             <header class="align-center">
@@ -211,11 +209,11 @@ class TemplatedHielo(TemplatedBase):
             </div>
         </div>
         """
-        html = """\n<section id="three" class="wrapper style2">\n\t<div class="inner">"""
-        galleryHead = 'galleryHead'
-        gallerySubhead = 'gallerySubhead'
-        if hasattr(pageData, galleryHead) or hasattr(pageData, gallerySubhead):
-            html += """\n\t\t<header class="align-center">"""
+        galleryHead = self._indexed('galleryHead', index)
+        gallerySubhead = self._indexed('gallerySubhead', index)
+        if (hasattr(pageData, galleryHead) or
+            hasattr(pageData, gallerySubhead)):
+            html = """\n<section id="three" class="wrapper style2">\n\t<div class="inner">\n\t\t<header class="align-center">"""
             if hasattr(pageData, gallerySubhead):
                 parsed = parseMarkdown(getattr(pageData, gallerySubhead))
                 html += """\n\t\t\t<p class="special">%s</p>""" % parsed
@@ -224,7 +222,7 @@ class TemplatedHielo(TemplatedBase):
                 html += """\n\t\t\t<h2>%s</h2>""" % parsed
             html += """\n\t</header>\n\t\t\t<div class="gallery">"""
             for n in range(1, 100): # Partical maximum amount of imageArticles possible
-                galleryImage = 'galleryImage_%d' % n
+                galleryImage = self._indexed('galleryImage', index, n)
                 if hasattr(pageData, galleryImage):
                     html += """\n\t\t\t<div>\n\t\t\t\t<div class="image fit">"""
                     url = getattr(pageData, galleryImage)
@@ -236,11 +234,10 @@ class TemplatedHielo(TemplatedBase):
                         html += """\n\t\t\t\t<div class="caption">%s</div>""" % parsed
                     html += """\n\t\t\t</div>"""
 
-            html += """\n\t\t\t</div>"""
-        html += """\n\t</div>\n</section>"""
+            html += """\n\t\t\t</div>\n\t</div>\n</section>"""
         return html
 
-    def _pullQuote(self, siteData, pageData):
+    def _pullQuote(self, siteData, pageData, index):
         """Add numbered pullquote with background images
         <section id="two" class="wrapper style3" style="background-image: url({{pullQuoteImage 1}});">
             <div class="inner">
@@ -252,28 +249,63 @@ class TemplatedHielo(TemplatedBase):
         </section>
         """
         html = ''
-        for n in range(1, 100): # Partical maximum amount of imageArticles possible
-            pullQuoteImage = 'pullQuoteImage_%d' % n
-            pullQuoteSubhead = 'pullQuoteSubhead_%d' % n
-            pullQuoteHead = 'pullQuoteHead_%d' % n
-            if (hasattr(pageData, pullQuoteImage) or 
-                hasattr(pageData, pullQuoteSubhead) or 
-                hasattr(pageData, pullQuoteHead)):
-                html +=  """\n\t<section class="wrapper style3" """
-                if hasattr(pageData, pullQuoteImage):
-                    url = getattr(pageData, pullQuoteImage)
-                    html += """ style="background-image: url(%s);" """ % url
-                html += '>'
-                if hasattr(pageData, pullQuoteSubhead) or hasattr(pageData, pullQuoteHead):
-                    html += """\n\t\t<div class="inner">\n\t\t<header class="align-center">"""
-                    if hasattr(pageData, pullQuoteSubhead):
-                        parsed = parseMarkdown(getattr(pageData, pullQuoteSubhead))
-                        html += """\n\t\t\t<p>%s</p>""" % parsed
-                    if hasattr(pageData, pullQuoteHead):
-                        parsed = parseMarkdown(getattr(pageData, pullQuoteHead))
-                        html += """\n\t\t\t<h2>%s</h2>""" % parsed
-                    html += """\n\t\t</header>\n\t</div>"""
-                html += """\n\t</section>"""
+        pullQuoteImage = self._indexed('pullQuoteImage', index)
+        pullQuoteSubhead = self._indexed('pullQuoteSubhead', index)
+        pullQuoteHead = self._indexed('pullQuoteHead', index)
+        if (hasattr(pageData, pullQuoteImage) or 
+            hasattr(pageData, pullQuoteSubhead) or 
+            hasattr(pageData, pullQuoteHead)):
+            html +=  """\n\t<section class="wrapper style3" """
+            if hasattr(pageData, pullQuoteImage):
+                url = getattr(pageData, pullQuoteImage)
+                html += """ style="background-image: url(%s);" """ % url
+            html += '>'
+            if hasattr(pageData, pullQuoteSubhead) or hasattr(pageData, pullQuoteHead):
+                html += """\n\t\t<div class="inner">\n\t\t<header class="align-center">"""
+                if hasattr(pageData, pullQuoteSubhead):
+                    parsed = parseMarkdown(getattr(pageData, pullQuoteSubhead))
+                    html += """\n\t\t\t<p>%s</p>""" % parsed
+                if hasattr(pageData, pullQuoteHead):
+                    parsed = parseMarkdown(getattr(pageData, pullQuoteHead))
+                    html += """\n\t\t\t<h2>%s</h2>""" % parsed
+                html += """\n\t\t</header>\n\t</div>"""
+            html += """\n\t</section>"""
+        return html
+
+    def _articlePageHeader(self, siteData, pageData, index):
+        html = ''
+        articlePageHeaderTitle = self._indexed('articlePageHeaderTitle', index)
+        articlePageHeaderSubhead = self._indexed('articlePageHeaderSubhead', index)
+        if (hasattr(pageData, articlePageHeaderTitle) or 
+            hasattr(pageData, articlePageHeaderSubhead)):
+            html += """<section id="articlePageHeader%d" class="wrapper style3">\n\t<div class="inner">\n\t\t<header class="align-center">""" % index
+            if hasattr(pageData, articlePageHeaderSubhead):
+                html += """\n\t\t\t<p>%s</p>""" % getattr(pageData, articlePageHeaderSubhead)
+            if hasattr(pageData, articlePageHeaderTitle):
+                html += """\n\t\t\t<h2>%s</h2>""" % getattr(pageData, articlePageHeaderSubhead)
+            html += """\n\t\t</header>\n\t</div>\n</section>"""
+        return html
+
+    def _article(self, siteData, pageData, index):
+        html = ''
+        articleSubhead = self._indexed('articleSubhead', index) # Add index to anchor name if index > 0
+        articleHead = self._indexed('articleHead', index)
+        articleText = self._indexed('articleText', index)
+        if (hasattr(pageData, articleSubhead) or 
+            hasattr(pageData, articleHead) or
+            hasattr(pageData, articleText)):
+            html += """<section id="article%d" class="wrapper style2">\n\t<div class="inner">\n\t\t<div class="box">\n\t\t\t<div class="content">""" % index
+            if (hasattr(pageData, articleSubhead) or 
+                hasattr(pageData, articleHead)):
+                html += """\n\t\t\t\t<header class="align-center">"""
+                if hasattr(pageData, articleSubhead):
+                    html += """\n\t\t\t\t\t<p>%s</p>""" % getattr(pageData, articleSubhead)
+                if hasattr(pageData, articleHead):
+                    html += """\n\t\t\t\t\t<h2>%s</h2>""" % getattr(pageData, articleHead)
+                html += """\n\t\t\t\t</header>"""
+            if hasattr(pageData, articleText):
+                html += """\n\t\t\t\t<p>%s</p>""" % getattr(pageData, articleText)
+            html += """\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</section>"""
         return html
 
 

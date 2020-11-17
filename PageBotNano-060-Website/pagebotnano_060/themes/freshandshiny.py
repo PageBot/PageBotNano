@@ -23,24 +23,20 @@ class FreshAndShiny(BaseTheme):
     """The FreshAndShiny theme is ...
 
     >>> theme = FreshAndShiny()
-    >>> theme.getColor('main')
-    'hilite2'
-    >>> theme.selectMood('dark') # Select another mode
-    >>> theme.mood['h1.color']
-    'hilite2'
-    """
+    >>> theme.getColor('main').hex
+    '7A7D81'
+     """
     NAME = 'Fresh and Shiny'
-    THEME_COLORS = dict(
-        #logo1
-        #logo2
-        #logo3
-        main=spotColor('coolgray11u'),
-        accent=spotColor('rhodamineredu'),
-        alt1=spotColor(265),
-        alt2=spotColor(3005),
-        support1=spotColor(375), 
-        support2=spotColor('red032u'),
-    )
+    
+    #baseLogo1
+    #baseLogo2
+    #baseLogo3
+    baseMain=spotColor('coolgray11u')
+    baseAccent=spotColor('rhodamineredu')
+    baseAlt1=spotColor(265)
+    baseAlt2=spotColor(3005)
+    baseSupport1=spotColor(375) 
+    baseSupport2=spotColor('red032u')
 
 if __name__ == "__main__":
     import doctest

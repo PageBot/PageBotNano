@@ -23,19 +23,20 @@ class WordlyWise(BaseTheme):
     """The WordlyWise theme is ...
 
     >>> theme = WordlyWise()
+    >>> theme.getColor('main').hex
+    '928981'
     """
     NAME = 'Wordly Wise'
-    THEME_COLORS = dict(
-        #logo1
-        #logo2
-        #logo3
-        main=spotColor('warmgray8u'),
-        accent=spotColor(286),
-        alt1=spotColor(265),
-        alt2=spotColor(258),
-        support1=spotColor(278),
-        supposrt2=spotColor(270),
-    )
+    
+    #baseLogo1
+    #baseLogo2
+    #baseLogo3
+    baseMain=spotColor('warmgray8u')
+    baseAccent=spotColor(286)
+    baseAlt1=spotColor(265)
+    baseAlt2=spotColor(258)
+    baseSupport1=spotColor(278)
+    baseSupport2=spotColor(270)
 
 if __name__ == "__main__":
     import doctest

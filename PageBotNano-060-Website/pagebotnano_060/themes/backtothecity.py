@@ -20,20 +20,24 @@ from pagebotnano_060.themes.theme import BaseTheme
 from pagebotnano_060.toolbox.color import spotColor
 
 class BackToTheCity(BaseTheme):
-    """The BackToTheCity theme is ..."""
+    """The BackToTheCity theme is ...
+
+    >>> theme = BackToTheCity()
+    >>> theme.getColor('main back').hex
+    'DED8D5'
+    """
 
     NAME = 'Back to the City'
-    THEME_COLORS = dict(
-        #logo1
-        #logo2
-        #logo3
-        main=spotColor(476),
-        accent=spotColor(1405),
-        alt1=spotColor(139), 
-        alt2=spotColor(480), 
-        support1=spotColor(421),
-        support2=spotColor(157),
-    )
+
+    #baseLogo1
+    #baseLogo2
+    #baseLogo3
+    baseMain = spotColor(476)
+    baseAccent = spotColor(1405)
+    baseAlt1 = spotColor(139) 
+    baseAlt2 = spotColor(480) 
+    baseSupport1 = spotColor(421)
+    baseSupport2 = spotColor(157)
 
 if __name__ == "__main__":
     import doctest

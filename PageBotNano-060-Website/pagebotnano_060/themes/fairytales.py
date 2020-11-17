@@ -20,20 +20,23 @@ from pagebotnano_060.themes.theme import BaseTheme
 from pagebotnano_060.toolbox.color import spotColor
 
 class FairyTales(BaseTheme):
-    """The FairyTales theme is ..."""
+    """The FairyTales theme is ...
 
+    >>> theme = FairyTales()
+    >>> theme.getColor('main back').hex
+    'DFDFDE'
+    """
     NAME = 'Fairy Tales'
-    THEME_COLORS = dict(
-        #logo1
-        #logo2
-        #logo3
-        main=spotColor(425),
-        accent=spotColor(237),
-        alt1=spotColor(278),
-        alt2=spotColor(373),
-        support1=spotColor(422),
-        support2=spotColor(473),
-    )
+    
+    #baseLogo1
+    #baseLogo2
+    #baseLogo3
+    baseMain=spotColor(425)
+    baseAccent=spotColor(237)
+    baseAlt1=spotColor(278)
+    baseAlt2=spotColor(373)
+    baseSupport1=spotColor(422)
+    baseSupport2=spotColor(473)
 
 if __name__ == "__main__":
     import doctest

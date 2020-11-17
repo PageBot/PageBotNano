@@ -1,6 +1,7 @@
 @charset "UTF-8";
 @import url(font-awesome.min.css);
-@import url(fonts.css);
+
+{{fontsCss}}
 
 /*
 	Caminar by TEMPLATED

@@ -102,13 +102,19 @@ class Website(Publication):
                 continue
             for anchor, anchorContent in data.__dict__.items(): # Check on all attributes
                 if anchorContent: # Can be just boolean, check on existing method first
-                    # In case self.templates._<anchor> is implenented, then call it, with siteData as attribute.
-                    methodName = '_'+anchor
-                    if hasattr(self.templates, methodName): # Implemented as method?
-                        anchorContent = str(getattr(self.templates, methodName)(siteData, pageData))
-                        src = src.replace('{{%s}}' % anchor, anchorContent)
+                    anchorParts = anchor.split('_')
+                    if len(anchorParts) > 1:
+                        anchorIndex = int(anchorParts[1])
                     else:
-                        # Otherwise, try to use the content to replace the template anchor?
+                        anchorIndex = 0
+                    anchorBase = anchorParts[0]
+                    # In case self.templates._<anchor> is implenented, then call it, with siteData as attribute.
+                    methodName = '_'+anchorBase
+                    if hasattr(self.templates, methodName): # Implemented as method?
+                        anchorContent = str(getattr(self.templates, methodName)(siteData, pageData, anchorIndex))
+                        src = src.replace('{{%s}}' % anchor, anchorContent) # Replace, even if content produced empty string.
+                    else:
+                        # Otherwise, try to use the content to replace the template anchor
                         src = src.replace('{{%s}}' % anchor, str(anchorContent))
                 elif clearAnchors: # Content is set to False or None, remove all anchors.
                     src = src.replace('{{%s}}' % anchor, '')

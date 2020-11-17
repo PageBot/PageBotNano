@@ -52,7 +52,6 @@ class PageData(BaseData):
     def __init__(self, id=None, title=None, template=None):
         BaseData.__init__(self, id, title)
         self.template = template or 'index'
-        self.elements = {}
 
     def __repr__(self):
         s = '<%s' % self.__class__.__name__
@@ -60,38 +59,23 @@ class PageData(BaseData):
             s += ' id=%s' % self.id
         if self.title:
             s += ' title="%s"' % self.title
-        s += ' elements=%d' % len(self.elements)
         s += '>'
         return s
 
+    def newElement(name, index=1):
+        nameIndex = '%s_%d' % (name, index)
+        e = ElementData(name, index)
+        setattr(self, e, nameIndex)
+        return e
+        
 class ElementData(BaseData):
-    def __init__(self, id=None, title=None, content=None):
-        BaseData.__init__(self, id, title)
-        self.content = content or ''
+    def __init__(self, name, index=1):
+        self.name = name
+        self.index = index
 
     def __repr__(self):
-        s = '<%s' % self.__class__.__name__
-        if self.id:
-            s += ' id=%s' % self.id
-        if self.title:
-            s += ' title="%s"' % self.title
-        if self.content:
-            s += ' content="%s">' % self.content[:40]
-        return s
+        return '<%s name=%s index=%d>' % (self.__class__.__name__, self.name, self.index)
 
-    def _get_html(self):
-        html = self.title
-        if self.content:
-            html += ' '+self.content
-        return html
-    html = property(_get_html)
-
-    def _get_url(self):
-        url = self.title # Plain url or <img src="path">?
-        if '"' in url:
-            url = re.findall('src=\"([^\"]*)', url)[0]
-        return url
-    url = property(_get_url)
         
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.

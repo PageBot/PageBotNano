@@ -22,21 +22,25 @@ from pagebotnano_060.toolbox.color import spotColor
 class BusinessAsUsual(BaseTheme):
     """The BusinessAsUsual theme is a generic “woody cool gray” theme, with settings that
     can be used in environments when functionality is more important than “arty”
-    appearance."""
+    appearance.
+
+    >>> theme = BusinessAsUsual()
+    >>> theme.getColor('main back').hex
+    'DFDFDE'
+    """
 
     NAME = 'Business as Usual'
-    THEME_COLORS = dict(
-        #logo1
-        #logo2
-        #logo3
-        main=spotColor('blacku'),
-        accent=spotColor(404),
-        alt1=spotColor(541),
-        alt2=spotColor(542),
-        support1=spotColor(139), 
-        support2=spotColor(877),
-    )
 
+    #baseLogo1
+    #baseLogo2
+    #baseLogo3
+    baseMain=spotColor('blacku')
+    baseAccent=spotColor(404)
+    baseAlt1=spotColor(541)
+    baseAlt2=spotColor(542)
+    baseSupport1=spotColor(139) 
+    baseSupport2=spotColor(877)
+  
 if __name__ == "__main__":
     import doctest
     import sys

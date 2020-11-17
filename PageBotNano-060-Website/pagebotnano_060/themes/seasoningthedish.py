@@ -20,20 +20,25 @@ from pagebotnano_060.themes.theme import BaseTheme
 from pagebotnano_060.toolbox.color import spotColor
 
 class SeasoningTheDish(BaseTheme):
-    """The SeasoningTheDish theme is ..."""
+    """The SeasoningTheDish theme is ...
+
+    >>> theme = SeasoningTheDish()
+    >>> theme.getColor('main').hex
+    '3D3028'
+    """
 
     NAME = 'Seasoning the Dish'
-    THEME_COLORS = dict(
-        #logo1
-        #logo2
-        #logo3
-        main=spotColor(412),
-        accent=spotColor(214),
-        alt1=spotColor(369),
-        alt2=spotColor(389),
-        support1=spotColor(401), 
-        support2=spotColor(103),
-    )
+   
+    #baseLogo1
+    #baseLogo2
+    #baseLogo3
+    baseMain=spotColor(412)
+    baseAccent=spotColor(214)
+    baseAlt1=spotColor(369)
+    baseAlt2=spotColor(389)
+    baseSupport1=spotColor(401)
+    baseSupport2=spotColor(103)
+
     BASE_TYPE = dict(
         familyName='Georgia',
     )

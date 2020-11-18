@@ -159,15 +159,15 @@ class TemplatedHielo(TemplatedBase):
         """
         html = """\n<section id="one" class="wrapper style2">\n\t<div class="inner">\n\t\t\t<div class="grid-style">"""
         for n in range(1, 21): # Partical maximum amount of images in an imageArticle possible
-            article = self._indexed('imagesArticle', index, n) # Double indexed achor name
             articleImage = self._indexed('articleImage', index, n)
             articleHead = self._indexed('articleHead', index, n)
             articleSubhead = self._indexed('articleSubhead', index, n)
+            articleText = self._indexed('articleText', index, n) # Double indexed achor name
             articleFooter = self._indexed('articleFooter', index, n)
             if (hasattr(pageData, articleImage) or 
                 hasattr(pageData, articleHead) or
                 hasattr(pageData, articleSubhead) or
-                hasattr(pageData, article)):
+                hasattr(pageData, articleText)):
                 html += """\n\t\t\t\t<div>\n\t\t\t\t\t<div class="box">"""
                 if hasattr(pageData, articleImage):
                     url = getattr(pageData, articleImage)
@@ -182,8 +182,8 @@ class TemplatedHielo(TemplatedBase):
                         parsed = parseMarkdown(getattr(pageData, articleHead))
                         html += """\n\t\t\t\t\t\t\t\t<h2>%s</h2>""" % parsed
                     html += """\n\t\t\t\t\t\t\t</header>"""
-                if hasattr(pageData, article):
-                    parsed = parseMarkdown(getattr(pageData, article))
+                if hasattr(pageData, articleText):
+                    parsed = parseMarkdown(getattr(pageData, articleText))
                     html += """<p>%s</p>""" % parsed
                 if hasattr(pageData, articleFooter):
                     parsed = parseMarkdown(getattr(pageData, articleFooter))
@@ -301,7 +301,7 @@ class TemplatedHielo(TemplatedBase):
         deckHead = self._indexed('deckHead', index)
         if (hasattr(pageData, deckImage) or 
             hasattr(pageData, deckHead)):
-            html +=  """\n\t<section class="wrapper style3" """
+            html +=  """\n\t<section class="wrapper style3 deck" """
             if hasattr(pageData, deckImage):
                 url = getattr(pageData, deckImage)
                 html += """ style="background-image: url(%s);" """ % url
@@ -344,10 +344,12 @@ class TemplatedHielo(TemplatedBase):
                 if hasattr(pageData, articleSubhead):
                     html += """\n\t\t\t\t\t<p>%s</p>""" % getattr(pageData, articleSubhead)
                 if hasattr(pageData, articleHead):
-                    html += """\n\t\t\t\t\t<h2>%s</h2>""" % getattr(pageData, articleHead)
+                    parsed = parseMarkdown(getattr(pageData, articleHead))
+                    html += """\n\t\t\t\t\t<h2>%s</h2>""" % parsed
                 html += """\n\t\t\t\t</header>"""
             if hasattr(pageData, articleText):
-                html += """\n\t\t\t\t<p>%s</p>""" % getattr(pageData, articleText)
+                parsed = parseMarkdown(getattr(pageData, articleText))
+                html += """\n\t\t\t\t<p>%s</p>""" % parsed
             html += """\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</section>"""
         return html
 

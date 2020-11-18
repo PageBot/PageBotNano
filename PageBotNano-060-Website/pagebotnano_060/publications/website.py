@@ -113,8 +113,9 @@ class Website(Publication):
                     if hasattr(self.templates, methodName): # Implemented as method?
                         anchorContent = str(getattr(self.templates, methodName)(siteData, pageData, anchorIndex))
                         src = src.replace('{{%s}}' % anchor, anchorContent) # Replace, even if content produced empty string.
-                    else:
-                        # Otherwise, try to use the content to replace the template anchor
+                    elif isinstance(anchorContent, Color):
+                        src = src.replace('{{%s}}' % anchor, anchorContent.css) # Export in best CSS format
+                    else: # Otherwise, try to use the content to replace the template anchor
                         src = src.replace('{{%s}}' % anchor, str(anchorContent))
                 elif clearAnchors: # Content is set to False or None, remove all anchors.
                     src = src.replace('{{%s}}' % anchor, '')

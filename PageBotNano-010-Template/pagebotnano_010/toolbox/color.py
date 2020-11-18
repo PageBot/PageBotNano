@@ -965,18 +965,18 @@ class Color:
         >>> color((0, 0, 0)).css
         '#000000'
         >>> color((0, 0, 0, 0.5)).css
-        'rgba(0.00, 0.00, 0.00, 0.50'
+        'rgba(0, 0, 0, 0.50)'
         >>> color('red', a=0.1).css # Transparant RGB name color as CSS notation
-        'rgba(1.00, 0.00, 0.00, 0.10'
+        'rgba(255, 0, 0, 0.10)'
         >>> color(spot=300, a=0.1).css # Transparant spot color as CSS notation
-        'rgba(0.00, 0.45, 0.78, 0.10'
+        'rgba(0, 114, 198, 0.10)'
         >>> color(cmyk=(0.1, 0.2, 0.3, 0.4), a=0.1).css # Transparant CMYK color as CSS notation
-        'rgba(0.54, 0.48, 0.42, 0.10'
+        'rgba(138, 122, 107, 0.10)'
         """
         if self.a == 1:
             return ('#%s' % self.hex).upper() # No opacity, answer as hex color.
         r, g, b, = self.rgb
-        return 'rgba(%0.2f, %0.2f, %0.2f, %0.2f' % (r, g, b, self.a)
+        return 'rgba(%d, %d, %d, %0.2f)' % (round(r*255), round(g*255), round(b*255), self.a)
     css = property(_get_css)
 
     def warmer(self, v=0.5):

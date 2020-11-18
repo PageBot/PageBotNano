@@ -158,7 +158,7 @@ class BaseTheme:
             col = -col + 8
         return row, col
 
-    def getColor(self, base, shade=None, diap=None):
+    def getColor(self, base, shade=None, diap=None, a=1):
         """Answer the color, at position (base=y, shade=x).
         If shade is None, then try to split shade into two values.
 
@@ -190,9 +190,15 @@ class BaseTheme:
         'E1DAD0'
         >>> theme.getColor('main back diap').hex # 'main back' + 'diap' --> equivalent to 'main front'
         '120C09'
+        >>> theme.getColor('main text', a=0.5).css
+        'rgba(0.87, 0.85, 0.83, 0.50)'
+        >>> theme.getColor('main text diap', a=0.5).css
+
         """
         row, col = self._getBaseShade2RowCol(base, shade, diap)
-        return self.colors[row][col]
+        c = copy(self.colors[row][col])
+        c.a = a
+        return c
 
     @classmethod
     def getCell(cls, base, shade=None):

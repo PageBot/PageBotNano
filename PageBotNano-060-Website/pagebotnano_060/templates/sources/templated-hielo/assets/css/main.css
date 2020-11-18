@@ -12,7 +12,7 @@
 /* Reset */
 
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-		font-family: "{{fontFamily}}", sans-serif;
+		font-family: "{{bodyFont}}", sans-serif;
 		margin: 0;
 		padding: 0;
 		border: 0;
@@ -1636,7 +1636,7 @@
 	}
 
 	body, input, select, textarea {
-		font-family: "{{fontFamily}}", sans-serif;
+		font-family: "{{bodyFont}}", sans-serif;
 		font-weight: 300;
 		font-size: 1rem;
 		line-height: 1.65;
@@ -1825,11 +1825,15 @@
 
 		.box header h2 {
 			margin-bottom: 2rem;
+			font-size: {{articleHeadSize}};
+			color: {{articleHeadColor}};
+			letter-spacing: 0.1rem;
 		}
 
 		.box header p {
 			text-transform: uppercase;
-			font-size: .75rem;
+			font-size: {{articleSubheadSize}}; /* .75rem; */
+			color: {{articleSubheadColor}};
 			font-weight: 300;
 			margin: 0 0 .25rem 0;
 			padding: 0 0 .75rem 0;
@@ -2672,7 +2676,7 @@
 /* Wrapper */
 
 	.wrapper {
-		padding: 6rem 0 4rem 0 ;
+		padding: 4rem 0 3rem 0 ; /* 6rem 0 4rem 0 */
 		position: relative;
 		margin: 0;
 	}
@@ -2891,8 +2895,11 @@
 			}
 
 		.wrapper.style2 {
+			font-family: {{bodyText2Font}};
 			background-color: #f2f2f2;
-			color: #a6a6a6;
+			color: {{bodyText2Color}}; /* #a6a6a6; */
+			font-size: {{bodyText2Size}};
+			line-height: {{bodyText2Leading}};
 		}
 
 			.wrapper.style2 input, .wrapper.style2 select, .wrapper.style2 textarea {
@@ -3397,7 +3404,7 @@
 		@media screen and (max-width: 736px) {
 
 			.wrapper {
-				padding: 3rem 0 1rem 0 ;
+				padding: 1rem 0 1rem 0; /* 3rem 0 1rem 0; */
 			}
 
 		}
@@ -4187,12 +4194,12 @@
 				}
 
 			.banner > article p {
-				color: rgba(255, 255, 255, 0.65);
+				color: {{bannerSlideShowSubheadColor}}; /* rgba(255, 255, 255, 0.65); */
 				text-transform: uppercase;
-				font-size: 1rem;
+				font-size: {{bannerSlideShowSubheadSize}}; /* 1rem */
 				font-weight: 300;
 				margin: 0;
-				padding-bottom: 1.75rem;
+				padding-bottom: 1.25rem; /* 1.75 rem */
 				letter-spacing: .25rem;
 			}
 
@@ -4282,6 +4289,15 @@
 			background-attachment: scroll;
 		}
 
+/* Deck */
+
+	.wrapper.style3.deck .inner h1 {
+		font-family: {{deckFont}};
+		font-size: {{deckFontSize}};
+		color: {{deckFontColor}};
+		line-height: {{deckFontLeading}};
+	}
+
 /* Main */
 
 	#main {
@@ -4291,7 +4307,7 @@
 		@media screen and (max-width: 736px) {
 
 			#main {
-				padding: 3rem 0 1rem 0 ;
+				padding: 2rem 0 1rem 0 ; /* 3rem 0 1rem 0; */
 			}
 
 		}
@@ -4323,7 +4339,7 @@
 		@media screen and (max-width: 736px) {
 
 			#footer {
-				padding: 3rem 0 1rem 0 ;
+				padding: 2rem 0 1rem 0; /* 3rem 0 1rem 0; */
 			}
 
 		}

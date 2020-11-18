@@ -99,11 +99,13 @@ def parseMarkdown(md):
     md = re.sub('(`)(.*?)\\1', '<code>\\2</code>', md, flags=re.MULTILINE)
     # ___ --> <hr /> 
     md = re.sub('^---(.*)', '<hr/>', md, flags=re.MULTILINE)
-    # \n\n\n --> <br/>\n
-    mb = re.sub('\\n\\n\\n', '<br/><br/>\\nAAA', md, flags=re.MULTILINE)
+    # \n\n\n --> <br/>\n<br/>\n
+    #mb = re.sub('\\n\\n', '<br/>\\n<br/>\\n', md, flags=re.MULTILINE)
+    #mb = re.sub('\\n\\n', '<br/>\\n', md, flags=re.MULTILINE)
+    #md = md.replace('<br/>\n<p>', '<br/>\n')
+    md = md.replace('\n\n', '<br/>\n<br/>\n')
     # <p>...</p> ,
     #md = re.sub('^[^\\.]([^<\n].*[^>]?)', '<p>\\1</p>', md, flags=re.MULTILINE)
-    #md = md.replace('<br/>\n<p>', '<br/>\n')
     md = md.replace('</blockquote>\n</p>', '</blockquote>\n')
     # Restore the Python comment inside <code>...</code>
     md = md.replace('<<pythonComment>>', '#')

@@ -164,6 +164,8 @@ class BaseTemplates:
     def _fontsCss(self, siteData, pageData, index):
         """Build the fonts css, based on what which parameters are
         defined in siteData.
+
+        siteData.fonts = ('Bold', 'Bold_Italic', ...)
         """
         css = ''
         logoFontFamily = self._indexed('logoFontFamily', index) # Add index to anchor name if index > 0
@@ -178,29 +180,23 @@ class BaseTemplates:
     font-weight: normal;
     font-style: normal
  }""" % dict(ff=getattr(siteData, logoFontFamily))
-        fontFamily = self._indexed('fontFamily', index)
-        if hasattr(siteData, fontFamily):
-            css += """
+
+        # Build the @font-face for every font that is used in the side,
+        # as defined by the siteData.fonts list.
+        if hasattr(siteData, 'fontFamily') and hasattr(siteData, 'fonts'):
+            for weightName in siteData.fonts:
+                css += """
 @font-face {
-    font-family: '%(ff)s';
-    src: url('../fonts/%(ff)s-Regular.eot?v=4.6.3');
-    src: url('../fonts/%(ff)s-Regular.eot?#iefix&v=4.6.3') format('embedded-opentype'),
-         url('../fonts/%(ff)s-Regular.woff2?v=4.6.3') format('woff2'),
-         url('../fonts/%(ff)s-Regular.woff?v=4.6.3') format('woff');
+    font-family: '%(ff)s-%(wn)s';
+    src: url('../fonts/%(ff)s-%(wn)s.eot?v=4.6.3');
+    src: url('../fonts/%(ff)s-%(wn)s.eot?#iefix&v=4.6.3') format('embedded-opentype'),
+         url('../fonts/%(ff)s-%(wn)s.woff2?v=4.6.3') format('woff2'),
+         url('../fonts/%(ff)s-%(wn)s.woff?v=4.6.3') format('woff');
     font-weight: normal;
-    font-style: normal
-}
-@font-face {
-    font-family: '%(ff)s';
-    src: url('../fonts/%(ff)s-Bold.eot?v=4.6.3');
-    src: url('../fonts/%(ff)s-Bold.eot?#iefix&v=4.6.3') format('embedded-opentype'),
-         url('../fonts/%(ff)s-Bold.woff2?v=4.6.3') format('woff2'),
-         url('../fonts/%(ff)s-Bold.woff?v=4.6.3') format('woff');
-    font-weight: bold;
     font-style: normal;
-}
-        """ % dict(ff=getattr(siteData, fontFamily))
+}           """ % dict(ff=siteData.fontFamily, wn=weightName)
         return css
+
 
 
 

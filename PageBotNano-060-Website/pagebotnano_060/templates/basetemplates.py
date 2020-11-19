@@ -108,6 +108,8 @@ class BaseTemplates:
         shutil.copyfile(srcPath, dstPath)
 
     def read(self, path):
+        if path.split('/')[-1].startswith('.'):
+            return
         if os.path.isdir(path): 
             if not path.endswith('/'):
                 path += '/'

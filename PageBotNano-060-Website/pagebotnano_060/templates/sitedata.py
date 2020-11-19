@@ -62,21 +62,7 @@ class PageData(BaseData):
         s += '>'
         return s
 
-    def newElement(name, index=1):
-        nameIndex = '%s_%d' % (name, index)
-        e = ElementData(name, index)
-        setattr(self, e, nameIndex)
-        return e
-        
-class ElementData(BaseData):
-    def __init__(self, name, index=1):
-        self.name = name
-        self.index = index
-
-    def __repr__(self):
-        return '<%s name=%s index=%d>' % (self.__class__.__name__, self.name, self.index)
-
-        
+     
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest

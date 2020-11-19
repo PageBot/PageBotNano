@@ -33,6 +33,12 @@ class BaseTheme:
     def __init__(self, mood=LIGHT, name=None, fonts=None, styles=None):
         self.name = name or self.NAME
         self.colors = self.makeColorMatrix(mood)
+        if mood == LIGHT:
+            self.lowest = color(1) # White as lowest back-most layer = paper
+            self.highest = color(0) # Black as front-most contrast
+        else:
+            self.lowest = color(0) # Black as lowest back-most layer = paper
+            self.highest = color(1) # White as front-most contrast
         # Defines the relation between typographic functions and font names.
         if fonts is None:
             fonts = self.getDefaultFonts()
@@ -83,6 +89,11 @@ class BaseTheme:
     # Alias names
     HOVER = 'hover'
     TEXT = 'text'
+
+    # Black & white equivalents, flipping is based o mood
+    LOWEST = 'lowest' # Default generic white (for light mood) or black (for dark mood)
+    HIGHEST = 'highest' # Default generic black (for light mood) or white (for dark mood)
+    CONTRAST = (LOWEST, HIGHEST)
 
     SHADE2COL = {
         BACK:0,
@@ -195,8 +206,11 @@ class BaseTheme:
         >>> theme.getColor('main text diap', a=0.5).css
 
         """
-        row, col = self._getBaseShade2RowCol(base, shade, diap)
-        c = copy(self.colors[row][col])
+        if base in self.CONTRAST:
+            c = getattr(self, base)
+        else:
+            row, col = self._getBaseShade2RowCol(base, shade, diap)
+            c = copy(self.colors[row][col])
         c.a = a
         return c
 

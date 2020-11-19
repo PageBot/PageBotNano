@@ -1,5 +1,6 @@
 @charset "UTF-8";
 @import url(font-awesome.min.css);
+@import url(jquery.bbslider.css);
 
 {{fontsCss}}
 
@@ -49,6 +50,22 @@
 
 	body {
 		-webkit-text-size-adjust: none;
+	}
+
+/* Slide show */
+
+	.clearfix {
+  		overflow: auto; /* CSS hack to grow div including all child content. */
+	}
+	.slideshowgroup {
+	    display: grid;
+	    grid-template-columns: 1fr; /* 2fr 1fr; */
+	    column-gap: 10px;
+	    row-gap: 10px;    
+	    background-color: {{slideShowBackgroundColor}};
+	}
+	.slideshow {
+	    background-color: {{slideShowBackgroundColor}};
 	}
 
 /* Box Model */

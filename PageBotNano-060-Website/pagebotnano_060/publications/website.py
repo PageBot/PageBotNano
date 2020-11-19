@@ -115,6 +115,11 @@ class Website(Publication):
                         src = src.replace('{{%s}}' % anchor, anchorContent) # Replace, even if content produced empty string.
                     elif isinstance(anchorContent, Color):
                         src = src.replace('{{%s}}' % anchor, anchorContent.css) # Export in best CSS format
+                    elif isinstance(anchorContent, (list, tuple)):
+                        merged = ''
+                        for s in anchorContent:
+                            merged += str(s)
+                        src = src.replace('{{%s}}' % anchor, merged)
                     else: # Otherwise, try to use the content to replace the template anchor
                         src = src.replace('{{%s}}' % anchor, str(anchorContent))
                 elif clearAnchors: # Content is set to False or None, remove all anchors.
@@ -125,7 +130,9 @@ class Website(Publication):
             color = siteData.theme.getColor(colorName)
             cell = siteData.theme.getCell(colorName) # Chess-like color code
             src = src.replace('{{%s}}' % colorName, '#%s /* Theme: (%s) %s */' % (color.hex, cell, colorName))
-
+        
+        # Replace Javascript output anchor
+        src = src.replace('{{jsOut}}', '\n<script>%s</script>' % '\n'.join(self.templates.jsOut))
 
         return src
 

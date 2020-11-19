@@ -43,3 +43,9 @@ class TemplatedBase(BaseTemplates):
     			anchor += '_%d' % index
     	return anchor
 
+    def _indexedValue(self, data, anchor, index, default=None):
+        indexedAnchor = self._indexed(anchor, index)
+        if hasattr(data, indexedAnchor):
+            return getattr(data, indexedAnchor)
+        return default
+

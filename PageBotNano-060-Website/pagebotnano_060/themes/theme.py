@@ -34,11 +34,11 @@ class BaseTheme:
         self.name = name or self.NAME
         self.colors = self.makeColorMatrix(mood)
         if mood == LIGHT:
-            self.lowest = color(1) # White as lowest back-most layer = paper
-            self.highest = color(0) # Black as front-most contrast
+            self.lowest = self.white = color(1) # White as lowest back-most layer = paper
+            self.highest = self.black = color(0) # Black as front-most contrast
         else:
-            self.lowest = color(0) # Black as lowest back-most layer = paper
-            self.highest = color(1) # White as front-most contrast
+            self.lowest = self.black = color(0) # Black as lowest back-most layer = paper
+            self.highest = self.white = color(1) # White as front-most contrast
         # Defines the relation between typographic functions and font names.
         if fonts is None:
             fonts = self.getDefaultFonts()
@@ -93,7 +93,9 @@ class BaseTheme:
     # Black & white equivalents, flipping is based o mood
     LOWEST = 'lowest' # Default generic white (for light mood) or black (for dark mood)
     HIGHEST = 'highest' # Default generic black (for light mood) or white (for dark mood)
-    CONTRAST = (LOWEST, HIGHEST)
+    WHITE = 'white'
+    BLACK = 'black'
+    CONTRAST = (LOWEST, HIGHEST, WHITE, BLACK)
 
     SHADE2COL = {
         BACK:0,

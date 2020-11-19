@@ -353,7 +353,7 @@ class TemplatedHielo(TemplatedBase):
             html += """\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</section>"""
         return html
 
-
+ 
 if __name__ == "__main__":
     # Running this document will execute all >>> comments as test of this source.
     import doctest

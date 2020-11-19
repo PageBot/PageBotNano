@@ -19,6 +19,7 @@ import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_060.toolbox import path2DirectoryName, path2CoreFileName
+from pagebotnano_060.toolbox.markdown import parseMarkdown
 
 class BaseTemplates:
     """    
@@ -46,6 +47,7 @@ class BaseTemplates:
         self.pdf = []
         self.fonts = []
         self.otherFiles = [] # List with other files that need to be copied
+        self.jsOut = []
 
         self.read(path)
 
@@ -199,6 +201,178 @@ class BaseTemplates:
 }           """ % dict(ff=siteData.fontFamily, wn=weightName)
         return css
 
+
+    def _slideShow(self, siteData, pageData, index):
+        """Generate the HTML and JS for the slide show. 
+        See options at: https://www.bbslider.com/options.php
+
+        p = pageData
+        p.slideShowAutoHeight = True # Automatically sets the height to the largest panel.
+        p.slideShowDynamicHeight = False # Recalculates height based on current panel
+        p.slideShowStart = 1 # Index of the panel to start on
+        p.slideShowDuration = 1000 # Duration of transition animation.
+        p.slideShowEasing = 'ease' # Easing of transition animation.
+        p.slideShowControls = False # Creates prev/next controls.
+        p.slideShowControlsText = '<a...' # HTML element output for controls
+        p.slideShowPager = False # Creates pagination.
+        p.slideShowPagerWeap = ".pager-wrap" # The element to append the pager to.
+        p.slideShowPagerText = "..." # Function to return a single item of the pager
+        p.slideShowMaskImage = "images/mask.png" # The mask image for the mask transition."
+        p.slideShowMaskSteps = 23 # The number of steps in your mask image.
+        p.slideShowAuto = True # Panels play automatically.
+        p.slideShowTimer = 5000 # Timer between slides for auto play.
+        p.slideShowLoop = True # Loops to beginning and end when controls are hit.
+        p.slideShowLoopTrans = True # Use the forward animation when looping back to beginning.
+        p.slideShowTransition = 'fade' # none, fade, slide, slideVert, blind, mask = Transition effects between slides.
+        p.slideShowPauseOnHit = True # Pause autoplay when someone uses controls or pager
+        p.slideShowRandomPlay = False # Slides are random on auto play
+        p.slideShowTouch = False # Use touch controls for phones and tablets
+        p.slideShowTouchoffset = 50 # Amount of pixels to touch drag before moving to new slide
+        p.slideShowDragControls = False # Use mouse click-and-drag left / right controls
+        p.slideShowDragoffset = 50 # Amount of pixels to mouse drag before moving to new slide
+        p.slideShowCarousel = 2 # Number of slides to show simultaneously
+        p.slideShowcarouselMove = 1 # Number of slides to move for next / previous functions
+        p.slideShowCallbackStart = '...' # Function to call when slider initializes
+        p.slideShowCallbackBefore = '...' # Function to call before every slide
+        p.slideShowCallbackAfter = '...' # Function to call after every slide
+        p.slideShowCallbackUpdate = '...' # Function to call whenever the update method is called
+        """
+        html = ''
+        slideShowImages = self._indexed('slideShowImages', index) # Add index to anchor name if index > 0
+        slideShowHeight = self._indexed('slideShowHeight', index)
+        cssClass = self._indexed('slideshow', index)
+        captions = []
+        if hasattr(pageData, slideShowImages):
+            assert isinstance(pageData.slideShowImages, (list, tuple))
+            html += """\n<section id="slideShowSection_%d" class="wrapper style2">""" % index
+            #html += """\n\t<div class="inner">\n\t\t<div class="grid-style">""" 
+            html += """<div class="slideshowgroup clearfix" id="slideShowGroup_%d">""" % index
+            html += """\n\t<div class="%s clearfix" id="slideShow_%d">""" % (cssClass, index)
+            images = getattr(pageData, slideShowImages)
+            for imageIndex, imageData in enumerate(images):
+                imagePosition = None
+                if isinstance(imageData, str):
+                    imageUrl = imageData
+                elif isinstance(imageData, (tuple, list)) and len(imageData) == 2:
+                    imageUrl, imagePosition = imageData
+                elif isinstance(imageData, (tuple, list)) and len(imageData) == 3:
+                    imageUrl, imagePosition, caption = imageData
+                    parsedCaption = parseMarkdown(caption)
+                    captions.append((imageIndex, parsedCaption))
+                else:
+                    raise ValueError('SlideShow-imageData has wrong format: %s' % imageData)
+
+                if not imagePosition:
+                   imagePosition = 'center center'
+ 
+                if hasattr(pageData, slideShowHeight):
+                    height = getattr(pageData, slideShowHeight)
+                    heightSrc = 'height:%dpt;' % height
+                else: 
+                    height = 300 # In case using autoHeight
+                    heightSrc = ''
+                html += """\n\t\t<div style="background-image:url('%s');width:100%%;%sbackground-position:%s;background-size:cover;"></div>""" % (imageUrl, heightSrc, imagePosition)
+            #html += """\n\t</div>\n</div>"""
+            html += """\n\t\t</div>"""
+            for imageIndex, parsedCaption in captions:
+                html += """<div id="slideShowCaption_%(index)d_%(imageIndex)d" 
+                    style="position: absolute; top:%(height)dpx; visibility: hidden;
+                    width:auto; margin-left: 40px; margin-right: 40px; margin-bottom: 30px;  
+                    background-color: rgba(255, 255, 255, 0.5); 
+                    padding: 20px;
+                    z-index: 10; font-size: 48px; line-height: 1.1em; font-family: Upgrade-Light_Italic;">%(parsedCaption)s</div>""" % dict(
+                        index=index, imageIndex=imageIndex, height=height+50, parsedCaption=parsedCaption)
+            html += """\n\t</div>\n</section>"""
+
+            # Make slideShow starting javascript
+            autoHeight = self._indexedValue(pageData, 'slideShowAutoHeight', index, True)
+            dynamicHeight = self._indexedValue(pageData, 'slideShowDynamicHeight', index, False)
+            startIndex = self._indexedValue(pageData, 'slideShowStartIndex', index, 1)
+            easing = self._indexedValue(pageData, 'slideShowEasing', index, 'ease')
+            pager = self._indexedValue(pageData, 'slideShowPager', index, False)
+            carousel = self._indexedValue(pageData, 'slideShowCarousel', index, 2)
+            controls = self._indexedValue(pageData, 'slideShowControls', index, False)
+            controlsText = self._indexedValue(pageData, 'slideShowControlsText', index, False)
+            touch = self._indexedValue(pageData, 'slideShowTouch', index, True)
+            touchOffset = self._indexedValue(pageData, 'slideShowTouchOffset', index)
+            dragControls = self._indexedValue(pageData, 'slideShowDragControls', index, True)
+            dragOffset = self._indexedValue(pageData, 'slideShowDragOffset', index)
+            pauseOnHit = self._indexedValue(pageData, 'slideShowPauseOnHit', index, True)
+            randomPlay = self._indexedValue(pageData, 'slideShowRandomPlay', index)
+            maskImage = self._indexedValue(pageData, 'slideShowMaskImage', index)
+            jsCallbackStart = self._indexedValue(pageData, 'slideShowJsCallbackStart', index)
+            jsCallbackBefore = self._indexedValue(pageData, 'slideShowJsCallbackBefore', index)
+            jsCallbackAfter = self._indexedValue(pageData, 'slideShowJsCallbackAfter', index)
+            jsCallbackUpdate = self._indexedValue(pageData, 'slideShowJsCallbackUpdate', index)
+            duration = self._indexedValue(pageData, 'slideShowDuration', index, 0.7)
+            auto = self._indexedValue(pageData, 'slideShowAuto', index, True)
+            timer = self._indexedValue(pageData, 'slideShowTimer', index, 4)
+            loop = self._indexedValue(pageData, 'slideShowLoop', index, True)
+            transition = self._indexedValue(pageData, 'slideShowTransition', index, 'slide')
+
+            js = "$('.%s').bbslider({" % cssClass
+            options = []
+            if autoHeight is None:
+                options.append('autoHeight: false')
+            else:
+                options.append('autoHeight: true, dynamicHeight: %s' % str(bool(dynamicHeight)).lower())
+            if startIndex is not None:
+                options.append('start: %d' % startIndex)
+            if easing is not None:
+                options.append("easing: '%s'" % easing)
+            if pager:
+                options.append("pager: %s" % str(bool(pager)).lower())
+            if carousel:
+                assert isinstance(carousel, int)
+                options.append("carousel: %d" % carousel)
+            if controls:
+                options.append("controls: %s" % str(bool(controls)).lower())
+                if controlsText:
+                    options.append("controlsText: %s" % str(controlsText))
+            if touch:
+                options.append("touch: true, touchoffset: %d" % (touchOffset or 50))
+            if dragControls:
+                options.append("dragControls: true, dragoffset: %d" % (dragOffset or 50))
+            if not pauseOnHit:
+                options.append('pauseOnHit: false')
+            if randomPlay:
+                options.append('randomPlay: true')
+            if maskImage:
+                options.append('maskImage: "%s"' % (maskImage))
+            if jsCallbackStart:
+                options.append('callbackStart: %s' % jsCallbackStart)
+            if jsCallbackBefore:
+                options.append('callbackBefore: %s' % jsCallbackBefore)
+            if jsCallbackAfter:
+                options.append('callbackAfter: %s' % jsCallbackAfter)
+            if jsCallbackUpdate:
+                options.append('callbackUpdate: %s' % jsCallbackUpdate)
+            options.append("duration: %d" % ((duration or 1) * 1000)) # In seconds
+            options.append("auto: %s" % str(bool(auto)).lower())
+            options.append("timer: %d" % ((timer or 3) * 1000))
+            options.append("loop: %s" % str(bool(loop)).lower())
+            options.append("transition: '%s'" % transition)
+            js += ', '.join(options) + '});\n\n'
+            js += """function slideShowUpdateCaption(d){
+                var caption;
+                var slideShow = $('#slideShow_%(index)d');
+                for (var i=0; i < %(length)s; i++){
+                    caption = document.getElementById('slideShowCaption_%(index)d_'+i);
+                    if (caption){
+                        /*
+                        caption.innerHTML = 'slideShowCaption_%(index)d_'+i + ' $' + i + ' #' + slideShow.data('pIndex') + ' @' + %(start)d + ' '+ (i == slideShow.data('pIndex') + %(start)d);
+                        */
+                        if (i == slideShow.data('pIndex') + %(start)d){
+                            caption.style.visibility = 'visible';
+                        } else {
+                            caption.style.visibility = 'hidden';
+                        }
+                    }
+                }
+                return 0;}""" % dict(index=index, start=carousel, length=len(images))
+            self.jsOut.append(js)
+
+        return html
 
 
 

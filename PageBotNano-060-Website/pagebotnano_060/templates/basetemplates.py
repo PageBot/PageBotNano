@@ -20,6 +20,7 @@ sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_060.toolbox import path2DirectoryName, path2CoreFileName
 from pagebotnano_060.toolbox.markdown import parseMarkdown
+from pagebotnano_060.toolbox.color import color
 
 class BaseTemplates:
     """    
@@ -271,17 +272,50 @@ class BaseTemplates:
                 else: 
                     height = 300 # In case using autoHeight
                     heightSrc = ''
-                html += """\n\t\t<div style="background-image:url('%s');width:100%%;%sbackground-position:%s;background-size:cover;"></div>""" % (imageUrl, heightSrc, imagePosition)
+                html += """\n\t\t<div style="background-image:url('%s');
+                    width:100%%;
+                    %sbackground-position:%s;
+                    background-size:cover;"></div>""" % (imageUrl, heightSrc, imagePosition)
             #html += """\n\t</div>\n</div>"""
             html += """\n\t\t</div>"""
+
+            captionFontSize = self._indexedValue(pageData, 'slideShowCaptionFontSize', index, 36)
+            captionPaddingTop = self._indexedValue(pageData, 'slideShowCaptionPaddingTop', index, captionFontSize/3)
+            captionPaddingRight = self._indexedValue(pageData, 'slideShowCaptionPaddingRight', index, captionFontSize/2)
+            captionPaddingBottom = self._indexedValue(pageData, 'slideShowCaptionPaddingBottom', index, captionFontSize/3)
+            captionPaddingLeft = self._indexedValue(pageData, 'slideShowCaptionPaddingLeft', index, captionFontSize/2)
+            captionMarginLeft = self._indexedValue(pageData, 'slideShowCaptionMarginLeft', index, 40)
+            captionMarginRight = self._indexedValue(pageData, 'slideShowCaptionMarginRight', index, 40)
+            captionMarginBottom = self._indexedValue(pageData, 'slideShowCaptionMarginBottom', index, 50)
+            captionBackgroundColor = self._indexedValue(pageData, 'slideShowCaptionBackgroundColor', index, color(1, a=0.8))
+            captionColor = self._indexedValue(pageData, 'slideShowCaptionColor', index, siteData.theme.black)
+            captionFont = self._indexedValue(pageData, 'slideShowCaptionFont', index, 'Upgrade-Light_Italic')
+
             for imageIndex, parsedCaption in captions:
                 html += """<div id="slideShowCaption_%(index)d_%(imageIndex)d" 
-                    style="position: absolute; top:%(height)dpx; visibility: hidden;
-                    width:auto; margin-left: 40px; margin-right: 40px; margin-bottom: 30px;  
-                    background-color: rgba(255, 255, 255, 0.5); 
-                    padding: 20px;
-                    z-index: 10; font-size: 48px; line-height: 1.1em; font-family: Upgrade-Light_Italic;">%(parsedCaption)s</div>""" % dict(
-                        index=index, imageIndex=imageIndex, height=height+50, parsedCaption=parsedCaption)
+                    style="position: absolute; bottom:%(y)dpx; visibility: hidden;
+                    width:auto; 
+                    padding-top: %(paddingTop)spx;
+                    padding-right: %(paddingRight)spx;
+                    padding-bottom: %(paddingBottom)spx;
+                    padding-left: %(paddingLeft)spx;
+                    margin-left: %(marginLeft)spx; 
+                    margin-right: %(marginRight)spx;  
+                    background-color: %(backgroundColor)s; 
+                    color: %(color)s;
+                    z-index: 10; font-size: %(fontSize)dpx; line-height: 1.1em; 
+                    font-family: %(font)s;">%(parsedCaption)s</div>""" % dict(
+                        paddingTop=captionPaddingTop,
+                        paddingRight=captionPaddingRight, 
+                        paddingBottom=captionPaddingBottom,
+                        paddingLeft=captionPaddingLeft,
+                        marginLeft=captionMarginLeft, 
+                        marginRight=captionMarginRight,
+                        backgroundColor=captionBackgroundColor.css,
+                        fontSize=captionFontSize,
+                        color=captionColor,
+                        font=captionFont,
+                        index=index, imageIndex=imageIndex, y=captionMarginBottom, parsedCaption=parsedCaption)
             html += """\n\t</div>\n</section>"""
 
             # Make slideShow starting javascript
@@ -353,11 +387,11 @@ class BaseTemplates:
             options.append("loop: %s" % str(bool(loop)).lower())
             options.append("transition: '%s'" % transition)
             js += ', '.join(options) + '});\n\n'
-            js += """function slideShowUpdateCaption(d){
+            js += """function %(functioName)s(d){
                 var caption;
                 var slideShow = $('#slideShow_%(index)d');
                 for (var i=0; i < %(length)s; i++){
-                    caption = document.getElementById('slideShowCaption_%(index)d_'+i);
+                    caption = document.getElementById('slideShowCaption_%(index)d_'+(i-1));
                     if (caption){
                         /*
                         caption.innerHTML = 'slideShowCaption_%(index)d_'+i + ' $' + i + ' #' + slideShow.data('pIndex') + ' @' + %(start)d + ' '+ (i == slideShow.data('pIndex') + %(start)d);
@@ -369,7 +403,7 @@ class BaseTemplates:
                         }
                     }
                 }
-                return 0;}""" % dict(index=index, start=carousel, length=len(images))
+                return 0;}""" % dict(functioName=jsCallbackBefore, index=index, start=carousel, length=len(images))
             self.jsOut.append(js)
 
         return html

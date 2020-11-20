@@ -58,6 +58,7 @@
   		overflow: auto; /* CSS hack to grow div including all child content. */
 	}
 	.slideshowgroup {
+		margin: 0;
 	    display: grid;
 	    grid-template-columns: 1fr; /* 2fr 1fr; */
 	    column-gap: 10px;
@@ -65,6 +66,7 @@
 	    background-color: {{slideShowBackgroundColor}};
 	}
 	.slideshow {
+		margin: 0;
 	    background-color: {{slideShowBackgroundColor}};
 	}
 

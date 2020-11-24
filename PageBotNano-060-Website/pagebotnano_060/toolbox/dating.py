@@ -108,6 +108,20 @@ def now():
     """
     return Dating(date='now')
 
+def date(ymd):
+    """Answer the Dating instance for @ymd, with format yyyy-mm-dd
+
+    >>> date('2020-12-01')
+    Dating(date='2020-12-01')
+    >>> date('2020-2-1')
+    Dating(date='2020-02-01')
+    >>> date('20-2-1') # Warning: this is year 20!
+    Dating(date='0020-02-01')
+    >>> date('2020-2-1').date
+    '2020-02-01'
+    """
+    return Dating(date=ymd)
+
 def milliSeconds(milliSeconds):
     """Answers the Duration instance for this amount of milliSeconds
 

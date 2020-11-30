@@ -171,6 +171,11 @@ class TemplatedHielo(TemplatedBase):
                 html += """\n\t\t\t\t<div>\n\t\t\t\t\t<div class="box">"""
                 if hasattr(pageData, articleImage):
                     url = getattr(pageData, articleImage)
+                    if isinstance(url, (list, tuple)):
+                        if len(url) == 2:
+                            url, alignment = url # TODO: add alignment in output
+                        elif len(url) == 3:
+                            url, alignment, caption = url # TODO: add alignment and caption in output 
                     html += """\n\t\t\t\t\t\t<div class="image fit">\n\t\t\t\t\t\t\t<img src="%s"/>\n\t\t\t\t\t\t</div>""" % url
                 html += """\n\t\t\t\t\t\t<div class="content">"""
                 if hasattr(pageData, articleHead) or getattr(pageData, articleSubhead):

@@ -554,7 +554,7 @@ class Dating:
 
             if date is not None:
                 if isinstance(date, str):
-                    # Could be one of the follovwing formats
+                    # Could be one of the following formats
                     # YYYY-MM-DD HH:MM:SS
                     stamp = re.compile("(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)([\-\+]\d+)?")
                     m = stamp.match(date)

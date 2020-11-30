@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, "../..") # So we can import pagebotnano without installing.
 
 from pagebotnano_060.themes import DefaultTheme
+from pagebotnano_060.toolbox.color import color
 
 class BaseData:
     def __init__(self, id=None, title=None):
@@ -32,6 +33,17 @@ class SiteData(BaseData):
         BaseData.__init__(self, id, title)
         self.theme = theme or DefaultTheme()
         self.pages = [] # As list, to keep the order in menu and navigation
+
+        # Initialize defaults that always should be filled for CSS
+        # Default values as used in templates Hielo
+        self.footerFont = 'Verdana'
+        self.footerFontSize = '1em'
+        self.footerColor = color(0)
+
+        self.bannerFullHeight = '100vh' # Height of banners
+        self.bannerFullHeightMax980 = '50vh' # Height of banner in media
+        self.bannerFullHeightMax1280 = '75vh' # Height of banner in media
+        self.bannerHalfHeight = '50vh' # Half height of banner
 
     def __repr__(self):
         s = '<%s' % self.__class__.__name__

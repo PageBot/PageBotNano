@@ -30,6 +30,15 @@ class BaseData:
 
 class SiteData(BaseData):
     def __init__(self, id=None, title=None, theme=None):
+        """Initialize the default attributes, incase a Templated instance
+        doesn't do it.
+
+        >>> sd = SiteData()
+        >>> sd.page # No pages yet
+        []
+        >>> sd.footerFontSize
+        '1em'
+        """
         BaseData.__init__(self, id, title)
         self.theme = theme or DefaultTheme()
         self.pages = [] # As list, to keep the order in menu and navigation

@@ -60,6 +60,7 @@ def parseMarkdown(md):
     # ~~~ ... ~~~ --> <code> ... </code>
     md = re.sub('\\~\\~\\~([^~]*).*$', '<python>\\1</python>', md, flags=re.MULTILINE)
     # ![text](src) --> <img src="src" alt="text" />
+    # TODO: This also changes image_123_ABC.jpg into italic.
     md = re.sub('\\!\\[([^\\[]*)\\]\\(([^\\)]+)\\)', '<img src="\\2" alt="\\1"/>', md, flags=re.MULTILINE)
     # [text](link) --> <a href="link">text</a>
     md = re.sub('\\[([^\\[]+)\\]\\(([^\\)]+)\\)', '<a href="\\2">\\1</a>', md, flags=re.MULTILINE)

@@ -214,6 +214,7 @@ class TemplatedHielo(TemplatedBase):
             </div>
         </div>
         """
+        html = ''
         galleryHead = self._indexed('galleryHead', index)
         gallerySubhead = self._indexed('gallerySubhead', index)
         if (hasattr(pageData, galleryHead) or
@@ -287,7 +288,7 @@ class TemplatedHielo(TemplatedBase):
             if hasattr(pageData, articlePageHeaderSubhead):
                 html += """\n\t\t\t<p>%s</p>""" % getattr(pageData, articlePageHeaderSubhead)
             if hasattr(pageData, articlePageHeaderTitle):
-                html += """\n\t\t\t<h2>%s</h2>""" % getattr(pageData, articlePageHeaderSubhead)
+                html += """\n\t\t\t<h2>%s</h2>""" % getattr(pageData, articlePageHeaderTitle)
             html += """\n\t\t</header>\n\t</div>\n</section>"""
         return html
 
@@ -330,7 +331,7 @@ class TemplatedHielo(TemplatedBase):
             if hasattr(pageData, articlePageHeaderSubhead):
                 html += """\n\t\t\t<p>%s</p>""" % getattr(pageData, articlePageHeaderSubhead)
             if hasattr(pageData, articlePageHeaderTitle):
-                html += """\n\t\t\t<h2>%s</h2>""" % getattr(pageData, articlePageHeaderSubhead)
+                html += """\n\t\t\t<h2>%s</h2>""" % getattr(pageData, articlePageHeaderTitle)
             html += """\n\t\t</header>\n\t</div>\n</section>"""
         return html
 

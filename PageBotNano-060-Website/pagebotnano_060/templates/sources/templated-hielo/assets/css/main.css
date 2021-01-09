@@ -1684,7 +1684,8 @@
 
 	p {
 		margin: 0 0 2rem 0;
-		letter-spacing: 0.06rem;
+		letter-spacing: {{pTracking}};
+		line-height: {{pLeading}};
 	}
 
 		p.special {
@@ -1809,7 +1810,7 @@
 	}
 
 	a {
-		color: #EC472C;
+		color: #FF00C1;
 	}
 
 	strong, b {
@@ -4313,6 +4314,9 @@
 
 /* Deck */
 
+	.wrapper.style3.deck:before {
+		background-color: {{deckBackgroundColor}};
+	}
 	.wrapper.style3.deck .inner h1 {
 		font-family: {{deckFont}};
 		font-size: {{deckFontSize}};

@@ -39,6 +39,7 @@ class BaseTheme:
         else:
             self.lowest = self.black = color(0) # Black as lowest back-most layer = paper
             self.highest = self.white = color(1) # White as front-most contrast
+        self.gray = color(0.5) # Default middle gray
         # Defines the relation between typographic functions and font names.
         if fonts is None:
             fonts = self.getDefaultFonts()

@@ -215,11 +215,16 @@ class TemplatedHielo(TemplatedBase):
         </div>
         """
         html = ''
+        galleryTitle = self._indexed('galleryTitle', index)
         galleryHead = self._indexed('galleryHead', index)
         gallerySubhead = self._indexed('gallerySubhead', index)
         if (hasattr(pageData, galleryHead) or
             hasattr(pageData, gallerySubhead)):
-            html = """\n<section id="three" class="wrapper style2">\n\t<div class="inner">\n\t\t<header class="align-center">"""
+            html += """\n<section id="three" class="wrapper style2">"""
+            html += """\n\t<div class="inner">"""
+            if hasattr(pageData, galleryTitle):
+                html += '\n\t<h2>%s</h2>' % getattr(pageData, galleryTitle)
+            html += """\n\t\t<header class="align-center">"""
             if hasattr(pageData, gallerySubhead):
                 parsed = parseMarkdown(getattr(pageData, gallerySubhead))
                 html += """\n\t\t\t<p class="special">%s</p>""" % parsed
@@ -270,10 +275,10 @@ class TemplatedHielo(TemplatedBase):
                 html += """\n\t\t<div class="inner">\n\t\t<header class="align-center">"""
                 if hasattr(pageData, pullQuoteSubhead):
                     parsed = parseMarkdown(getattr(pageData, pullQuoteSubhead))
-                    html += """\n\t\t\t<p>%s</p>""" % parsed
+                    html += """\n\t\t\t<p class="pullquote">%s</p>""" % parsed
                 if hasattr(pageData, pullQuoteHead):
                     parsed = parseMarkdown(getattr(pageData, pullQuoteHead))
-                    html += """\n\t\t\t<h2>%s</h2>""" % parsed
+                    html += """\n\t\t\t<h2 class="pullquote">%s</h2>""" % parsed
                 html += """\n\t\t</header>\n\t</div>"""
             html += """\n\t</section>"""
         return html

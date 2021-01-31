@@ -70,9 +70,22 @@
 		row-gap: 10px;    
 		background-color: {{slideShowBackgroundColor}};
 	}
+	.slideshowgroup .inner h2.slideshowtitle {
+		font-family: {{slideShowTitleFont}};
+		font-size: {{slideShowTitleFontSize}};
+		color: {{slideShowTitleColor}};
+		padding: {{slideShowTitlePadding}};
+		letter-spacing: {{slideShowTitleTracking}};
+	}
 	.slideshow {
 		margin: 0;
 		background-color: {{slideShowBackgroundColor}};
+	}
+		@media screen and (max-width: 800px) {
+			.slideshowgroup {
+				width: 900px;
+				/*grid-template-columns: 4fr 1fr;*/ /* 2fr 1fr; */
+			}
 	}
 
 /* Box Model */
@@ -3134,7 +3147,7 @@
 
 		.wrapper.style3 {
 			background-color: #000;
-			color: #bfbfbf;
+			color: #E0E0E0; /* #bfbfbf; */
 			/*background-image: url(../../images/pic02.jpg); Defined by anchor in the page */
 			background-size: cover;
 			background-attachment: fixed;
@@ -3334,7 +3347,11 @@
 			}
 
 			.wrapper.style3 header p {
-				color: #999999;
+				color: #999999; 
+			}
+			.wrapper.style3 header p.pullquote {
+				font-family: "Upgrade-Medium"; /* Make parametric in PullQuote */
+				color: rgba(0, 0, 0, 0.5); /*#999999; */
 			}
 
 			.wrapper.style3 table tbody tr {
@@ -3368,11 +3385,11 @@
 
 			.wrapper.style3 p {
 				text-transform: uppercase;
-				font-size: .75rem;
+				font-size: 1rem; /* .75rem; */
 				font-weight: 300;
 				margin: 0 0 .5rem 0;
 				padding: 0 0 1rem 0;
-				letter-spacing: .25rem;
+				letter-spacing: {{pTrackingWide}};
 			}
 
 				.wrapper.style3 p:after {
@@ -3398,7 +3415,7 @@
 				transition-delay: 1.25s;
 				content: '';
 				display: block;
-				background-color: rgba(0, 0, 0, 0.95);
+				/*background-color: rgba(0, 0, 0, 0.95);*/
 				height: 100%;
 				left: 0;
 				opacity: 0.75;

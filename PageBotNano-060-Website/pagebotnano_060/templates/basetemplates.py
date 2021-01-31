@@ -239,6 +239,7 @@ class BaseTemplates:
         p.slideShowCallbackUpdate = '...' # Function to call whenever the update method is called
         """
         html = ''
+        slideShowTitle = self._indexed('slideShowTitle', index) # Calculate the indexed attribute name
         slideShowImages = self._indexed('slideShowImages', index) # Add index to anchor name if index > 0
         slideShowHeight = self._indexed('slideShowHeight', index)
         cssClass = self._indexed('slideshow', index)
@@ -246,8 +247,11 @@ class BaseTemplates:
         if hasattr(pageData, slideShowImages):
             assert isinstance(pageData.slideShowImages, (list, tuple))
             html += """\n<section id="slideShowSection_%d" class="wrapper style2">""" % index
-            #html += """\n\t<div class="inner">\n\t\t<div class="grid-style">""" 
-            html += """<div class="slideshowgroup clearfix" id="slideShowGroup_%d">""" % index
+            html += """\n<div class="slideshowgroup clearfix" id="slideShowGroup_%d">""" % index
+            if hasattr(pageData, slideShowTitle):
+                html += """\n\t<div class="inner">""" 
+                html += """\n<h2 class="slideshowtitle">%s</h2>""" % getattr(pageData, slideShowTitle)
+                html += """\n\t</div>"""
             html += """\n\t<div class="%s clearfix" id="slideShow_%d">""" % (cssClass, index)
             images = getattr(pageData, slideShowImages)
             for imageIndex, imageData in enumerate(images):
